@@ -1,0 +1,478 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Wtada233&apos;s Blog</title><description>_LFW_</description><link>https://wtada233.top/</link><language>zh_CN</language><item><title>给古董笔记本安装Arch</title><link>https://wtada233.top/posts/laptop-arch/</link><guid isPermaLink="true">https://wtada233.top/posts/laptop-arch/</guid><description>记一次奇葩的Arch安装</description><pubDate>Sun, 23 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+&lt;p&gt;起因是我同学给我了一台配置十分可怕的来自传说中的2017年的笔记本电脑让我优化
+然后我花了5分钟开机。。。于是我决定给它安装Arch。相信同学一定会很感谢我的。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4&gt;配置展示&lt;/h4&gt;
+&lt;p&gt;&lt;img src=&quot;BA8F26EAF65F8037E3AB65240C4CFF4A.jpg&quot; alt=&quot;BA8F26EAF65F8037E3AB65240C4CFF4A.jpg&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;看上去很离谱是吧？&lt;s&gt;其实我也觉得很离谱&lt;/s&gt;
+4G RAM没什么好说的。CPU??? 1500Mhz???&lt;/p&gt;
+&lt;h4&gt;&lt;strong&gt;请输入文本&lt;/strong&gt;&lt;/h4&gt;
+&lt;p&gt;好吧。既然已经接了活，当然得做完了
+可是这种配置的笔记本电脑，开机都能卡5分钟，怎么装arch...&lt;/p&gt;
+&lt;h2&gt;当然是不正经方式了&lt;/h2&gt;
+&lt;p&gt;首先我们需要一个已经安装好的Arch，我这里是我自己的主机上的硬盘
+P.S.FSTAB需要使用UUID!不然挂载可能失败。&lt;/p&gt;
+&lt;p&gt;相信大家都已经猜到我要做什么了
+rsync，启动！&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;分区！&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;cfdisk /dev/sda
+第一个boot，512M，第二个swap，4G，第三个root。
+mount /dev/sda3 /mnt/
+mount /dev/sda1 /mnt/boot/
+swapon /dev/sda2
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;同步！&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;rsync -avx --exclude=/dev/* --exclude=/proc/* 
+--exclude=/sys/* --exclude=/tmp/* 
+--exclude=/run/* --exclude=/mnt/* 
+--exclude=/home/Projects/* 
+--exclude=/home/Games/* 
+--exclude=/lost+found / /mnt/
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;排除掉Games才不是有Galgame，是因为里面有一个90G的原神...&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;配置！&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;其他不变，重点弄和磁盘相关的&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;genfstab -U /mnt &amp;gt; /mnt/etc/fstab
+nano /etc/fstab
+（删掉挂载的另一个swap，如果有）
+arch-chroot /mnt
+grub-install --target=x86_64-efi --efi-directory=/boot --removable
+（我的/boot不标准，应该挂载在/boot/EFI，但是不标准没什么影响）
+（这就是我给boot分512M的原因，因为里面有内核）
+grub-mkconfig -o /boot/grub/grub.cfg
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;至此，已成艺术！(&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&quot;13629A768ABAAF7667B35C7145EEA106.jpg&quot; alt=&quot;13629A768ABAAF7667B35C7145EEA106.jpg&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;修复BUG&lt;/h3&gt;
+&lt;h3&gt;1 声卡驱动&lt;/h3&gt;
+&lt;p&gt;驱动当然是有的，我被坑了半天，最后发现播放不了声音是因为默认输出是hdmi
+想要解决也很简单&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;cat /etc/asound.conf
+defaults.pcm.card 1
+defaults.pcm.device 0
+defaults.ctl.card 1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;设置默认声卡即可。&lt;/p&gt;
+&lt;h3&gt;2 异常卡顿&lt;/h3&gt;
+&lt;p&gt;安装AMD显卡驱动和CPU微码就好了
+(好不了一点，硬件不行)&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;pacman -S mesa lib32-mesa xf86-video-amdgpu xf86-video-ati vulkan-radeon
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;总结&lt;/h1&gt;
+&lt;p&gt;&lt;img src=&quot;359B27886CBC3736EF637236E8198937.jpg&quot; alt=&quot;359B27886CBC3736EF637236E8198937.jpg&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;好的，现在这台古董笔记本也是装上了Arch，但是没有流畅到哪里去。最直观的原因就是这玩意配置太低。。。总之，折腾还是很快乐的！欢迎关注我的Bilibili观看我的最新视频！&lt;/p&gt;
+</content:encoded></item><item><title>魔改 Fuwari：从零开始为博客添加音乐播放器</title><link>https://wtada233.top/posts/fuwari-music-player/</link><guid isPermaLink="true">https://wtada233.top/posts/fuwari-music-player/</guid><description>一篇完整的教程，教你如何将 APlayer.js 音乐播放器无缝集成到你的 Fuwari 主题博客中，包括状态保持和样式美化。</description><pubDate>Thu, 27 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;该教程由AI编写&lt;/h1&gt;
+&lt;p&gt;Fuwari 是一个设计简洁、注重性能的 Astro 博客主题。但简洁不代表我们不能对其进行扩展和“魔改”。一个常见的需求就是为博客添加一个背景音乐播放器，以增强氛围感。&lt;/p&gt;
+&lt;p&gt;本教程将详细介绍如何从零开始，将强大的 &lt;a href=&quot;https://github.com/DIYgod/APlayer&quot;&gt;APlayer.js&lt;/a&gt; 音乐播放器集成到 Fuwari 博客中。我们将实现以下目标：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;一个可配置的开关，随时启用或禁用播放器。&lt;/li&gt;
+&lt;li&gt;在 Astro 页面切换（SPA 模式）时保持播放状态不中断。&lt;/li&gt;
+&lt;li&gt;与 Fuwari 主题风格（特别是深色模式）完美融合的播放器样式。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;第一步：添加 APlayer 库文件&lt;/h3&gt;
+&lt;p&gt;首先，我们需要获取 APlayer 的核心库文件。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;下载 APlayer&lt;/strong&gt;:
+访问 &lt;a href=&quot;https://github.com/DIYgod/APlayer&quot;&gt;APlayer 的 GitHub 仓库&lt;/a&gt;。在项目的 &lt;code&gt;dist&lt;/code&gt; 目录中，找到并下载 &lt;code&gt;APlayer.min.js&lt;/code&gt; 和 &lt;code&gt;APlayer.min.css&lt;/code&gt; 这两个文件。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;放置文件&lt;/strong&gt;:
+将下载的 &lt;code&gt;APlayer.min.js&lt;/code&gt; 和 &lt;code&gt;APlayer.min.css&lt;/code&gt; 文件放入您项目的 &lt;code&gt;public/&lt;/code&gt; 目录下。这能确保它们可以像静态资源一样被直接访问。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;第二步：添加功能开关&lt;/h3&gt;
+&lt;p&gt;为了方便管理，我们在博客的配置文件中添加一个开关来控制播放器是否加载。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;更新类型定义&lt;/strong&gt;:
+打开 &lt;code&gt;src/types/config.ts&lt;/code&gt; 文件，在 &lt;code&gt;SiteConfig&lt;/code&gt; 类型中添加 &lt;code&gt;musicPlayer&lt;/code&gt; 属性：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;export type SiteConfig = {
+    // ... 其他类型
+    favicon: Favicon[];
+
+    musicPlayer: { // &amp;lt;-- 添加这部分
+        enable: boolean;
+    };
+};
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;更新主配置&lt;/strong&gt;:
+打开 &lt;code&gt;src/config.ts&lt;/code&gt; 文件，在 &lt;code&gt;siteConfig&lt;/code&gt; 对象中添加 &lt;code&gt;musicPlayer&lt;/code&gt; 配置，并将其设置为 &lt;code&gt;true&lt;/code&gt; 来启用它。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;export const siteConfig: SiteConfig = {
+    title: &quot;Wtada233&apos;s Blog&quot;,
+    // ... 其他配置
+    toc: {
+        // ...
+    },
+    favicon: [
+        // ...
+    ],
+    musicPlayer: { // &amp;lt;-- 添加这部分
+        enable: true,
+    },
+};
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;第三步：配置播放列表 (&lt;code&gt;MasterMusic.js&lt;/code&gt;)&lt;/h3&gt;
+&lt;p&gt;这是定义播放器行为和歌曲列表的核心文件。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;创建文件&lt;/strong&gt;:
+在 &lt;code&gt;public/&lt;/code&gt; 目录下创建一个 &lt;code&gt;lib&lt;/code&gt; 文件夹，然后在其中新建一个 &lt;code&gt;MasterMusic.js&lt;/code&gt; 文件。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;编写配置&lt;/strong&gt;:
+将以下代码复制到 &lt;code&gt;public/lib/MasterMusic.js&lt;/code&gt; 中。这是一个包含了歌曲信息、APlayer 基础设置和状态恢复逻辑的完整模板。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;(() =&amp;gt; {
+    // 确保 APlayer 已加载
+    if (typeof APlayer === &quot;undefined&quot;) {
+        console.error(&quot;APlayer 未加载&quot;);
+        return;
+    }
+
+    // 避免重复初始化
+    if (window.musicPlayerInitialized) {
+        return;
+    }
+    window.musicPlayerInitialized = true;
+
+    try {
+        // 创建音乐播放器实例
+        const musicPlayer = new APlayer({
+            container: document.getElementById(&quot;player&quot;),
+            fixed: false, // 不启用吸底模式
+            autoplay: true,
+            theme: &quot;#04112d&quot;,
+            loop: &quot;all&quot;,
+            order: &quot;random&quot;,
+            volume: 1.0,
+            mutex: true,
+            listFolded: false,
+            listMaxHeight: 90,
+            lrcType: 1, // 使用内联歌词
+            audio: [
+                {
+                    name: &quot;Lemon&quot;,
+                    artist: &quot;米津玄師&quot;,
+                    url: &quot;/music/lemon/lemon.mp3&quot;,
+                    cover: &quot;/music/lemon/lemon.jpg&quot;,
+                    lrc: &quot;[00:00.000]Lemon - 米津玄師...&quot;,
+                },
+                {
+                    name: &quot;让风告诉你&quot;,
+                    artist: &quot;花玲,喵☆酱,宴宁,kinsen&quot;,
+                    url: &quot;/music/demo/demo.mp3&quot;,
+                    cover: &quot;/music/demo/demo.jpg&quot;,
+                    lrc: &quot;[00:00.000] 作词 : ChiliChill...&quot;,
+                },
+            ],
+        });
+
+        // 将播放器实例保存到全局
+        window.musicPlayer = musicPlayer;
+
+        // 恢复页面切换前保存的播放状态
+        if (window.musicPlayerState) {
+            const state = window.musicPlayerState;
+            musicPlayer.on(&quot;loadeddata&quot;, () =&amp;gt; {
+                if (state.currentIndex !== undefined) {
+                    musicPlayer.list.switch(state.currentIndex);
+                }
+                if (state.currentTime) {
+                    musicPlayer.seek(state.currentTime);
+                }
+                if (!state.paused) {
+                    musicPlayer.play().catch(() =&amp;gt; {
+                        // 自动播放失败，等待用户交互
+                    });
+                }
+                window.musicPlayerState = null;
+            });
+        }
+    } catch (error) {
+        console.error(&quot;音乐播放器初始化失败:&quot;, error);
+    }
+})();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;放置音乐文件&lt;/strong&gt;:
+根据您在 &lt;code&gt;audio&lt;/code&gt; 数组中配置的 &lt;code&gt;url&lt;/code&gt; 和 &lt;code&gt;cover&lt;/code&gt; 路径，将音乐和封面文件放置到 &lt;code&gt;public/&lt;/code&gt; 目录下。例如，创建 &lt;code&gt;public/music/&lt;/code&gt; 文件夹来存放它们。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;第四步：集成到主布局 (&lt;code&gt;Layout.astro&lt;/code&gt;)&lt;/h3&gt;
+&lt;p&gt;这是最关键的一步。我们需要修改博客的全局布局文件 &lt;code&gt;src/layouts/Layout.astro&lt;/code&gt;，以加载播放器的 HTML、CSS 和 JavaScript。&lt;/p&gt;
+&lt;p&gt;打开 &lt;code&gt;src/layouts/Layout.astro&lt;/code&gt; 并添加以下代码块：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;在 &lt;code&gt;&amp;lt;head&amp;gt;&lt;/code&gt; 中引入 APlayer 样式&lt;/strong&gt;:
+在 &lt;code&gt;&amp;lt;/head&amp;gt;&lt;/code&gt; 标签之前，加入以下代码。它会根据配置决定是否加载 CSS。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{/* 音乐播放器样式 */}
+{siteConfig.musicPlayer.enable &amp;amp;&amp;amp; (
+    &amp;lt;link href=&quot;/APlayer.min.css&quot; rel=&quot;stylesheet&quot;&amp;gt;
+)}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;在 &lt;code&gt;&amp;lt;body&amp;gt;&lt;/code&gt; 中添加播放器容器和加载脚本&lt;/strong&gt;:
+在 &lt;code&gt;&amp;lt;/body&amp;gt;&lt;/code&gt; 标签之前，加入播放器的 HTML 容器和核心的加载与状态管理脚本。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{/* 音乐播放器容器 */}
+{siteConfig.musicPlayer.enable &amp;amp;&amp;amp; (
+    &amp;lt;div id=&quot;player&quot; class=&quot;aplayer&quot;&amp;gt;&amp;lt;/div&amp;gt;
+)}
+
+{/* 音乐播放器脚本 */}
+{siteConfig.musicPlayer.enable &amp;amp;&amp;amp; (
+    &amp;lt;script is:inline&amp;gt;
+        // 防止重复加载脚本
+        if (!window.aplayerLoaded) {
+            window.aplayerLoaded = true;
+
+            // 定义全局加载函数
+            window.loadMasterMusic = function() {
+                if (window.musicPlayerInitialized) return;
+                const script = document.createElement(&apos;script&apos;);
+                script.src = &apos;/lib/MasterMusic.js&apos;;
+                document.head.appendChild(script);
+            };
+
+            // 加载 APlayer 库，加载完成后回调 loadMasterMusic
+            const aplayerScript = document.createElement(&apos;script&apos;);
+            aplayerScript.src = &apos;/APlayer.min.js&apos;;
+            aplayerScript.onload = window.loadMasterMusic;
+            document.head.appendChild(aplayerScript);
+        }
+
+        // 监听 Astro 页面导航事件，确保容器存在
+        document.addEventListener(&apos;astro:page-load&apos;, function() {
+            if (!document.getElementById(&apos;player&apos;)) {
+                const playerContainer = document.createElement(&apos;div&apos;);
+                playerContainer.id = &apos;player&apos;;
+                playerContainer.className = &apos;aplayer&apos;;
+                document.body.appendChild(playerContainer);
+            }
+            // 重新加载播放器逻辑
+            if (window.loadMasterMusic) {
+                window.loadMasterMusic();
+            }
+        });
+
+        // 页面卸载前保存播放状态
+        document.addEventListener(&apos;astro:before-swap&apos;, function() {
+            if (window.musicPlayer) {
+                window.musicPlayerState = {
+                    currentTime: window.musicPlayer.audio.currentTime,
+                    paused: window.musicPlayer.audio.paused,
+                    currentIndex: window.musicPlayer.list.index
+                };
+                // 标记播放器需要重新初始化
+                window.musicPlayerInitialized = false;
+            }
+        });
+    &amp;lt;/script&amp;gt;
+)}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;脚本解释&lt;/strong&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;它首先加载 &lt;code&gt;APlayer.min.js&lt;/code&gt;，成功后再加载我们的配置文件 &lt;code&gt;MasterMusic.js&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;通过监听 &lt;code&gt;astro:before-swap&lt;/code&gt; 事件，在页面切换前将当前播放进度、播放状态和歌曲索引保存到 &lt;code&gt;window.musicPlayerState&lt;/code&gt; 中。&lt;/li&gt;
+&lt;li&gt;通过监听 &lt;code&gt;astro:page-load&lt;/code&gt; 事件，在页面切换后重新加载 &lt;code&gt;MasterMusic.js&lt;/code&gt;，该文件内的逻辑会读取 &lt;code&gt;window.musicPlayerState&lt;/code&gt; 并恢复播放，从而实现无缝播放。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;添加播放器自定义样式&lt;/strong&gt;:
+将以下 CSS 代码块添加到 &lt;code&gt;src/layouts/Layout.astro&lt;/code&gt; 文件末尾的 &lt;code&gt;&amp;lt;style is:global&amp;gt;&lt;/code&gt; 标签内。这些样式能让播放器完美融入主题。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@layer components {
+    /* ... 其他组件样式 ... */
+
+    /* 音乐播放器样式 */
+    #player.aplayer {
+        margin: 0;
+        border-radius: var(--radius-large);
+        border: 1px solid var(--line-divider);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        z-index: 999;
+        width: 300px;
+        transition: all 0.3s ease;
+        overflow: hidden;
+    }
+    
+    @media (max-width: 768px) {
+        #player.aplayer {
+            bottom: 10px;
+            left: 10px;
+            right: 10px;
+            width: auto;
+        }
+    }
+    
+    :root.dark #player.aplayer {
+        background: var(--card-bg);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        border-color: var(--line-divider);
+    }
+
+    :root.dark #player.aplayer .aplayer-info {
+        border-bottom-color: var(--line-divider);
+    }
+
+    :root.dark #player.aplayer .aplayer-info .aplayer-music .aplayer-title {
+        color: rgb(255 255 255 / 0.9);
+    }
+
+    :root.dark #player.aplayer .aplayer-info .aplayer-music .aplayer-author,
+    :root.dark #player.aplayer .aplayer-info .aplayer-controller .aplayer-time {
+        color: rgb(255 255 255 / 0.5);
+    }
+
+    :root.dark #player.aplayer .aplayer-list {
+        background-color: var(--card-bg);
+    }
+
+    :root.dark #player.aplayer .aplayer-list ol li {
+        color: rgb(255 255 255 / 0.7);
+        border-top-color: var(--line-divider);
+    }
+
+    :root.dark #player.aplayer .aplayer-list ol li:hover {
+        background: var(--btn-plain-bg-hover);
+    }
+    
+    :root.dark #player.aplayer .aplayer-list ol li.aplayer-list-light {
+        background: var(--btn-plain-bg-hover);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;总结&lt;/h3&gt;
+&lt;p&gt;恭喜！通过以上步骤，您已经成功地为您的 Fuwari 博客添加了一个功能完善且外观精美的音乐播放器。现在，每当访问者在您的站点中浏览时，都可以享受不间断的音乐了。&lt;/p&gt;
+&lt;p&gt;您可以进一步探索 APlayer 的&lt;a href=&quot;https://aplayer.js.org/&quot;&gt;官方文档&lt;/a&gt;，解锁更多高级功能，例如歌词滚动、多播放列表等，尽情发挥您的创造力吧！&lt;/p&gt;
+</content:encoded></item><item><title>一服四用</title><link>https://wtada233.top/posts/all-in-one-server/</link><guid isPermaLink="true">https://wtada233.top/posts/all-in-one-server/</guid><description>究竟有多绝望才能一台低配服务器运行四个服务</description><pubDate>Mon, 24 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+&lt;p&gt;众所周知，一台2核2G的云服务器是绝对不能同时运行四个服务的...？
+当然，如果真是这样，就不会有这篇文章了&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h1&gt;一 服 四 用&lt;/h1&gt;
+&lt;p&gt;在开始前，我要先介绍一下我运行的四个服务，没一个是没用的&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Nginx（没错就是这个博客）&lt;/li&gt;
+&lt;li&gt;FTP（开anonymous但是没有写入权限，主要是下载，也方便配置）&lt;/li&gt;
+&lt;li&gt;Minecraft（究极优化服务器）&lt;/li&gt;
+&lt;li&gt;Hypixel加速（主要消耗带宽而不是资源）&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;我知道你们觉得这很离谱，但先别觉得离谱，先看看怎么实现的再说（&lt;/p&gt;
+&lt;h3&gt;1. 终极系统优化&lt;/h3&gt;
+&lt;p&gt;第一步是swapfile启动&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;fallocate -l 2G /swapfile
+chmod 600 /swapfile
+mkswap /swapfile
+swapon /swapfile
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;但是我在做这一步时忘了一件事——fstab&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;apt install arch-install-scripts
+genfstab -U / &amp;gt; /etc/fstab
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;手动编辑fstab又难又容易错，arch大法好&lt;/p&gt;
+&lt;p&gt;然后修改swap使用倾向&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;echo &quot;vm.swappiness=10&quot; | sudo tee -a /etc/sysctl.conf
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;2.终极网站优化&lt;/h3&gt;
+&lt;p&gt;降低服务器消耗资源的最简单方法就是使用静态网页——没错这个博客就是&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;#这是build.sh参考，我在本地弄好博客编译了快捷上传，改掉root密码
+#!/bin/bash
+rm -rf dist
+npm run build
+sshpass -p &quot;root密码&quot; ssh -T root@wtada233.top &quot;rm -rf /var/www/html/*&quot;
+sshpass -p &quot;root密码&quot; scp -r dist/* root@wtada233.top:/var/www/html/
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;现在服务器基本上只消耗带宽了&lt;/p&gt;
+&lt;h3&gt;3.终极代理优化&lt;/h3&gt;
+&lt;p&gt;使用minecraftspeedproxy这个轻量级的代理服务，可以自行Github&lt;/p&gt;
+&lt;h3&gt;4.重头戏！Minecraft!&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;root@Wtada233:~# cat Minecraft/start.sh 
+#!/bin/bash
+#java -jar -Xms1G -Xmx1G -XX:+UseG1GC -XX:+UnlockExperimentalVMOptions -XX:MaxGCPauseMillis=100 -XX:+DisableExplicitGC -XX:TargetSurvivorRatio=90 -XX:G1NewSizePercent=50 -XX:G1MaxNewSizePercent=80 -XX:G1MixedGCLiveThresholdPercent=35 -XX:+AlwaysPreTouch -XX:+ParallelRefProcEnabled -Dusing.aikars.flags=mcflags.emc.gs server.jar nogui
+#java -jar -Xms1G -Xmx1G -Xss512K -XX:+AggressiveOpts -XX:+UseCompressedOops -XX:+UseCMSCompactAtFullCollection -XX:+UseFastAccessorMethods -XX:ParallelGCThreads=4 -XX:+UseConcMarkSweepGC -XX:CMSFullGCsBeforeCompaction=2 -XX:CMSInitiatingOccupancyFraction=70 -XX:-DisableExplicitGC -XX:TargetSurvivorRatio=90 -jar server.jar nogui
+java -Xms1G -Xmx1G -XX:+UseSerialGC -XX:MaxRAMPercentage=70 -XX:+DisableExplicitGC -XX:OnOutOfMemoryError=&quot;kill -9 %p&quot; -jar server.jar --nogui
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;前面几个是我以前用的，感觉最后一个效果最好
+建议装一些优化插件，然后在server.properties中设置max-tick-time为-1，关闭watchdog&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;#Minecraft server properties
+#Sun Nov 23 15:04:12 CST 2025
+allow-flight=false
+allow-nether=true
+broadcast-console-to-ops=true
+broadcast-rcon-to-ops=true
+debug=false
+difficulty=hard
+enable-command-block=true
+enable-jmx-monitoring=false
+enable-query=false
+enable-rcon=false
+enable-status=true
+enforce-secure-profile=true
+enforce-whitelist=false
+entity-broadcast-range-percentage=100
+force-gamemode=false
+function-permission-level=2
+gamemode=survival
+generate-structures=true
+generator-settings={}
+hardcore=false
+hide-online-players=false
+initial-disabled-packs=
+initial-enabled-packs=vanilla
+level-name=Server
+level-seed=
+level-type=default
+max-build-height=320
+max-chained-neighbor-updates=-1
+max-players=100
+max-tick-time=-1
+max-world-size=29999984
+motd=§l§6Linuxfirmware §4的 §2土豆服务器§r
+network-compression-threshold=1024
+online-mode=false
+op-permission-level=4
+player-idle-timeout=0
+prevent-proxy-connections=false
+pvp=true
+query.port=25565
+rate-limit=0
+rcon.password=
+rcon.port=25575
+require-resource-pack=false
+resource-pack=
+resource-pack-prompt=
+resource-pack-sha1=
+server-ip=
+server-name=土豆服
+server-port=25565
+simulation-distance=10
+snooper-enabled=true
+spawn-animals=true
+spawn-monsters=true
+spawn-npcs=true
+spawn-protection=16
+sync-chunk-writes=true
+text-filtering-config=
+use-native-transport=true
+view-distance=4
+white-list=false
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;我的配置仅供参考，欢迎邮箱联系提出意见&lt;/p&gt;
+&lt;h3&gt;5.总结&lt;/h3&gt;
+&lt;p&gt;弄好之后swap的好处就有了——别听AI胡说八道说swap降低速度，实际上swap根本不是拿来当正常内存用的，就是防内存不够。弄好这套配置之后常年消耗5M左右swap，负载高的时候不超过512M，十分稳定&lt;/p&gt;
+</content:encoded></item></channel></rss>

@@ -1,0 +1,6 @@
+
+import __ASTRO_IMAGE_IMPORT_psGvA from "BA8F26EAF65F8037E3AB65240C4CFF4A.jpg?astroContentImageFlag=&importer=src%2Fcontent%2Fposts%2Flaptop-arch%2Findex.md";
+import __ASTRO_IMAGE_IMPORT_Zd771D from "13629A768ABAAF7667B35C7145EEA106.jpg?astroContentImageFlag=&importer=src%2Fcontent%2Fposts%2Flaptop-arch%2Findex.md";
+import __ASTRO_IMAGE_IMPORT_ZQo7mV from "359B27886CBC3736EF637236E8198937.jpg?astroContentImageFlag=&importer=src%2Fcontent%2Fposts%2Flaptop-arch%2Findex.md";
+export default new Map([["BA8F26EAF65F8037E3AB65240C4CFF4A.jpg?astroContentImageFlag=&importer=src%2Fcontent%2Fposts%2Flaptop-arch%2Findex.md", __ASTRO_IMAGE_IMPORT_psGvA], ["13629A768ABAAF7667B35C7145EEA106.jpg?astroContentImageFlag=&importer=src%2Fcontent%2Fposts%2Flaptop-arch%2Findex.md", __ASTRO_IMAGE_IMPORT_Zd771D], ["359B27886CBC3736EF637236E8198937.jpg?astroContentImageFlag=&importer=src%2Fcontent%2Fposts%2Flaptop-arch%2Findex.md", __ASTRO_IMAGE_IMPORT_ZQo7mV]]);
+		
