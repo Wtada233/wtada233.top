@@ -6,91 +6,38 @@
 
 A static blog template built with [Astro](https://astro.build).
 
-[**🖥️ Live Demo (Vercel)**](https://fuwari.vercel.app)
+## 🛠️ 魔改功能 (Custom Features)
 
-![Preview Image](https://raw.githubusercontent.com/saicaca/resource/main/fuwari/home.png)
+This project is enhanced with several custom features based on the Fuwari theme:
 
-🌏 README in
-[**中文**](https://github.com/saicaca/fuwari/blob/main/docs/README.zh-CN.md) /
-[**日本語**](https://github.com/saicaca/fuwari/blob/main/docs/README.ja.md) /
-[**한국어**](https://github.com/saicaca/fuwari/blob/main/docs/README.ko.md) /
-[**Español**](https://github.com/saicaca/fuwari/blob/main/docs/README.es.md) /
-[**ไทย**](https://github.com/saicaca/fuwari/blob/main/docs/README.th.md) /
-[**Tiếng Việt**](https://github.com/saicaca/fuwari/blob/main/docs/README.vi.md) /
-[**Bahasa Indonesia**](https://github.com/saicaca/fuwari/blob/main/docs/README.id.md) (Provided by the community and may not always be up-to-date)
+原创作者链接：
 
-## ✨ Features
+音乐播放器（我魔改过）：
+https://blog.pljzy.top/posts/astrofuwai/astrofuwai%E5%8D%9A%E5%AE%A2%E9%83%A8%E7%BD%B2%E6%95%99%E7%A8%8B/
+系列：
+https://ikamusume7.org/posts/frontend/add_series_field/
+置顶：
+https://blog.yang233.eu.org/posts/post-pinning-feature/
+字体修改：
+https://lanke-seven.vercel.app/posts/107368/#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%AD%97%E4%BD%93
 
-- [x] Built with [Astro](https://astro.build) and [Tailwind CSS](https://tailwindcss.com)
-- [x] Smooth animations and page transitions
-- [x] Light / dark mode
-- [x] Customizable theme colors & banner
-- [x] Responsive design
-- [x] Search functionality with [Pagefind](https://pagefind.app/)
-- [x] [Markdown extended features](https://github.com/saicaca/fuwari?tab=readme-ov-file#-markdown-extended-syntax)
-- [x] Table of contents
-- [x] RSS feed
+- **Post Pinning System**: By adding an `order` field to the post's frontmatter, you can pin a post to the top (`order: 1`) or sink it to the bottom (`order: -1`). The post list will be sorted based on this `order` value first.
 
-## 🚀 Getting Started
+- **Post Series Functionality**: Group multiple posts into a series by adding a `series` field in the frontmatter. Posts from the same series will be displayed in a "Series" widget on the sidebar and have a dedicated series aggregation page.
 
-1. Create your blog repository:
-    - [Generate a new repository](https://github.com/saicaca/fuwari/generate) from this template or fork this repository.
-    - Or run one of the following commands:
-       ```sh
-       npm create fuwari@latest
-       yarn create fuwari
-       pnpm create fuwari@latest
-       bun create fuwari@latest
-       deno run -A npm:create-fuwari@latest
-       ```
-2. To edit your blog locally, clone your repository, run `pnpm install` to install dependencies.
-    - Install [pnpm](https://pnpm.io) `npm install -g pnpm` if you haven't.
-3. Edit the config file `src/config.ts` to customize your blog.
-4. Run `pnpm new-post <filename>` to create a new post and edit it in `src/content/posts/`.
-5. Deploy your blog to Vercel, Netlify, GitHub Pages, etc. following [the guides](https://docs.astro.build/en/guides/deploy/). You need to edit the site configuration in `astro.config.mjs` before deployment.
+- **Global Music Player**: Integrates APlayer.js as a global background music player. The player maintains its playback state across Astro page transitions and can be enabled or disabled in the `src/config.ts` file. The playlist and music files are configured in `public/lib/MasterMusic.js` and `public/music/`.
 
-## 📝 Frontmatter of Posts
+- **Giscus Comment System**: The post page integrates the [Giscus](https://giscus.app/) comment system, which is based on GitHub Discussions. Visitors can easily leave comments and interact using their GitHub accounts.
 
-```yaml
----
-title: My First Blog Post
-published: 2023-09-09
-description: This is the first post of my new Astro blog.
-image: ./cover.jpg
-tags: [Foo, Bar]
-category: Front-end
-draft: false
-lang: jp      # Set only if the post's language differs from the site's language in `config.ts`
----
+## 如何使用
+
 ```
-
-## 🧩 Markdown Extended Syntax
-
-In addition to Astro's default support for [GitHub Flavored Markdown](https://github.github.com/gfm/), several extra Markdown features are included:
-
-- Admonitions ([Preview and Usage](https://fuwari.vercel.app/posts/markdown-extended/#admonitions))
-- GitHub repository cards ([Preview and Usage](https://fuwari.vercel.app/posts/markdown-extended/#github-repository-cards))
-- Enhanced code blocks with Expressive Code ([Preview](https://fuwari.vercel.app/posts/expressive-code/) / [Docs](https://expressive-code.com/))
-
-## ⚡ Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                    | Action                                              |
-|:---------------------------|:----------------------------------------------------|
-| `pnpm install`             | Installs dependencies                               |
-| `pnpm dev`                 | Starts local dev server at `localhost:4321`         |
-| `pnpm build`               | Build your production site to `./dist/`             |
-| `pnpm preview`             | Preview your build locally, before deploying        |
-| `pnpm check`               | Run checks for errors in your code                  |
-| `pnpm format`              | Format your code using Biome                        |
-| `pnpm new-post <filename>` | Create a new post                                   |
-| `pnpm astro ...`           | Run CLI commands like `astro add`, `astro check`    |
-| `pnpm astro --help`        | Get help using the Astro CLI                        |
-
-## ✏️ Contributing
-
-Check out the [Contributing Guide](https://github.com/saicaca/fuwari/blob/main/CONTRIBUTING.md) for details on how to contribute to this project.
+git clone https://github.com/Wtada233/wtada233.top
+vim wtada233.top/src/config.ts
+#自定义
+pnpm install
+npm run build
+```
 
 ## 📄 License
 
