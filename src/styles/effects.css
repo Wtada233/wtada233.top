@@ -1,0 +1,37 @@
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  background-color: var(--primary);
+}
+
+.click-particle {
+  animation: fly-out 600ms ease-out forwards;
+}
+
+.trail-particle {
+  animation: fade-and-shrink 500ms ease-out forwards;
+}
+
+@keyframes fly-out {
+  from {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: var(--transform-to);
+    opacity: 0;
+  }
+}
+
+@keyframes fade-and-shrink {
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: scale(0);
+    opacity: 0;
+  }
+}
