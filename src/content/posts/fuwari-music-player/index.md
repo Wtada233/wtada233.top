@@ -242,7 +242,8 @@ series: "该博客搭建"
         #player.aplayer {
             margin: 0;
             border-radius: var(--radius-large);
-            border: 1px solid var(--line-divider);
+            outline: 3px solid var(--primary);
+            outline-offset: 3px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
             position: fixed;
             bottom: 20px;
