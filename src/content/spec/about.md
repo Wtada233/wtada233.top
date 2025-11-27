@@ -14,5 +14,9 @@ Minecraft:_Linuxfirmware_
 
 # 关于博客
 
+### 使用
+- 快捷键
+M：隐藏/弹出音乐播放器
+
 这是使用 [Fuwari](https://github.com/saicaca/fuwari). 制作的博客网站，部署在腾讯云服务器。
 ::github{repo="saicaca/fuwari"}

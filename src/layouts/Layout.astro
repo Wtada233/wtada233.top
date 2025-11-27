@@ -170,6 +170,23 @@ const bannerOffset =
 		{/* 音乐播放器脚本 */}
 		{siteConfig.musicPlayer.enable && (
 			<script is:inline>
+			// Handle music player toggle
+			if (!window.musicPlayerToggle) {
+				window.musicPlayerToggle = true;
+				document.addEventListener('keydown', (event) => {
+					const target = event.target;
+					if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable)) {
+						return;
+					}
+					if (event.key === 'm' || event.key === 'M') {
+						const playerElement = document.getElementById('player');
+						if (playerElement) {
+							playerElement.classList.toggle('player-hidden');
+						}
+					}
+				});
+			}
+
 			// 防止重复加载脚本
 			if (!window.aplayerLoaded) {
 				window.aplayerLoaded = true;
@@ -318,6 +335,12 @@ const bannerOffset =
 		width: 300px;
 		transition: all 0.3s ease;
 		overflow: hidden;
+	}
+
+	#player.aplayer.player-hidden {
+		transform: translateY(calc(100% + 40px));
+		pointer-events: none;
+		opacity: 0;
 	}
 	
 	/* 响应式适配 */
