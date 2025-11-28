@@ -216,7 +216,6 @@ const bannerOffset =
 				// 加载 APlayer 库
 				const aplayerScript = document.createElement('script');
 				aplayerScript.src = '/APlayer.min.js';
-				aplayerScript.defer = true;
 				aplayerScript.onload = window.loadMasterMusic;
 				document.head.appendChild(aplayerScript);
 			} else {
