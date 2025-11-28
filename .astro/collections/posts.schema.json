@@ -87,6 +87,10 @@
           "type": "number",
           "default": 0
         },
+        "ai": {
+          "type": "string",
+          "default": ""
+        },
         "prevTitle": {
           "type": "string",
           "default": ""

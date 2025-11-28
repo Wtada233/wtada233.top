@@ -14,6 +14,7 @@ import ImageWrapper from "../../components/misc/ImageWrapper.astro";
 import PostMetadata from "../../components/PostMeta.astro";
 import { profileConfig, siteConfig } from "../../config";
 import { formatDateToYYYYMMDD } from "../../utils/date-utils";
+import AISummary from "@components/misc/AISummary.astro";
 
 export async function getStaticPaths() {
 	const blogEntries = await getSortedPosts();
@@ -32,7 +33,7 @@ const jsonLd = {
 	"@context": "https://schema.org",
 	"@type": "BlogPosting",
 	headline: entry.data.title,
-	description: entry.data.description || entry.data.title,
+	description: entry.data.ai || entry.data.title,
 	keywords: entry.data.tags,
 	author: {
 		"@type": "Person",
@@ -89,6 +90,8 @@ const jsonLd = {
                     }
                 </div>
             </div>
+
+            {entry.data.description && <AISummary content={entry.data.ai} class="onload-animation" />}
 
             <!-- metadata -->
             <div class="onload-animation">
