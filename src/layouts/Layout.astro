@@ -145,6 +145,8 @@ const bannerOffset =
 
 		<slot name="head"></slot>
 
+		<link rel="preload" href="/hk4e_zh-cn.woff2" as="font" type="font/woff2" crossorigin>
+
 		{/* 音乐播放器样式 */}
 		{siteConfig.musicPlayer.enable && (
 			<link href="/APlayer.min.css" rel="stylesheet">
@@ -214,6 +216,7 @@ const bannerOffset =
 				// 加载 APlayer 库
 				const aplayerScript = document.createElement('script');
 				aplayerScript.src = '/APlayer.min.js';
+				aplayerScript.defer = true;
 				aplayerScript.onload = window.loadMasterMusic;
 				document.head.appendChild(aplayerScript);
 			} else {
