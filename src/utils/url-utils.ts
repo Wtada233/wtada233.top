@@ -42,3 +42,14 @@ export function getDir(path: string): string {
 export function url(path: string) {
 	return joinUrl("", import.meta.env.BASE_URL, path);
 }
+
+export const isHomePage = (pathname: string): boolean => {
+	// 获取 base URL
+	const baseUrl = import.meta.env.BASE_URL || "/";
+	
+	// 标准化路径：移除 base URL 前缀
+	const normalizedPath = pathname.replace(baseUrl, "/");
+	
+	// 检查是否为根路径
+	return normalizedPath === "/" || normalizedPath === "";
+};
