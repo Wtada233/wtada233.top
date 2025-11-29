@@ -6,11 +6,11 @@
 
 我研究过一段时间编程，最后还是感觉折腾Arch更适合我。
 
-QQ:3931701428
+- QQ:3931701428
 
-原神:337342223
+- 原神:337342223
 
-Minecraft:_Linuxfirmware_
+- Minecraft: _Linuxfirmware_
 
 # 关于博客
 
