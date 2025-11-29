@@ -58,18 +58,20 @@ const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encoded
         navigator.clipboard.writeText(urlToCopy).then(() => {
           // Optional: Add a visual feedback for successful copy
           const originalContent = copyButton.innerHTML;
-          copyButton.innerHTML = '<span class="flex items-center justify-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="m10 16.4l-4-4L7.4 11l2.6 2.6L16.6 7L18 8.4l-8 8Z"/></svg>Copied!</span>';
+          copyButton.innerHTML = '<span class="flex items-center justify-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="m10 16.4l-4-4L7.4 11l2.6 2.6L16.6 7L18 8.4l-8 8Z"/></svg>OK</span>';
           setTimeout(() => {
             copyButton.innerHTML = originalContent;
           }, 2000);
         }).catch(err => {
           console.error('Failed to copy URL:', err);
-          alert('Failed to copy URL. Please try again or copy manually. Error: ' + err.message);
+          alert(err.message);
         });
       }
     }
   });
 </script>
+
+<br />
 
 <style>
   .share-buttons {
