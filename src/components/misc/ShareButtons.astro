@@ -49,20 +49,22 @@ const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encoded
 
 <script is:inline>
   document.addEventListener('click', (event) => {
-    const target = event.target as HTMLElement;
-    if (target && target.closest('.copy-link-btn')) {
-      const button = target.closest('.copy-link-btn');
-      const urlToCopy = button.dataset.url;
+    const target = event.target;
+    // Check if the clicked element or any of its parents have the class 'copy-link-btn'
+    const copyButton = target.closest('.copy-link-btn');
+    if (copyButton) {
+      const urlToCopy = copyButton.dataset.url;
       if (urlToCopy) {
         navigator.clipboard.writeText(urlToCopy).then(() => {
           // Optional: Add a visual feedback for successful copy
-          const originalText = button.innerHTML;
-          button.innerHTML = '<span class="flex items-center justify-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="m10 16.4l-4-4L7.4 11l2.6 2.6L16.6 7L18 8.4l-8 8Z"/></svg>Copied!</span>';
+          const originalContent = copyButton.innerHTML;
+          copyButton.innerHTML = '<span class="flex items-center justify-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="m10 16.4l-4-4L7.4 11l2.6 2.6L16.6 7L18 8.4l-8 8Z"/></svg>Copied!</span>';
           setTimeout(() => {
-            button.innerHTML = originalText;
+            copyButton.innerHTML = originalContent;
           }, 2000);
         }).catch(err => {
-          console.error('Failed to copy URL: ', err);
+          console.error('Failed to copy URL:', err);
+          alert('Failed to copy URL. Please try again or copy manually. Error: ' + err.message);
         });
       }
     }

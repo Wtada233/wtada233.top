@@ -119,7 +119,7 @@ const jsonLd = {
 
             {licenseConfig.enable && <License title={entry.data.title} slug={entry.slug} pubDate={entry.data.published} class="mb-6 rounded-xl license-container onload-animation"></License>}
 
-            <ShareButtons title={entry.data.title} url={Astro.url.href}></ShareButtons>
+            <ShareButtons title={entry.data.title} url={Astro.url.href} class="mb-6"></ShareButtons>
 
             <Giscus
                repo="Wtada233/fuwari-comments-wtada233.top"
