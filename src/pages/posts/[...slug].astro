@@ -15,6 +15,7 @@ import PostMetadata from "../../components/PostMeta.astro";
 import { profileConfig, siteConfig } from "../../config";
 import { formatDateToYYYYMMDD } from "../../utils/date-utils";
 import AISummary from "@components/misc/AISummary.astro";
+import ShareButtons from "@components/misc/ShareButtons.astro";
 
 export async function getStaticPaths() {
 	const blogEntries = await getSortedPosts();
@@ -117,6 +118,9 @@ const jsonLd = {
             </Markdown>
 
             {licenseConfig.enable && <License title={entry.data.title} slug={entry.slug} pubDate={entry.data.published} class="mb-6 rounded-xl license-container onload-animation"></License>}
+
+            <ShareButtons title={entry.data.title} url={Astro.url.href}></ShareButtons>
+
             <Giscus
                repo="Wtada233/fuwari-comments-wtada233.top"
                repoId="R_kgDOQcCOWQ"

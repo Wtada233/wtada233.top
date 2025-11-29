@@ -33,6 +33,11 @@ enum I18nKey {
 	publishedAt = "publishedAt",
 	license = "license",
 	series = 'series',
+
+	share = "share",
+	shareToTwitter = "shareToTwitter",
+	shareToFacebook = "shareToFacebook",
+	copyLink = "copyLink",
 }
 
 export default I18nKey;

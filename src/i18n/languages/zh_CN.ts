@@ -37,4 +37,9 @@ export const zh_CN: Translation = {
 	[Key.publishedAt]: "发布于",
 	[Key.license]: "许可协议",
 	[Key.series]: '系列',
+
+	[Key.share]: "分享",
+	[Key.shareToTwitter]: "分享到 Twitter",
+	[Key.shareToFacebook]: "分享到 Facebook",
+	[Key.copyLink]: "复制链接",
 };
