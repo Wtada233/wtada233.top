@@ -43,6 +43,13 @@ export const siteConfig: SiteConfig = {
 			  pauseTime: 2000, // 完全显示后的暂停时间（毫秒）
 			},
 		  },
+    waves: {
+      enable: true,
+      performance: {
+        quality: "high",
+        hardwareAcceleration: true,
+      },
+    },
 	},
 	toc: {
 		enable: true, // Display the table of contents on the right side of the post
