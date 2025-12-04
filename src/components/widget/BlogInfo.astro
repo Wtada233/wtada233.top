@@ -1,0 +1,49 @@
+---
+import WidgetLayout from "./WidgetLayout.astro";
+import { i18n } from "@i18n/translation";
+import I18nKey from "@i18n/i18nKey";
+import { getBlogStats } from "@utils/content-utils";
+import { Icon } from "astro-icon/components";
+
+const stats = await getBlogStats();
+---
+
+<WidgetLayout name={i18n(I18nKey.blogInfo)} id="blog-info">
+    <div class="flex flex-col gap-2 text-sm text-gray-600 dark:text-gray-400">
+        <div class="flex items-center justify-between">
+            <span class="flex items-center gap-2">
+                <Icon name="material-symbols:article-outline" class="text-lg"></Icon>
+                {i18n(I18nKey.totalArticles)}:
+            </span>
+            <span class="font-bold text-gray-800 dark:text-gray-200">{stats.totalArticles}</span>
+        </div>
+        <div class="flex items-center justify-between">
+            <span class="flex items-center gap-2">
+                <Icon name="material-symbols:collections-bookmark-outline" class="text-lg"></Icon>
+                {i18n(I18nKey.totalSeries)}:
+            </span>
+            <span class="font-bold text-gray-800 dark:text-gray-200">{stats.totalSeries}</span>
+        </div>
+        <div class="flex items-center justify-between">
+            <span class="flex items-center gap-2">
+                <Icon name="material-symbols:sell-outline" class="text-lg"></Icon>
+                {i18n(I18nKey.totalTags)}:
+            </span>
+            <span class="font-bold text-gray-800 dark:text-gray-200">{stats.totalTags}</span>
+        </div>
+        <div class="flex items-center justify-between">
+            <span class="flex items-center gap-2">
+                <Icon name="material-symbols:category-outline" class="text-lg"></Icon>
+                {i18n(I18nKey.totalCategories)}:
+            </span>
+            <span class="font-bold text-gray-800 dark:text-gray-200">{stats.totalCategories}</span>
+        </div>
+        <div class="flex items-center justify-between">
+            <span class="flex items-center gap-2">
+                <Icon name="material-symbols:text-fields" class="text-lg"></Icon>
+                {i18n(I18nKey.totalWords)}:
+            </span>
+            <span class="font-bold text-gray-800 dark:text-gray-200">{stats.totalWords}</span>
+        </div>
+    </div>
+</WidgetLayout>

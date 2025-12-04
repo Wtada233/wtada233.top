@@ -1,0 +1,242 @@
+@import './variables.styl';
+@import './effects.css';
+@import './markdown.css';
+@tailwind components;
+
+@layer components {
+    .card-base {
+        @apply rounded-[var(--radius-large)] overflow-hidden bg-[var(--card-bg)] transition;
+    }
+    html.glass-mode .card-base {
+        @apply bg-[var(--card-bg-glass)] backdrop-blur-2xl;
+    }
+    h1, h2, h3, h4, h5, h6, p, a, span, li, ul, ol, blockquote, code, pre, table, th, td, strong {
+        @apply transition;
+    }
+    .card-shadow {
+        @apply drop-shadow-[0_2px_4px_rgba(0,0,0,0.005)]
+    }
+    .float-panel {
+        @apply top-[5.25rem] rounded-[var(--radius-large)] overflow-hidden bg-[var(--float-panel-bg)] transition shadow-xl dark:shadow-none
+    }
+    html.glass-mode .float-panel {
+        @apply bg-[var(--float-panel-bg-glass)] backdrop-blur-2xl;
+    }
+    .float-panel-closed {
+        @apply -translate-y-1 opacity-0 pointer-events-none
+    }
+    .search-panel mark {
+        @apply bg-transparent text-[var(--primary)]
+    }
+
+    .btn-card {
+        @apply transition flex items-center justify-center bg-[var(--card-bg)] hover:bg-[var(--btn-card-bg-hover)]
+        active:bg-[var(--btn-card-bg-active)]
+    }
+    .btn-card.disabled {
+        @apply pointer-events-none text-black/10 dark:text-white/10
+    }
+    .btn-plain {
+        @apply transition relative flex items-center justify-center bg-none
+        text-black/75 hover:text-[var(--primary)] dark:text-white/75 dark:hover:text-[var(--primary)];
+        &:not(.scale-animation) {
+            @apply hover:bg-[var(--btn-plain-bg-hover)] active:bg-[var(--btn-plain-bg-active)]
+        }
+        &.scale-animation {
+            @apply expand-animation;
+            &.current-theme-btn {
+                @apply before:scale-100 before:opacity-100 before:bg-[var(--btn-plain-bg-hover)] text-[var(--primary)]
+            }
+        }
+    }
+    .btn-regular {
+        @apply transition flex items-center justify-center bg-[var(--btn-regular-bg)] hover:bg-[var(--btn-regular-bg-hover)] active:bg-[var(--btn-regular-bg-active)]
+        text-[var(--btn-content)] dark:text-white/75
+    }
+
+    .link-underline {
+        @apply transition underline decoration-2 decoration-dashed decoration-[var(--link-underline)]
+        hover:decoration-[var(--link-hover)] active:decoration-[var(--link-active)] underline-offset-[0.25rem]
+    }
+
+
+
+
+
+    .hide-scrollbar {
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+    .hide-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+
+    .text-90 {
+        @apply text-black/90 dark:text-white/90
+    }
+    .text-75 {
+        @apply text-black/75 dark:text-white/75
+    }
+    .text-50 {
+        @apply text-black/50 dark:text-white/50
+    }
+    .text-30 {
+        @apply text-black/30 dark:text-white/30
+    }
+    .text-25 {
+        @apply text-black/25 dark:text-white/25
+    }
+
+    .meta-icon {
+        @apply w-8 h-8 transition rounded-md flex items-center justify-center bg-[var(--btn-regular-bg)]
+        text-[var(--btn-content)] mr-2
+    }
+    .with-divider {
+        @apply before:content-['/'] before:ml-1.5 before:mr-1.5 before:text-[var(--meta-divider)] before:text-sm
+        before:font-medium before:first-of-type:hidden before:transition
+    }
+}
+
+::selection {
+    background-color: var(--selection-bg)
+}
+
+.dash-line {
+    position: relative;
+}
+
+.dash-line::before {
+    content: "";
+    position: absolute;
+    width: 10%;
+    height: 100%;
+    left: calc(50% - 1px);
+    border-left: 2px dashed var(--line-color);
+    pointer-events: none;
+    transition: all 0.3s;
+    transform: translateY(-50%);
+}
+
+.collapsed {
+    height: var(--collapsedHeight);
+}
+
+/* =================== */
+/* 📘 AI 摘要模块样式 */
+/* =================== */
+
+.ai-summary {
+    background: var(--card-bg);
+    border: 1px solid var(--line-divider);
+    border-radius: 12px;
+    padding: 8px 8px 12px 8px;
+    line-height: 1.3;
+    flex-direction: column;
+    margin-bottom: 16px;
+    display: flex;
+    gap: 5px;
+    position: relative;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s;
+}
+
+.ai-summary:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
+}
+
+.ai-summary .ai-explanation {
+    z-index: 10;
+    padding: 8px 12px;
+    font-size: 15px;
+    line-height: 1.4;
+    @apply text-90;
+    text-align: justify;
+}
+
+/* ✅ 打字机光标动画 */
+.ai-summary .ai-explanation::after {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 2px;
+    margin-left: 2px;
+    @apply bg-black/90 dark:bg-white/90;
+    vertical-align: bottom;
+    animation: blink-underline 1s ease-in-out infinite;
+    transition: all 0.3s;
+    position: relative;
+    bottom: 3px;
+}
+
+/* 打字完成后隐藏光标 */
+.ai-summary .ai-explanation.typing-complete::after {
+    display: none;
+}
+
+.ai-summary .ai-title {
+    z-index: 10;
+    font-size: 14px;
+    display: flex;
+    border-radius: 8px;
+    align-items: center;
+    position: relative;
+    padding: 0 12px;
+    cursor: default;
+    user-select: none;
+}
+
+.ai-summary .ai-title .ai-title-left {
+    display: flex;
+    align-items: center;
+    color: var(--primary);
+}
+
+.ai-summary .ai-title .ai-title-left i {
+    margin-right: 3px;
+    display: flex;
+    color: var(--primary);
+    border-radius: 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+.ai-summary .ai-title .ai-title-left .ai-title-text {
+    font-weight: 500;
+}
+
+.ai-summary .ai-title .ai-tag {
+    color: var(--btn-content);
+    font-weight: 300;
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s;
+}
+
+/* ✅ 打字机光标闪烁动画 */
+@keyframes blink-underline {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0;
+    }
+}
+
+
+
+/* New: Reading Progress Bar */
+#reading-progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 3px; /* Adjust height as needed */
+    background-color: var(--primary); /* Use primary theme color */
+    z-index: 1000; /* Ensure it's above other elements */
+    transition: width 0.1s ease-out; /* Smooth transition for width change */
+}
+
+
