@@ -47,21 +47,7 @@ const mainPanelTop = siteConfig.banner.enable
 	? `calc(${BANNER_HEIGHT}vh - ${MAIN_PANEL_OVERLAPS_BANNER_HEIGHT}rem)`
 	: "5.5rem";
 
-// Logic for banner text
-const isHomePageCheck = isHomePage(Astro.url.pathname);
-const homeTextEnable = siteConfig.banner.homeText?.enable;
-const showHomeText = siteConfig.banner.enable && !!homeTextEnable && isHomePageCheck;
 
-// Random subtitle logic
-const getRandomSubtitle = () => {
-  const subtitle = siteConfig.banner.homeText?.subtitle;
-  if (Array.isArray(subtitle) && subtitle.length > 0) {
-    const randomIndex = Math.floor(Math.random() * subtitle.length);
-    return subtitle[randomIndex];
-  }
-  return subtitle || "";
-};
-const randomSubtitle = getRandomSubtitle();
 
 const isPostsRoute = Astro.url.pathname.startsWith(url("/posts/"));
 

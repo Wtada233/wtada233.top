@@ -36,7 +36,6 @@ export const siteConfig: SiteConfig = {
     navbar: {
       transparentMode: "semi", // 导航栏透明模式："semi" 半透明加圆角，"full" 完全透明，"semifull" 动态透明
     },
-	},
 
 	showLastModified: true, // 文章页底部的"上次编辑时间"卡片开关
 	favicon: [
