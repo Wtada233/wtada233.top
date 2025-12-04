@@ -25,17 +25,19 @@ export const siteConfig: SiteConfig = {
 			text: "Firewatch", // Credit text to be displayed
 			url: "https://store.steampowered.com/app/383870/Firewatch/", // (Optional) URL link to the original artwork or artist's page
 		},
+        },
 
-    waves: {
-      enable: true,
-      performance: {
-        quality: "high",
-        hardwareAcceleration: true,
-      },
-    },
-    navbar: {
-      transparentMode: "semi", // 导航栏透明模式："semi" 半透明加圆角，"full" 完全透明，"semifull" 动态透明
-    },
+	waves: {
+		enable: true,
+		performance: {
+			quality: "high",
+			hardwareAcceleration: true,
+		},
+	},
+
+	navbar: {
+  		transparentMode: "semi", // 导航栏透明模式："semi" 半透明加圆角，"full" 完全透明，"semifull" 动态透明
+	},
 
 	showLastModified: true, // 文章页底部的"上次编辑时间"卡片开关
 	favicon: [
@@ -46,7 +48,6 @@ export const siteConfig: SiteConfig = {
 		//   sizes: '32x32',              // (Optional) Size of the favicon, set only if you have favicons of different sizes
 		// }
 	],
-
 };
 
 export const navBarConfig: NavBarConfig = {
