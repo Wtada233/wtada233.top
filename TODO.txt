@@ -1,0 +1,8 @@
+- [x] Fix SeriesPanel link to point to a series filter page instead of the last post.
+- [x] Fix Pagination link for subdirectory deployments.
+- [x] Remove duplicate `initSemifullScrollDetection` function from Navbar.astro.
+- [x] Remove unused `switchTheme` function from Navbar.astro.
+- [ ] Internationalize (i18n) hardcoded strings in `SeriesPanel.astro` and `[...slug].astro`.
+- [ ] Optimize `getBlogStats` function in `content-utils.ts` to improve performance.
+- [ ] Refactor `AISummary.astro` to use a simpler and more robust script for re-triggering animations.
+- [ ] Scope event listeners in `Markdown.astro` and `ShareButtons.astro` to their component roots.

@@ -4,7 +4,7 @@ import { seriesConfig } from "../configs/series";
 import I18nKey from "../i18n/i18nKey";
 import { i18n } from "../i18n/translation";
 import { getSortedPosts } from "../utils/content-utils";
-import { getCategoryUrl, getPostUrlBySlug } from "../utils/url-utils";
+import { getCategoryUrl, getPostUrlBySlug, getSeriesUrl } from "../utils/url-utils";
 
 interface Props {
 	keyword?: string;
@@ -80,7 +80,7 @@ const groups: { category: string; series: Series[] }[] = (() => {
                       <div class="w-[65%] md:w-[75%] transition text-left text-50">{group.series.length} 个{i18n(I18nKey.series)}</div>
                   </div>
                   {group.series.map(series => (
-                      <a href={getPostUrlBySlug(series.posts[series.posts.length-1].slug)}
+                      <a href={getSeriesUrl(series.name)}
                          aria-label={series.name}
                          class="group btn-plain !block h-10 w-full rounded-lg hover:text-[initial]"
                       >
