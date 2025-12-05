@@ -23,8 +23,8 @@ export const zh_CN: Translation = {
 	[Key.postCount]: "篇文章",
 	[Key.postsCount]: "篇文章",
 
-	[Key.numberOfSeries]: "个系列",
-	[Key.numberOfArticles]: "篇文章",
+	[Key.numberOfSeries]: "{n}个系列",
+	[Key.numberOfArticles]: "{n}篇文章",
 
 	[Key.themeColor]: "主题色",
 
