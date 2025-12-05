@@ -221,7 +221,9 @@ export async function getBlogStats(): Promise<{
 	for (const post of allBlogPosts) {
 		totalArticles++;
 		if (post.data.tags) {
-			post.data.tags.forEach((tag) => uniqueTags.add(tag));
+			post.data.tags.forEach((tag: string) => {
+				uniqueTags.add(tag);
+			});
 		}
 		if (post.data.category) {
 			uniqueCategories.add(post.data.category);

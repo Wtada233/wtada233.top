@@ -29,13 +29,19 @@ export function getTranslation(lang: string): Translation {
 	return map[lang.toLowerCase()] || defaultTranslation;
 }
 
-export function i18n(key: I18nKey, replacements?: Record<string, string | number>): string {
+export function i18n(
+	key: I18nKey,
+	replacements?: Record<string, string | number>,
+): string {
 	const lang = siteConfig.lang || "en";
 	let text = getTranslation(lang)[key];
 
 	if (replacements) {
 		for (const placeholder in replacements) {
-			text = text.replace(`{${placeholder}}`, String(replacements[placeholder]));
+			text = text.replace(
+				`{${placeholder}}`,
+				String(replacements[placeholder]),
+			);
 		}
 	}
 
