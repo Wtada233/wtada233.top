@@ -6,67 +6,58 @@ interface Props {
 	class: string;
 }
 const className = Astro.props.class;
+const uniqueId = `md-root-${Math.random().toString(36).slice(2)}`;
 ---
-<div data-pagefind-body class={`prose dark:prose-invert prose-base !max-w-none custom-md ${className}`}>
+<div id={uniqueId} data-pagefind-body class={`prose dark:prose-invert prose-base !max-w-none custom-md ${className}`}>
     <!--<div class="prose dark:prose-invert max-w-none custom-md">-->
     <!--<div class="max-w-none custom-md">-->
     <slot/>
 </div>
 
-<script>
-(() => {
-    // Function to handle the click event
-    function handleClick(e) {
-        const target = e.target;
-        if (target && target.classList.contains("copy-btn")) {
-            const preEle = target.closest("pre");
-            const codeEle = preEle?.querySelector("code");
-            const code = Array.from(codeEle?.querySelectorAll(".code:not(summary *)") ?? [])
-                .map(el => el.textContent)
-                .map(t => t === "\\n" ? "" : t)
-                .join("\\n");
-            navigator.clipboard.writeText(code);
+<script define:vars={{ uniqueId }}>
+  const markdownRoot = document.getElementById(uniqueId);
 
-            const timeoutId = target.getAttribute("data-timeout-id");
-            if (timeoutId) {
-                clearTimeout(parseInt(timeoutId));
-            }
+  if (markdownRoot) {
+    const handleClick = (e) => {
+      const target = e.target;
+      if (target && target.classList.contains("copy-btn")) {
+        const preEle = target.closest("pre");
+        const codeEle = preEle?.querySelector("code");
+        const code = Array.from(codeEle?.querySelectorAll(".code:not(summary *)") ?? [])
+          .map(el => el.textContent)
+          .map(t => t === "\\n" ? "" : t)
+          .join("\\n");
+        navigator.clipboard.writeText(code);
 
-            target.classList.add("success");
-
-            const newTimeoutId = setTimeout(() => {
-                target.classList.remove("success");
-                target.removeAttribute("data-timeout-id"); // Clean up attribute
-            }, 1000);
-
-            target.setAttribute("data-timeout-id", newTimeoutId.toString());
-        }
-    }
-
-    // Attach listener to the root element of this component
-    // Assuming the script is placed right after the div.custom-md or within it
-    const markdownRoot = document.querySelector(".custom-md");
-    if (markdownRoot) {
-        markdownRoot.addEventListener("click", handleClick);
-
-        // Function to clear all copy button timeouts
-        function clearAllCopyTimeouts() {
-            const copyButtons = markdownRoot.querySelectorAll(".copy-btn");
-            copyButtons.forEach(button => {
-                const timeoutId = button.getAttribute("data-timeout-id");
-                if (timeoutId) {
-                    clearTimeout(parseInt(timeoutId));
-                    button.classList.remove("success");
-                    button.removeAttribute("data-timeout-id");
-                }
-            });
+        const timeoutId = target.getAttribute("data-timeout-id");
+        if (timeoutId) {
+          clearTimeout(parseInt(timeoutId));
         }
 
-        // Listen for Astro's page navigation events to clean up
-        document.addEventListener('astro:before-swap', clearAllCopyTimeouts);
-        
-        // Also clean up on DOMContentLoaded if the page reloads without a swap
-        document.addEventListener('DOMContentLoaded', clearAllCopyTimeouts);
-    }
-})();
+        target.classList.add("success");
+
+        const newTimeoutId = setTimeout(() => {
+          target.classList.remove("success");
+          target.removeAttribute("data-timeout-id");
+        }, 1000);
+
+        target.setAttribute("data-timeout-id", newTimeoutId.toString());
+      }
+    };
+
+    const clearAllCopyTimeouts = () => {
+      const copyButtons = markdownRoot.querySelectorAll(".copy-btn");
+      copyButtons.forEach(button => {
+        const timeoutId = button.getAttribute("data-timeout-id");
+        if (timeoutId) {
+          clearTimeout(parseInt(timeoutId));
+          button.classList.remove("success");
+          button.removeAttribute("data-timeout-id");
+        }
+      });
+    };
+
+    markdownRoot.addEventListener("click", handleClick);
+    document.addEventListener('astro:before-swap', clearAllCopyTimeouts);
+  }
 </script>
