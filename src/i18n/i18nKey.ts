@@ -20,6 +20,9 @@ enum I18nKey {
 	postCount = "postCount",
 	postsCount = "postsCount",
 
+	numberOfSeries = "numberOfSeries",
+	numberOfArticles = "numberOfArticles",
+
 	themeColor = "themeColor",
 
 	lightMode = "lightMode",
@@ -34,6 +37,9 @@ enum I18nKey {
 	series = "series",
 
 	relatedPosts = "relatedPosts",
+
+	pinned = "pinned",
+	pinnedToBottom = "pinnedToBottom",
 
 	// Blog Stats
 	totalArticles = "totalArticles",

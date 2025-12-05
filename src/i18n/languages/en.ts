@@ -23,6 +23,9 @@ export const en: Translation = {
 	[Key.postCount]: "post",
 	[Key.postsCount]: "posts",
 
+	[Key.numberOfSeries]: "{n} series",
+	[Key.numberOfArticles]: "{n} articles",
+
 	[Key.themeColor]: "Theme Color",
 
 	[Key.lightMode]: "Light",
@@ -44,6 +47,9 @@ export const en: Translation = {
 	[Key.blogInfo]: "Blog Information",
 
 	[Key.relatedPosts]: "Related Posts",
+
+	[Key.pinned]: "Pinned",
+	[Key.pinnedToBottom]: "Pinned to bottom",
 
 	[Key.share]: "Share",
 	[Key.shareToTwitter]: "Share to Twitter",

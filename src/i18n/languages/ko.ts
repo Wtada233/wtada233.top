@@ -23,6 +23,9 @@ export const ko: Translation = {
 	[Key.postCount]: "게시물",
 	[Key.postsCount]: "게시물",
 
+	[Key.numberOfSeries]: "{n} 시리즈",
+	[Key.numberOfArticles]: "{n} 게시물",
+
 	[Key.themeColor]: "테마 색상",
 
 	[Key.lightMode]: "밝은 모드",
@@ -45,6 +48,9 @@ export const ko: Translation = {
 	[Key.totalCategories]: "총 카테고리",
 	[Key.totalWords]: "총 단어 수",
 	[Key.blogInfo]: "블로그 정보",
+
+	[Key.pinned]: "고정됨",
+	[Key.pinnedToBottom]: "하단 고정",
 
 	[Key.share]: "공유",
 	[Key.shareToTwitter]: "트위터에 공유",

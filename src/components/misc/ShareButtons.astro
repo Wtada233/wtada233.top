@@ -42,33 +42,60 @@ const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encoded
     class="btn-regular rounded-lg h-9 px-3 flex items-center justify-center gap-2 copy-link-btn"
     data-url={url}
   >
-    <Icon name="material-symbols:link" class="text-lg"></Icon>
-    {i18n(I18nKey.copyLink)}
+    <span class="original-content">
+      <Icon name="material-symbols:link" class="text-lg"></Icon>
+      {i18n(I18nKey.copyLink)}
+    </span>
+    <span class="success-content">
+      <Icon name="material-symbols:check" class="text-lg"></Icon>
+      OK
+    </span>
   </button>
 </div>
 
 <script is:inline>
-  document.addEventListener('click', (event) => {
-    const target = event.target;
-    // Check if the clicked element or any of its parents have the class 'copy-link-btn'
-    const copyButton = target.closest('.copy-link-btn');
-    if (copyButton) {
+  (() => {
+    const shareButtonsContainer = document.querySelector('.share-buttons');
+    if (!shareButtonsContainer) return;
+
+    // Use a single listener on the container
+    shareButtonsContainer.addEventListener('click', (event) => {
+      const copyButton = event.target.closest('.copy-link-btn');
+      if (!copyButton) return;
+
+      // Prevent multiple clicks while animation is running
+      if (copyButton.classList.contains('copied')) return;
+
       const urlToCopy = copyButton.dataset.url;
       if (urlToCopy) {
         navigator.clipboard.writeText(urlToCopy).then(() => {
-          // Optional: Add a visual feedback for successful copy
-          const originalContent = copyButton.innerHTML;
-          copyButton.innerHTML = '<span class="flex items-center justify-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="m10 16.4l-4-4L7.4 11l2.6 2.6L16.6 7L18 8.4l-8 8Z"/></svg>OK</span>';
-          setTimeout(() => {
-            copyButton.innerHTML = originalContent;
+          copyButton.classList.add('copied');
+
+          const timeoutId = setTimeout(() => {
+            copyButton.classList.remove('copied');
+            copyButton.removeAttribute('data-timeout-id');
           }, 2000);
+
+          copyButton.setAttribute('data-timeout-id', timeoutId);
+
         }).catch(err => {
           console.error('Failed to copy URL:', err);
-          alert(err.message);
+          alert('Failed to copy link: ' + err.message);
         });
       }
-    }
-  });
+    });
+
+    // Cleanup timeouts on page navigation
+    document.addEventListener('astro:before-swap', () => {
+        const copyButton = shareButtonsContainer.querySelector('.copy-link-btn');
+        if (copyButton) {
+            const timeoutId = copyButton.getAttribute('data-timeout-id');
+            if (timeoutId) {
+                clearTimeout(parseInt(timeoutId));
+            }
+        }
+    });
+  })();
 </script>
 
 <br />
@@ -79,6 +106,29 @@ const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encoded
     padding-top: 1.5rem;
     border-top: 1px dashed var(--line-divider);
     justify-content: flex-end; /* Align buttons to the right */
+  }
+
+  .copy-link-btn .original-content,
+  .copy-link-btn .success-content {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: opacity 0.2s ease-in-out;
+  }
+
+  .copy-link-btn .success-content {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .copy-link-btn.copied .original-content {
+    opacity: 0;
+  }
+
+  .copy-link-btn.copied .success-content {
+    opacity: 1;
+    pointer-events: auto;
   }
 
   @media (max-width: 768px) {
@@ -93,3 +143,4 @@ const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encoded
     }
   }
 </style>
+

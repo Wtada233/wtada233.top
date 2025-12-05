@@ -23,6 +23,9 @@ export const zh_CN: Translation = {
 	[Key.postCount]: "篇文章",
 	[Key.postsCount]: "篇文章",
 
+	[Key.numberOfSeries]: "个系列",
+	[Key.numberOfArticles]: "篇文章",
+
 	[Key.themeColor]: "主题色",
 
 	[Key.lightMode]: "亮色",
@@ -43,6 +46,9 @@ export const zh_CN: Translation = {
 	[Key.totalWords]: "总字数",
 	[Key.blogInfo]: "博客信息",
 	[Key.relatedPosts]: "相关文章",
+
+	[Key.pinned]: "置顶",
+	[Key.pinnedToBottom]: "置底",
 
 	[Key.share]: "分享",
 	[Key.shareToTwitter]: "分享到 Twitter",

@@ -208,32 +208,35 @@ export async function getBlogStats(): Promise<{
 	totalTags: number;
 	totalCategories: number;
 }> {
-	const allPosts = await getRawSortedPosts();
-	const allTags = await getTagList();
-	const allCategories = await getCategoryList();
+	const allBlogPosts = await getCollection("posts", ({ data }) => {
+		return import.meta.env.PROD ? data.draft !== true : true;
+	});
 
-	const totalArticles = allPosts.length;
-
-	// Correctly calculate totalWords by rendering each post
+	let totalArticles = 0;
 	let totalWords = 0;
-	for (const post of allPosts) {
+	const uniqueTags = new Set<string>();
+	const uniqueCategories = new Set<string>();
+	const uniqueSeries = new Set<string>();
+
+	for (const post of allBlogPosts) {
+		totalArticles++;
+		if (post.data.tags) {
+			post.data.tags.forEach((tag) => uniqueTags.add(tag));
+		}
+		if (post.data.category) {
+			uniqueCategories.add(post.data.category);
+		}
+		if (seriesConfig.enabled && post.data.series) {
+			uniqueSeries.add(post.data.series);
+		}
+		// Await post.render() to get remarkPluginFrontmatter for word count
 		const { remarkPluginFrontmatter } = await post.render();
 		totalWords += remarkPluginFrontmatter?.words || 0;
 	}
 
-	let totalSeries = 0;
-	if (seriesConfig.enabled) {
-		const uniqueSeries = new Set<string>();
-		allPosts.forEach((post) => {
-			if (post.data.series) {
-				uniqueSeries.add(post.data.series);
-			}
-		});
-		totalSeries = uniqueSeries.size;
-	}
-
-	const totalTags = allTags.length;
-	const totalCategories = allCategories.length;
+	const totalTags = uniqueTags.size;
+	const totalCategories = uniqueCategories.size;
+	const totalSeries = uniqueSeries.size;
 
 	return {
 		totalArticles,

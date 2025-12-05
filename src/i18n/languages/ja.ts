@@ -23,6 +23,9 @@ export const ja: Translation = {
 	[Key.postCount]: "件の投稿",
 	[Key.postsCount]: "件の投稿",
 
+	[Key.numberOfSeries]: "{n} シリーズ",
+	[Key.numberOfArticles]: "{n} 記事",
+
 	[Key.themeColor]: "テーマカラー",
 
 	[Key.lightMode]: "ライト",
@@ -45,6 +48,9 @@ export const ja: Translation = {
 	[Key.totalCategories]: "全カテゴリ",
 	[Key.totalWords]: "総語数",
 	[Key.blogInfo]: "ブログ情報",
+
+	[Key.pinned]: "ピン留め",
+	[Key.pinnedToBottom]: "下部にピン留め",
 
 	[Key.share]: "共有",
 	[Key.shareToTwitter]: "Twitterで共有",

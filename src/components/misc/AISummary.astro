@@ -1,4 +1,4 @@
----
+--- 
 export interface Props {
 	content: string;
 }
@@ -20,104 +20,59 @@ if (!content || content.trim() === "") {
       </div>
       <div class="ai-tag">Gemini 2.5 Pro</div>
     </div>
-    <div class="ai-explanation" data-content={content}></div>
+    <div class="ai-explanation"></div>
   </div>
 )}
 
-<script>
-  // 检查当前页面路径是否包含 "posts"
-  function isPostsPage() {
-    return window.location.pathname.includes('/posts/');
-  }
-
-  // 全局函数，用于初始化AI打字效果
+<script define:vars={{ content }}>
   function initAITyping() {
-    // 只在包含 "posts" 的页面才执行AI总结功能
-    if (!isPostsPage()) {
+    // Only run on post pages
+    if (!window.location.pathname.includes('/posts/')) {
       return;
     }
 
-    // 查找所有AI摘要容器
-    const aiSummaryContainers = document.querySelectorAll('.ai-summary');
+    // Since this script is tied to this component, we can be more specific.
+    // This assumes only one AI summary per page.
+    const textElement = document.querySelector('.ai-summary .ai-explanation');
     
-    aiSummaryContainers.forEach(container => {
-      const textElement = container.querySelector('.ai-explanation');
-      
-      if (!textElement) {
-        return;
-      }
-
-      // 检查是否已经初始化过
-      if (textElement.hasAttribute('data-initialized')) {
-        return;
-      }
-
-      const content = textElement.getAttribute('data-content');
-      if (!content) {
-        return;
-      }
-
-      // 标记为已初始化
-      textElement.setAttribute('data-initialized', 'true');
-      
-      // 清空文本内容，准备打字效果
-      textElement.textContent = '';
-      textElement.classList.remove('typing-complete');
-      
-      let index = 0;
-      const typeSpeed = 30; // 打字速度（毫秒）
-      
-      function typeWriter() {
-        if (index < content.length) {
-          textElement.textContent += content.charAt(index);
-          index++;
-          setTimeout(typeWriter, typeSpeed);
-        } else {
-          // 打字完成后隐藏光标（通过CSS控制）
-          textElement.classList.add('typing-complete');
-        }
-      }
-      
-      // 延迟开始打字效果
-      setTimeout(typeWriter, 800);
-    });
-  }
-
-  // 页面加载完成时初始化
-  function handlePageLoad() {
-    setTimeout(initAITyping, 100);
-  }
-
-  // 监听页面导航事件（适用于Astro的客户端路由）
-  function setupNavigationListeners() {
-    // DOMContentLoaded事件
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', handlePageLoad);
-    } else {
-      handlePageLoad();
+    if (!textElement) {
+      return;
     }
 
-    // 监听Astro的页面导航事件
-    document.addEventListener('astro:page-load', handlePageLoad);
+    // Check if already initialized
+    if (textElement.hasAttribute('data-initialized')) {
+      return;
+    }
+
+    // The 'content' variable is now directly available from `define:vars`
+    if (!content) {
+      return;
+    }
+
+    // Mark as initialized
+    textElement.setAttribute('data-initialized', 'true');
+    textElement.textContent = '';
+    textElement.classList.remove('typing-complete');
     
-    // 监听浏览器的popstate事件（后退/前进按钮）
-    window.addEventListener('popstate', handlePageLoad);
+    let index = 0;
+    const typeSpeed = 30; // ms
     
-    // 监听pushstate和replacestate事件
-    const originalPushState = history.pushState;
-    const originalReplaceState = history.replaceState;
+    function typeWriter() {
+      if (index < content.length) {
+        textElement.textContent += content.charAt(index);
+        index++;
+        setTimeout(typeWriter, typeSpeed);
+      } else {
+        textElement.classList.add('typing-complete');
+      }
+    }
     
-    history.pushState = function() {
-      originalPushState.apply(history, arguments);
-      setTimeout(handlePageLoad, 100);
-    };
-    
-    history.replaceState = function() {
-      originalReplaceState.apply(history, arguments);
-      setTimeout(handlePageLoad, 100);
-    };
+    // Delay to start typing for dramatic effect
+    setTimeout(typeWriter, 800);
   }
 
-  // 立即设置监听器
-  setupNavigationListeners();
+  // Run on initial page load and subsequent navigations
+  document.addEventListener('astro:page-load', initAITyping);
+  // Also run immediately in case astro:page-load was missed (e.g., initial non-transitioned load)
+  initAITyping();
 </script>
