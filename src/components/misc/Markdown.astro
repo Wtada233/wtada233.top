@@ -25,8 +25,7 @@ const uniqueId = `md-root-${Math.random().toString(36).slice(2)}`;
         const codeEle = preEle?.querySelector("code");
         const code = Array.from(codeEle?.querySelectorAll(".code:not(summary *)") ?? [])
           .map(el => el.textContent)
-          .map(t => t === "\\n" ? "" : t)
-          .join("\\n");
+          .join("\n");
         navigator.clipboard.writeText(code);
 
         const timeoutId = target.getAttribute("data-timeout-id");
