@@ -16,6 +16,9 @@ export type SiteConfig = {
 		| "tr"
 		| "id";
 
+	keywords: string;        // 新增：SEO 关键词
+	description: string;     // 新增：站点描述
+
 	themeColor: {
 		hue: number;
 		fixed: boolean;
