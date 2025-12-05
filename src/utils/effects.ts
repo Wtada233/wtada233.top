@@ -3,7 +3,10 @@ function throttle<T extends (...args: Parameters<T>) => ReturnType<T>>(
 	limit: number,
 ): T {
 	let inThrottle: boolean;
-	return function (this: ThisParameterType<T>, ...args: Parameters<T>): ReturnType<T> {
+	return function (
+		this: ThisParameterType<T>,
+		...args: Parameters<T>
+	): ReturnType<T> {
 		if (!inThrottle) {
 			const result = func.apply(this, args);
 			inThrottle = true;

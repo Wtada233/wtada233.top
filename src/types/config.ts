@@ -32,18 +32,9 @@ export type SiteConfig = {
 			text: string;
 			url?: string;
 		};
-		waves?: { // Added '?' because it might be optional depending on `enable` flag in siteConfig.ts
-			enable: {
-				desktop: boolean;
-				mobile: boolean;
-			};
-			performance: {
-				quality: "high" | "medium" | "low";
-				hardwareAcceleration: boolean;
-			};
-		};
 	};
-	navbar?: { // Added navbar property to SiteConfig
+	navbar?: {
+		// Added navbar property to SiteConfig
 		transparentMode?: "semi" | "full" | "semifull";
 	};
 	showLastModified?: boolean;

@@ -1,7 +1,7 @@
 @import './variables.styl';
 @import './effects.css';
 @import './markdown.css';
-@import './waves.css';
+
 @tailwind components;
 
 @layer components {

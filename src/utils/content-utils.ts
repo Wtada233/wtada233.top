@@ -171,7 +171,9 @@ export async function getRelatedPosts(
 		// Score based on shared tags
 		const currentPostTags = currentPost.data.tags || [];
 		const postTags = post.data.tags || [];
-		const sharedTags = currentPostTags.filter((tag: string) => postTags.includes(tag));
+		const sharedTags = currentPostTags.filter((tag: string) =>
+			postTags.includes(tag),
+		);
 		score += sharedTags.length * 2; // Each shared tag gives 2 points
 
 		// Score based on shared category
