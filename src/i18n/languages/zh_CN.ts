@@ -55,6 +55,13 @@ export const zh_CN: Translation = {
 	[Key.shareToFacebook]: "分享到 Facebook",
 	[Key.copyLink]: "复制链接",
 
+	[Key.pageNotFoundTitle]: "页面未找到",
+	[Key.pageNotFoundHeading]: "页面走丢了",
+	[Key.pageNotFoundDescription]: "抱歉，您访问的页面不存在或已被移动。\n请检查URL是否正确，或者返回首页继续浏览。",
+	[Key.pageNotFoundHomeButton]: "返回首页",
+	[Key.pageNotFoundArchiveButton]: "文章归档",
+	[Key.pageNotFoundBackButtonHint]: "您也可以使用浏览器的后退按钮返回上一页",
+
 	//最后编辑时间卡片
 	[Key.lastModifiedPrefix]: "最后更新于 ",
 	[Key.lastModifiedOutdated]: "部分内容可能已过时",

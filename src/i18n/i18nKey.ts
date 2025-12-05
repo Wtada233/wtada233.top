@@ -54,6 +54,13 @@ enum I18nKey {
 	shareToFacebook = "shareToFacebook",
 	copyLink = "copyLink",
 
+	pageNotFoundTitle = "pageNotFoundTitle",
+	pageNotFoundHeading = "pageNotFoundHeading",
+	pageNotFoundDescription = "pageNotFoundDescription",
+	pageNotFoundHomeButton = "pageNotFoundHomeButton",
+	pageNotFoundArchiveButton = "pageNotFoundArchiveButton",
+	pageNotFoundBackButtonHint = "pageNotFoundBackButtonHint",
+
 	//最后编辑时间卡片
 	lastModifiedPrefix = "lastModifiedPrefix",
 	lastModifiedOutdated = "lastModifiedOutdated",

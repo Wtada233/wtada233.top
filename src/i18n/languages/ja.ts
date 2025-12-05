@@ -57,6 +57,13 @@ export const ja: Translation = {
 	[Key.shareToFacebook]: "Facebookで共有",
 	[Key.copyLink]: "リンクをコピー",
 
+	[Key.pageNotFoundTitle]: "ページが見つかりません",
+	[Key.pageNotFoundHeading]: "ページが見つかりません",
+	[Key.pageNotFoundDescription]: "申し訳ありませんが、お探しのページは見つかりませんでした、または移動されました。\nURLを確認するか、ホームページに戻ってください。",
+	[Key.pageNotFoundHomeButton]: "ホームに戻る",
+	[Key.pageNotFoundArchiveButton]: "記事アーカイブ",
+	[Key.pageNotFoundBackButtonHint]: "ブラウザの戻るボタンで前のページに戻ることもできます",
+
 	//最終編集時間カード
 	[Key.lastModifiedPrefix]: "最終更新日：",
 	[Key.lastModifiedOutdated]: "一部の内容は古くなっている可能性があります",
