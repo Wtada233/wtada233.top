@@ -1,3 +1,3 @@
 export const seriesConfig = {
-  enabled: true,
+	enabled: true,
 };

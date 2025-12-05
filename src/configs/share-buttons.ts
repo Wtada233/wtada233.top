@@ -1,3 +1,3 @@
 export const shareButtonsConfig = {
-  enabled: true,
+	enabled: true,
 };

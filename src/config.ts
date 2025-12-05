@@ -1,3 +1,4 @@
+import { seriesConfig } from "./configs/series";
 import type {
 	ExpressiveCodeConfig,
 	LicenseConfig,
@@ -6,7 +7,6 @@ import type {
 	SiteConfig,
 } from "./types/config";
 import { LinkPreset } from "./types/config";
-import { seriesConfig } from "./configs/series";
 
 export const siteConfig: SiteConfig = {
 	title: "Wtada233's Blog",
@@ -28,10 +28,20 @@ export const siteConfig: SiteConfig = {
 			text: "Firewatch", // Credit text to be displayed
 			url: "https://store.steampowered.com/app/383870/Firewatch/", // (Optional) URL link to the original artwork or artist's page
 		},
-        },
+		waves: {
+			enable: {
+				desktop: true,
+				mobile: true,
+			},
+			performance: {
+				quality: "high",
+				hardwareAcceleration: true,
+			},
+		},
+	},
 
 	navbar: {
-  		transparentMode: "semi", // 导航栏透明模式："semi" 半透明加圆角，"full" 完全透明，"semifull" 动态透明
+		transparentMode: "semi", // 导航栏透明模式："semi" 半透明加圆角，"full" 完全透明，"semifull" 动态透明
 	},
 
 	showLastModified: true, // 文章页底部的"上次编辑时间"卡片开关
@@ -51,16 +61,16 @@ export const navBarConfig: NavBarConfig = {
 		LinkPreset.Archive,
 		LinkPreset.About,
 		...(seriesConfig.enabled ? [LinkPreset.Series] : []),
-                {
-                        name: "别人的网页..?",
-                        url: "/sites/",
-                        external: false, // Show an external link icon and will open in a new tab
-                },
-                {
-                        name: "QQ交流群",
-                        url: "https://qm.qq.com/cgi-bin/qm/qr?k=L1oKGqOXks5BfCnmXICVHK12fp6idgXJ&jump_from=webapi&authKey=0wKKiYFigxhrOpUAvWu4DzoU8oEc7U6JSnBF3rMGo5Zq8PgxPKppLb+pe0Z4GByD",
-                        external: true, // Show an external link icon and will open in a new tab
-                },
+		{
+			name: "别人的网页..?",
+			url: "/sites/",
+			external: false, // Show an external link icon and will open in a new tab
+		},
+		{
+			name: "QQ交流群",
+			url: "https://qm.qq.com/cgi-bin/qm/qr?k=L1oKGqOXks5BfCnmXICVHK12fp6idgXJ&jump_from=webapi&authKey=0wKKiYFigxhrOpUAvWu4DzoU8oEc7U6JSnBF3rMGo5Zq8PgxPKppLb+pe0Z4GByD",
+			external: true, // Show an external link icon and will open in a new tab
+		},
 	],
 };
 

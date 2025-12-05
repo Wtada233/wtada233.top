@@ -3,6 +3,7 @@ enum I18nKey {
 	about = "about",
 	archive = "archive",
 	search = "search",
+	sites = "sites",
 
 	tags = "tags",
 	categories = "categories",
@@ -30,7 +31,7 @@ enum I18nKey {
 	author = "author",
 	publishedAt = "publishedAt",
 	license = "license",
-	series = 'series',
+	series = "series",
 
 	relatedPosts = "relatedPosts",
 

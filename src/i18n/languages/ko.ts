@@ -34,5 +34,31 @@ export const ko: Translation = {
 	[Key.author]: "저자",
 	[Key.publishedAt]: "게시일",
 	[Key.license]: "라이선스",
-	[Key.series]: '시리즈',
+	[Key.series]: "시리즈",
+
+	[Key.relatedPosts]: "관련 게시물",
+
+	// Blog Stats
+	[Key.totalArticles]: "총 게시물",
+	[Key.totalSeries]: "총 시리즈",
+	[Key.totalTags]: "총 태그",
+	[Key.totalCategories]: "총 카테고리",
+	[Key.totalWords]: "총 단어 수",
+	[Key.blogInfo]: "블로그 정보",
+
+	[Key.share]: "공유",
+	[Key.shareToTwitter]: "트위터에 공유",
+	[Key.shareToFacebook]: "페이스북에 공유",
+	[Key.copyLink]: "링크 복사",
+
+	//마지막 편집 시간 카드
+	[Key.lastModifiedPrefix]: "최종 수정일: ",
+	[Key.lastModifiedOutdated]: "일부 내용이 오래되었을 수 있습니다",
+	[Key.lastModifiedDaysAgo]: "{days}일 전",
+	[Key.year]: "년",
+	[Key.month]: "월",
+	[Key.day]: "일",
+	[Key.hour]: "시",
+	[Key.minute]: "분",
+	[Key.second]: "초",
 };

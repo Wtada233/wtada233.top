@@ -1,4 +1,4 @@
-import { defineCollection, z } from "astro:content";
+import { defineCollection, z, type CollectionEntry } from "astro:content";
 
 const postsCollection = defineCollection({
 	schema: z.object({
@@ -24,7 +24,7 @@ const postsCollection = defineCollection({
 const specCollection = defineCollection({
 	schema: z.object({}),
 });
-export const collections = {
+export const collections: Record<string, CollectionEntry<any>> = {
 	posts: postsCollection,
 	spec: specCollection,
 };

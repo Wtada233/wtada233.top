@@ -16,8 +16,8 @@ export type SiteConfig = {
 		| "tr"
 		| "id";
 
-	keywords: string;        // 新增：SEO 关键词
-	description: string;     // 新增：站点描述
+	keywords: string; // 新增：SEO 关键词
+	description: string; // 新增：站点描述
 
 	themeColor: {
 		hue: number;
@@ -32,11 +32,23 @@ export type SiteConfig = {
 			text: string;
 			url?: string;
 		};
+		waves?: { // Added '?' because it might be optional depending on `enable` flag in siteConfig.ts
+			enable: {
+				desktop: boolean;
+				mobile: boolean;
+			};
+			performance: {
+				quality: "high" | "medium" | "low";
+				hardwareAcceleration: boolean;
+			};
+		};
 	};
+	navbar?: { // Added navbar property to SiteConfig
+		transparentMode?: "semi" | "full" | "semifull";
+	};
+	showLastModified?: boolean;
 
 	favicon: Favicon[];
-
-
 };
 
 export type Favicon = {
@@ -93,7 +105,7 @@ export type BlogPostData = {
 	draft?: boolean;
 	image?: string;
 	category?: string;
-        series?: string
+	series?: string;
 	prevTitle?: string;
 	prevSlug?: string;
 	nextTitle?: string;

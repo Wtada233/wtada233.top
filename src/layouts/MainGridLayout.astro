@@ -3,22 +3,21 @@ import BackToTop from "@components/control/BackToTop.astro";
 import Footer from "@components/Footer.astro";
 import Navbar from "@components/Navbar.astro";
 import SideBar from "@components/widget/SideBar.astro";
+import WidgetLayout from "@components/widget/WidgetLayout.astro";
 import type { MarkdownHeading } from "astro";
 import { Icon } from "astro-icon/components";
 import ImageWrapper from "../components/misc/ImageWrapper.astro";
 import TOC from "../components/widget/TOC.astro";
-import WidgetLayout from "@components/widget/WidgetLayout.astro";
 import { siteConfig } from "../config";
 import {
 	BANNER_HEIGHT,
 	BANNER_HEIGHT_EXTEND,
 	MAIN_PANEL_OVERLAPS_BANNER_HEIGHT,
 } from "../constants/constants";
-import Layout from "./Layout.astro";
-import { isHomePage, url } from "../utils/url-utils";
-
-import { i18n } from "../i18n/translation";
 import I18nKey from "../i18n/i18nKey";
+import { i18n } from "../i18n/translation";
+import { isHomePage, url } from "../utils/url-utils";
+import Layout from "./Layout.astro";
 
 interface Props {
 	title?: string;
@@ -26,7 +25,7 @@ interface Props {
 	description?: string;
 	lang?: string;
 	setOGTypeArticle?: boolean;
-	series?: string
+	series?: string;
 	headings?: MarkdownHeading[];
 }
 
@@ -47,7 +46,18 @@ const mainPanelTop = siteConfig.banner.enable
 	? `calc(${BANNER_HEIGHT}vh - ${MAIN_PANEL_OVERLAPS_BANNER_HEIGHT}rem)`
 	: "5.5rem";
 
+// 获取波浪效果配置
+const wavesConfig = siteConfig.banner.waves?.enable;
+// 处理分设备控制的波浪动画
+const wavesEnabledOnDesktop =
+	typeof wavesConfig === "object" ? wavesConfig.desktop : wavesConfig;
+const wavesEnabledOnMobile =
+	typeof wavesConfig === "object" ? wavesConfig.mobile : wavesConfig;
 
+// 获取波浪效果性能设置
+const performanceConfig = siteConfig.banner.waves?.performance;
+const waveQuality = performanceConfig?.quality || "high";
+const hardwareAcceleration = performanceConfig?.hardwareAcceleration ?? true;
 
 const isPostsRoute = Astro.url.pathname.startsWith(url("/posts/"));
 ---
@@ -68,6 +78,63 @@ const isPostsRoute = Astro.url.pathname.startsWith(url("/posts/"));
                   src={siteConfig.banner.src} position={siteConfig.banner.position}
     >
     </ImageWrapper>
+    <!-- Water waves effect - 始终渲染以便动态切换 -->
+    {(wavesEnabledOnDesktop || wavesEnabledOnMobile) ? (
+    <div class="waves absolute -bottom-[1px] h-[10vh] max-h-[9.375rem] min-h-[3.125rem] w-full md:h-[15vh] 
+        " 
+        id="header-waves" 
+        style={`transform: translateZ(0); will-change: fill; `}
+        data-wave-quality={waveQuality}
+        data-hardware-acceleration={hardwareAcceleration}>
+        <svg
+            class="waves"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            viewBox="0 20 150 32"
+            preserveAspectRatio="none"
+            shape-rendering={waveQuality === 'low' ? 'optimizeSpeed' : 'auto'}
+            style={`transform: translateZ(0); backface-visibility: hidden; `}
+        >
+            <defs>
+                <path
+                    id="gentle-wave"
+                    d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 v48h-352z"
+                >
+                </path>
+            </defs>
+            <g class="parallax" style={`transform: translateZ(0); `}>
+                <use
+                    xlink:href="#gentle-wave"
+                    x="48"
+                    y="0"
+                    class={`opacity-25 fill-[var(--page-bg)] `}
+                    style={`animation-delay: -2s; animation-duration: ${waveQuality === 'low' ? '10s' : waveQuality === 'medium' ? '8s' : '7s'}; animation-name: ${waveQuality === 'low' ? 'wave-slow' : waveQuality === 'medium' ? 'wave' : 'wave'}; `}
+                ></use>
+                <use
+                    xlink:href="#gentle-wave"
+                    x="48"
+                    y="3"
+                    class={`opacity-50 fill-[var(--page-bg)] `}
+                    style={`animation-delay: -3s; animation-duration: ${waveQuality === 'low' ? '15s' : waveQuality === 'medium' ? '12s' : '10s'}; animation-name: ${waveQuality === 'low' ? 'wave-slow' : waveQuality === 'medium' ? 'wave' : 'wave'}; `}
+                ></use>
+                <use
+                    xlink:href="#gentle-wave"
+                    x="48"
+                    y="5"
+                    class={`opacity-75 fill-[var(--page-bg)] `}
+                    style={`animation-delay: -4s; animation-duration: ${waveQuality === 'low' ? '20s' : waveQuality === 'medium' ? '16s' : '13s'}; animation-name: ${waveQuality === 'low' ? 'wave-slow' : waveQuality === 'medium' ? 'wave' : 'wave'}; `}
+                ></use>
+                <use
+                    xlink:href="#gentle-wave"
+                    x="48"
+                    y="7"
+                    class={`fill-[var(--page-bg)] `}
+                    style={`animation-delay: -5s; animation-duration: ${waveQuality === 'low' ? '30s' : waveQuality === 'medium' ? '25s' : '20s'}; animation-name: ${waveQuality === 'low' ? 'wave-slow' : waveQuality === 'medium' ? 'wave' : 'wave'}; `}
+                ></use>
+            </g>
+        </svg>
+    </div>
+    ) : null}
 </div>}
 
 <!-- Main content -->

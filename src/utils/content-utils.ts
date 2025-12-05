@@ -1,14 +1,14 @@
 import { type CollectionEntry, getCollection } from "astro:content";
+import { pinningConfig } from "@configs/pinning";
+import { relatedPostsConfig } from "@configs/related-posts";
+import { seriesConfig } from "@configs/series";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import { getCategoryUrl } from "@utils/url-utils.ts";
-import { pinningConfig } from "@configs/pinning";
-import { seriesConfig } from "@configs/series";
-import { relatedPostsConfig } from "@configs/related-posts";
 import type { BlogPostData } from "@/types/config";
 
 // // Retrieve posts and sort them by publication date
-async function getRawSortedPosts() {
+async function getRawSortedPosts(): Promise<CollectionEntry<"posts">[]> {
 	const allBlogPosts = await getCollection("posts", ({ data }) => {
 		return import.meta.env.PROD ? data.draft !== true : true;
 	});
@@ -22,7 +22,6 @@ async function getRawSortedPosts() {
 			}
 		}
 
-
 		// 第二优先级：order 相同时，按发布日期倒序（新文章在前）
 		const dateA = new Date(a.data.published);
 		const dateB = new Date(b.data.published);
@@ -32,7 +31,7 @@ async function getRawSortedPosts() {
 	return sorted;
 }
 
-export async function getSortedPosts() {
+export async function getSortedPosts(): Promise<CollectionEntry<"posts">[]> {
 	const sorted = await getRawSortedPosts();
 
 	for (let i = 1; i < sorted.length; i++) {
@@ -129,25 +128,25 @@ export async function getCategoryList(): Promise<Category[]> {
 }
 
 export async function getPostSeries(
-  seriesName: string,
+	seriesName: string,
 ): Promise<{ body: string; data: BlogPostData; slug: string }[]> {
-  if (!seriesConfig.enabled) {
-    return [];
-  }
-  const posts = (await getCollection('posts', ({ data }) => {
-    return (
-      (import.meta.env.PROD ? data.draft !== true : true) &&
-      data.series === seriesName
-    )
-  })) as unknown as { body: string; data: BlogPostData; slug: string }[]
+	if (!seriesConfig.enabled) {
+		return [];
+	}
+	const posts = (await getCollection("posts", ({ data }) => {
+		return (
+			(import.meta.env.PROD ? data.draft !== true : true) &&
+			data.series === seriesName
+		);
+	})) as unknown as { body: string; data: BlogPostData; slug: string }[];
 
-  posts.sort((a, b) => {
-    const dateA = new Date(a.data.published)
-    const dateB = new Date(b.data.published)
-    return dateA > dateB ? 1 : -1
-  })
+	posts.sort((a, b) => {
+		const dateA = new Date(a.data.published);
+		const dateB = new Date(b.data.published);
+		return dateA > dateB ? 1 : -1;
+	});
 
-  return posts
+	return posts;
 }
 
 export async function getRelatedPosts(
@@ -172,9 +171,7 @@ export async function getRelatedPosts(
 		// Score based on shared tags
 		const currentPostTags = currentPost.data.tags || [];
 		const postTags = post.data.tags || [];
-		const sharedTags = currentPostTags.filter((tag) =>
-			postTags.includes(tag),
-		);
+		const sharedTags = currentPostTags.filter((tag: string) => postTags.includes(tag));
 		score += sharedTags.length * 2; // Each shared tag gives 2 points
 
 		// Score based on shared category
@@ -202,24 +199,30 @@ export async function getRelatedPosts(
 	return relatedPosts.slice(0, limit).map((item) => item.post);
 }
 
-export async function getBlogStats() {
+export async function getBlogStats(): Promise<{
+	totalArticles: number;
+	totalWords: number;
+	totalSeries: number;
+	totalTags: number;
+	totalCategories: number;
+}> {
 	const allPosts = await getRawSortedPosts();
 	const allTags = await getTagList();
 	const allCategories = await getCategoryList();
 
 	const totalArticles = allPosts.length;
 
-    // Correctly calculate totalWords by rendering each post
+	// Correctly calculate totalWords by rendering each post
 	let totalWords = 0;
 	for (const post of allPosts) {
 		const { remarkPluginFrontmatter } = await post.render();
-		totalWords += (remarkPluginFrontmatter?.words || 0);
+		totalWords += remarkPluginFrontmatter?.words || 0;
 	}
 
 	let totalSeries = 0;
 	if (seriesConfig.enabled) {
 		const uniqueSeries = new Set<string>();
-		allPosts.forEach(post => {
+		allPosts.forEach((post) => {
 			if (post.data.series) {
 				uniqueSeries.add(post.data.series);
 			}

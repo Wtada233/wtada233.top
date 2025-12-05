@@ -1,3 +1,3 @@
 export const aiSummaryConfig = {
-  enabled: true,
+	enabled: true,
 };

@@ -1,4 +1,4 @@
 export const relatedPostsConfig = {
-  enabled: true,
-  limit: 5,
+	enabled: true,
+	limit: 5,
 };

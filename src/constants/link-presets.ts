@@ -17,6 +17,6 @@ export const LinkPresets: { [key in LinkPreset]: NavBarLink } = {
 	},
 	[LinkPreset.Series]: {
 		name: i18n(I18nKey.series),
-		url: '/series/',
+		url: "/series/",
 	},
 };

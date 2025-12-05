@@ -4,22 +4,22 @@ import { onMount } from "svelte";
 let isGlassMode = false;
 
 function applyGlassMode() {
-    if (isGlassMode) {
-        document.documentElement.classList.add("glass-mode");
-    } else {
-        document.documentElement.classList.remove("glass-mode");
-    }
+	if (isGlassMode) {
+		document.documentElement.classList.add("glass-mode");
+	} else {
+		document.documentElement.classList.remove("glass-mode");
+	}
 }
 
 function toggleGlassMode() {
-    isGlassMode = !isGlassMode;
-    localStorage.setItem("glassMode", String(isGlassMode));
-    applyGlassMode();
+	isGlassMode = !isGlassMode;
+	localStorage.setItem("glassMode", String(isGlassMode));
+	applyGlassMode();
 }
 
 onMount(() => {
-    isGlassMode = localStorage.getItem("glassMode") === "true";
-    applyGlassMode();
+	isGlassMode = localStorage.getItem("glassMode") === "true";
+	applyGlassMode();
 });
 </script>
 

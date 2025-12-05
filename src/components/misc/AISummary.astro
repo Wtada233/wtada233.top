@@ -1,13 +1,13 @@
 ---
 export interface Props {
-  content: string;
+	content: string;
 }
 
 const { content } = Astro.props;
 
 // 如果没有内容，不渲染组件
-if (!content || content.trim() === '') {
-  return null;
+if (!content || content.trim() === "") {
+	return null;
 }
 ---
 

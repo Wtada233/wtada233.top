@@ -1,3 +1,3 @@
 export const pinningConfig = {
-  enabled: true,
+	enabled: true,
 };
