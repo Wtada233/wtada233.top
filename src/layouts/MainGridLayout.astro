@@ -7,7 +7,6 @@ import WidgetLayout from "@components/widget/WidgetLayout.astro";
 import type { MarkdownHeading } from "astro";
 import { Icon } from "astro-icon/components";
 import ImageWrapper from "../components/misc/ImageWrapper.astro";
-import TOC from "../components/widget/TOC.astro";
 import { siteConfig } from "../config";
 import {
 	BANNER_HEIGHT,
@@ -69,7 +68,6 @@ const isPostsRoute = Astro.url.pathname.startsWith(url("/posts/"));
 
 <!-- Main content -->
 <div class="absolute w-full z-30 pointer-events-none" style={`top: ${mainPanelTop}`}>
-    <!-- The pointer-events-none here prevent blocking the click event of the TOC -->
     <div class="relative max-w-[var(--page-width)] mx-auto pointer-events-auto">
         <div id="main-grid" class="transition duration-700 w-full left-0 right-0 grid grid-cols-1 lg:grid-cols-[17.5rem_auto] grid-rows-[auto_auto]
     mx-auto gap-4 px-0 md:px-4"

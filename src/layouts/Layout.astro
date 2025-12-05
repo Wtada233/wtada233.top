@@ -381,7 +381,6 @@ function showBanner() {
 }
 
 let backToTopBtn = document.getElementById('back-to-top-btn');
-let toc = document.getElementById('toc-wrapper');
 let navbar = document.getElementById('navbar-wrapper')
 
 // Function to initialize semifull scroll detection
@@ -524,12 +523,6 @@ const setup = () => {
 			heightExtend.classList.remove('hidden')
 		}
 
-		// Hide the TOC while scrolling back to top
-		let toc = document.getElementById('toc-wrapper');
-		if (toc) {
-			toc.classList.add('toc-not-ready')
-		}
-
 		// Re-initialize semifull scroll detection on visit:start
 		initSemifullScrollDetection();
 	});
@@ -548,11 +541,6 @@ const setup = () => {
 				heightExtend.classList.add('hidden')
 			}
 
-            // Just make the transition looks better
-            const toc = document.getElementById('toc-wrapper');
-            if (toc) {
-                toc.classList.remove('toc-not-ready')
-            }
         }, 200)
 	});
 }

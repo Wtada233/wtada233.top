@@ -352,13 +352,6 @@
         box-shadow: var(--shadow-navbar) !important;
     }
     
-    .glass-mode #mobile-toc-panel {
-        backdrop-filter: blur(var(--blur-2xl)) !important;
-        background: rgba(255, 255, 255, var(--opacity-90)) !important;
-        border: 1px solid rgba(255, 255, 255, var(--opacity-90)) !important;
-        box-shadow: var(--shadow-navbar) !important;
-    }
-    
     .glass-mode #search-panel {
         backdrop-filter: blur(var(--blur-2xl)) !important;
         background: rgba(255, 255, 255, var(--opacity-90)) !important;
@@ -404,13 +397,6 @@
         box-shadow: var(--shadow-navbar) !important;
     }
     
-    .glass-mode #navbar[data-is-home="true"] #mobile-toc-panel {
-        backdrop-filter: blur(var(--blur-2xl)) !important;
-        background: rgba(255, 255, 255, var(--opacity-90)) !important;
-        border: 1px solid rgba(255, 255, 255, var(--opacity-90)) !important;
-        box-shadow: var(--shadow-navbar) !important;
-    }
-    
     .glass-mode #navbar[data-is-home="true"] #search-panel {
         backdrop-filter: blur(var(--blur-2xl)) !important;
         background: rgba(255, 255, 255, var(--opacity-90)) !important;
@@ -450,12 +436,6 @@
         box-shadow: var(--shadow-navbar-dark) !important;
     }
     
-    :root.dark.glass-mode #mobile-toc-panel {
-        background: rgba(0, 0, 0, var(--opacity-90)) !important;
-        border: 1px solid rgba(0, 0, 0, var(--opacity-90)) !important;
-        box-shadow: var(--shadow-navbar-dark) !important;
-    }
-    
     :root.dark.glass-mode #search-panel {
         background: rgba(0, 0, 0, var(--opacity-90)) !important;
         border: 1px solid rgba(0, 0, 0, var(--opacity-90)) !important;
@@ -490,12 +470,6 @@
     }
     
     :root.dark.glass-mode #navbar[data-is-home="true"] #nav-menu-panel {
-        background: rgba(0, 0, 0, var(--opacity-90)) !important;
-        border: 1px solid rgba(0, 0, 0, var(--opacity-90)) !important;
-        box-shadow: var(--shadow-navbar-dark) !important;
-    }
-    
-    :root.dark.glass-mode #navbar[data-is-home="true"] #mobile-toc-panel {
         background: rgba(0, 0, 0, var(--opacity-90)) !important;
         border: 1px solid rgba(0, 0, 0, var(--opacity-90)) !important;
         box-shadow: var(--shadow-navbar-dark) !important;
