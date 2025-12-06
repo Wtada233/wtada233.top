@@ -117,7 +117,6 @@ export default defineConfig({
 			workbox: {
 				globPatterns: ['**/*.{js,css,html,svg,png,jpg,jpeg,gif,webp,woff2}'], // Cache these file types
 				maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // Increase limit to 5 MB (sufficient for 3.6 MB font)
-				globIgnores: ['404/**'], // Exclude 404 paths from precaching
 				runtimeCaching: [{
 					urlPattern: ({ url }) => url.pathname.startsWith('/'), // Cache all site pages
 					handler: 'NetworkFirst', // Prioritize network, then fall back to cache
