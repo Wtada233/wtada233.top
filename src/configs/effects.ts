@@ -1,0 +1,22 @@
+export const effectsConfig = {
+	enable: true,
+	click: {
+		sizeRange: {
+			min: 5,
+			max: 15,
+		},
+		distanceRange: {
+			min: 50,
+			max: 100, // 50 + 50 from original code
+		},
+		animationDuration: 600,
+		particleCount: 10,
+	},
+	trail: {
+		size: 5,
+		animationDuration: 500,
+	},
+	throttleLimit: 50,
+};
+
+export type EffectsConfig = typeof effectsConfig;

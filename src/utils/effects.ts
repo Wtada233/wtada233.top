@@ -1,3 +1,5 @@
+import { effectsConfig } from '../configs/effects';
+
 function throttle<T extends (...args: Parameters<T>) => ReturnType<T>>(
 	func: T,
 	limit: number,
@@ -20,7 +22,7 @@ function throttle<T extends (...args: Parameters<T>) => ReturnType<T>>(
 }
 
 export function initEffects(): void {
-	if (typeof window === "undefined") return;
+	if (typeof window === "undefined" || !effectsConfig.enable) return;
 
 	// Don't run on devices that likely have touch as primary input to save performance.
 	if (window.matchMedia("(pointer: coarse)").matches) {
@@ -38,21 +40,21 @@ export function initEffects(): void {
 
 		if (isClick) {
 			particle.className = "particle click-particle";
-			const size = Math.floor(Math.random() * 15 + 5);
+			const size = Math.floor(Math.random() * effectsConfig.click.sizeRange.max + effectsConfig.click.sizeRange.min);
 			particle.style.width = `${size}px`;
 			particle.style.height = `${size}px`;
 
 			const angle = Math.random() * Math.PI * 2;
-			const distance = Math.random() * 50 + 50;
+			const distance = Math.random() * (effectsConfig.click.distanceRange.max - effectsConfig.click.distanceRange.min) + effectsConfig.click.distanceRange.min;
 			const transformTo = `translate(${Math.cos(angle) * distance}px, ${Math.sin(angle) * distance}px) scale(0)`;
 			particle.style.setProperty("--transform-to", transformTo);
 		} else {
 			particle.className = "particle trail-particle";
-			particle.style.width = "5px";
-			particle.style.height = "5px";
+			particle.style.width = `${effectsConfig.trail.size}px`;
+			particle.style.height = `${effectsConfig.trail.size}px`;
 		}
 
-		const animationDuration = isClick ? 600 : 500;
+		const animationDuration = isClick ? effectsConfig.click.animationDuration : effectsConfig.trail.animationDuration;
 		setTimeout(() => {
 			if (particle.parentNode) {
 				particle.parentNode.removeChild(particle);
@@ -64,7 +66,7 @@ export function initEffects(): void {
 		// Use pageX/pageY to get the position relative to the whole page
 		const x = e.pageX;
 		const y = e.pageY;
-		for (let i = 0; i < 10; i++) {
+		for (let i = 0; i < effectsConfig.click.particleCount; i++) {
 			createParticle(x, y, true);
 		}
 	});
@@ -75,6 +77,6 @@ export function initEffects(): void {
 			const x = e.pageX;
 			const y = e.pageY;
 			createParticle(x, y, false);
-		}, 50),
+		}, effectsConfig.throttleLimit),
 	);
 }
