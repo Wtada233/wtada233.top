@@ -131,6 +131,7 @@ export default defineConfig({
 						},
 					},
 				}],
+				exclude: [/\/404\/?/], // Exclude the 404 page from precaching
 				// Explicitly precache assets that were previously listed in public/sw.js
 				additionalManifestEntries: [],
 			},
