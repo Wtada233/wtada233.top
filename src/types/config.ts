@@ -133,4 +133,3 @@ export type PWAConfig = {
 		purpose: string;
 	}[];
 };
-
