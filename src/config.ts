@@ -50,6 +50,31 @@ export const siteConfig: SiteConfig = {
 		enable: true,
 		depth: 3,
 	},
+
+	pwa: {
+		enable: true, // Enable PWA features
+		name: "Wtada233's Blog",
+		short_name: "Wtada233 Blog",
+		description: "Wtada233's personal blog powered by Fuwari.",
+		start_url: "/",
+		display: "standalone",
+		background_color: "#ffffff",
+		theme_color: "#8a2be2",
+		icons: [
+			{
+				src: "/favicon/favicon-light-192.png",
+				sizes: "192x192",
+				type: "image/png",
+				purpose: "any maskable"
+			},
+			{
+				src: "/favicon/favicon-dark-192.png",
+				sizes: "192x192",
+				type: "image/png",
+				purpose: "any maskable"
+			}
+		]
+	},
 };
 
 export const navBarConfig: NavBarConfig = {
