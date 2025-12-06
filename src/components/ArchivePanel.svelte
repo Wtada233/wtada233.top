@@ -107,12 +107,11 @@ $: {
 	// Series grouping
 	const groupedBySeries = filteredPosts.reduce(
 		(acc, post) => {
-			if (post.data.series) {
-				if (!acc[post.data.series]) {
-					acc[post.data.series] = [];
-				}
-				acc[post.data.series].push(post);
+			const seriesName = post.data.series || i18n(I18nKey.noSeries);
+			if (!acc[seriesName]) {
+				acc[seriesName] = [];
 			}
+			acc[seriesName].push(post);
 			return acc;
 		},
 		{} as Record<string, Post[]>,
@@ -122,7 +121,11 @@ $: {
 			title: seriesName,
 			posts: groupedBySeries[seriesName],
 		}))
-		.sort((a, b) => a.title.localeCompare(b.title));
+		.sort((a, b) => {
+			if (a.title === i18n(I18nKey.noSeries)) return 1;
+			if (b.title === i18n(I18nKey.noSeries)) return -1;
+			return a.title.localeCompare(b.title);
+		});
 
 	// Category grouping
 	const groupedByCategory = filteredPosts.reduce(

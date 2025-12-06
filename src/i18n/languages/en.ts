@@ -15,6 +15,7 @@ export const en: Translation = {
 	[Key.untitled]: "Untitled",
 	[Key.uncategorized]: "Uncategorized",
 	[Key.noTags]: "No Tags",
+	[Key.noSeries]: "No Series",
 
 	[Key.wordCount]: "word",
 	[Key.wordsCount]: "words",
