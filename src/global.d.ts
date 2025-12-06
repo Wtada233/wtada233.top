@@ -10,6 +10,7 @@ declare global {
 					data: () => Promise<SearchResult>;
 				}>;
 			}>;
+			options: (config: { excerptLength: number }) => Promise<void>;
 		};
 		semifullScrollHandler?: () => void;
 	}
