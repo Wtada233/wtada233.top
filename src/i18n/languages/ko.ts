@@ -59,10 +59,12 @@ export const ko: Translation = {
 
 	[Key.pageNotFoundTitle]: "페이지를 찾을 수 없습니다",
 	[Key.pageNotFoundHeading]: "페이지를 찾을 수 없습니다",
-	[Key.pageNotFoundDescription]: "죄송합니다. 찾으시는 페이지가 존재하지 않거나 이동되었을 수 있습니다.\nURL을 확인하거나 홈페이지로 돌아가십시오.",
+	[Key.pageNotFoundDescription]:
+		"죄송합니다. 찾으시는 페이지가 존재하지 않거나 이동되었을 수 있습니다.\nURL을 확인하거나 홈페이지로 돌아가십시오.",
 	[Key.pageNotFoundHomeButton]: "홈으로 돌아가기",
 	[Key.pageNotFoundArchiveButton]: "아카이브",
-	[Key.pageNotFoundBackButtonHint]: "브라우저의 뒤로 가기 버튼을 사용하여 이전 페이지로 돌아갈 수도 있습니다",
+	[Key.pageNotFoundBackButtonHint]:
+		"브라우저의 뒤로 가기 버튼을 사용하여 이전 페이지로 돌아갈 수도 있습니다",
 
 	//마지막 편집 시간 카드
 	[Key.lastModifiedPrefix]: "최종 수정일: ",

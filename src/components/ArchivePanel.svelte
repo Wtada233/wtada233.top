@@ -9,8 +9,12 @@ export let sortedPosts: Post[] = [];
 
 const params = new URLSearchParams(window.location.search);
 export let tags: string[] = params.has("tag") ? params.getAll("tag") : [];
-export let categories: string[] = params.has("category") ? params.getAll("category") : [];
-export let series: string[] = params.has("series") ? params.getAll("series") : [];
+export let categories: string[] = params.has("category")
+	? params.getAll("category")
+	: [];
+export let series: string[] = params.has("series")
+	? params.getAll("series")
+	: [];
 const uncategorized = params.get("uncategorized");
 
 interface Post {
