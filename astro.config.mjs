@@ -115,15 +115,15 @@ export default defineConfig({
 				icons: siteConfig.pwa?.icons,
 			},
 			workbox: {
-				globPatterns: ['**/*.{js,css,html,svg,png,jpg,jpeg,gif,webp,woff2}'], // Cache these file types
+				globPatterns: ['**/*.{js,css,html,woff2}'], // Cache these file types
 				maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // Increase limit to 5 MB (sufficient for 3.6 MB font)
 				runtimeCaching: [{
-					urlPattern: ({ url }) => url.pathname.startsWith('/'), // Cache all site pages
-					handler: 'NetworkFirst', // Prioritize network, then fall back to cache
+					urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp|woff2)$/,
+					handler: 'CacheFirst', // Prioritize network, then fall back to cache
 					options: {
 						cacheName: 'fuwari-pages-cache',
 						expiration: {
-							maxEntries: 100, // Max 100 entries
+							maxEntries: 200, // Max 100 entries
 							maxAgeSeconds: 60 * 60 * 24 * 7, // 7 Days
 						},
 						cacheableResponse: {
@@ -132,8 +132,6 @@ export default defineConfig({
 					},
 				}],
 
-				// Explicitly precache assets that were previously listed in public/sw.js
-				additionalManifestEntries: [],
 			},
 			devOptions: {
 				enabled: true, // Enable PWA in development for testing
