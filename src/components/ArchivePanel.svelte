@@ -5,15 +5,12 @@ import I18nKey from "../i18n/i18nKey";
 import { i18n } from "../i18n/translation";
 import { getPostUrlBySlug } from "../utils/url-utils";
 
-export let tags: string[];
-export let categories: string[];
-export let series: string[];
 export let sortedPosts: Post[] = [];
 
 const params = new URLSearchParams(window.location.search);
-tags = params.has("tag") ? params.getAll("tag") : [];
-categories = params.has("category") ? params.getAll("category") : [];
-series = params.has("series") ? params.getAll("series") : [];
+export let tags: string[] = params.has("tag") ? params.getAll("tag") : [];
+export let categories: string[] = params.has("category") ? params.getAll("category") : [];
+export let series: string[] = params.has("series") ? params.getAll("series") : [];
 const uncategorized = params.get("uncategorized");
 
 interface Post {
@@ -44,7 +41,7 @@ function formatTag(tagList: string[]) {
 	return tagList.map((t) => `#${t}`).join(" ");
 }
 
-onMount(async () => {
+$: {
 	let filteredPosts: Post[] = sortedPosts;
 
 	if (tags.length > 0) {
@@ -91,7 +88,7 @@ onMount(async () => {
 	groupedPostsArray.sort((a, b) => b.year - a.year);
 
 	groups = groupedPostsArray;
-});
+}
 </script>
 
 <div class="card-base px-8 py-6">

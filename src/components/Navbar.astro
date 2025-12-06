@@ -94,7 +94,7 @@ function loadButtonScript() {
 
 loadButtonScript();
 
-window.initSemifullScrollDetection = () => {};
+import { initSemifullScrollDetection } from '../utils/semifull-scroll-detection';
 
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initSemifullScrollDetection);

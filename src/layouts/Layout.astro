@@ -228,6 +228,7 @@ import {
 } from "../constants/constants";
 import { siteConfig } from '../config';
 import { initEffects } from '../utils/effects.ts';
+import { initSemifullScrollDetection } from '../utils/semifull-scroll-detection';
 
 /* Preload fonts */
 // (async function() {
@@ -242,36 +243,7 @@ import { initEffects } from '../utils/effects.ts';
 // 	}
 // })();
 
-/* TODO This is a temporary solution for style flicker issue when the transition is activated */
-/* issue link: https://github.com/withastro/astro/issues/8711, the solution get from here too */
-/* update: fixed in Astro 3.2.4 */
-/*
-function disableAnimation() {
-	const css = document.createElement('style')
-	css.appendChild(
-		document.createTextNode(
-			`*{
-              -webkit-transition:none!important;
-              -moz-transition:none!important;
-              -o-transition:none!important;
-              -ms-transition:none!important;
-              transition:none!important
-              }`
-		)
-	)
-	document.head.appendChild(css)
 
-	return () => {
-		// Force restyle
-		;(() => window.getComputedStyle(document.body))()
-
-		// Wait for next tick before removing
-		setTimeout(() => {
-			document.head.removeChild(css)
-		}, 1)
-	}
-}
-*/
 
 const bannerEnabled = !!document.getElementById('banner-wrapper')
 
@@ -383,59 +355,9 @@ function showBanner() {
 let backToTopBtn = document.getElementById('back-to-top-btn');
 let navbar = document.getElementById('navbar-wrapper')
 
-// Function to initialize semifull scroll detection
-function initSemifullScrollDetection() {
-    const navbar = document.getElementById('navbar');
-    if (!navbar) return;
 
-    const transparentMode = navbar.getAttribute('data-transparent-mode');
-    if (transparentMode !== 'semifull') return;
 
-    const isHomePage = navbar.getAttribute('data-is-home') === 'true';
 
-    // If not on the homepage, remove scroll listener and set to scrolled state
-    if (!isHomePage) {
-        if (window.semifullScrollHandler) {
-            window.removeEventListener('scroll', window.semifullScrollHandler);
-            window.semifullScrollHandler = undefined;
-        }
-        navbar.classList.add('scrolled');
-        return;
-    }
-
-    navbar.classList.remove('scrolled');
-
-    let ticking = false;
-
-    function updateNavbarState() {
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        const threshold = 50;
-        if (scrollTop > threshold) {
-            navbar.classList.add('scrolled');
-        } else {
-            navbar.classList.remove('scrolled');
-        }
-        ticking = false;
-    }
-
-    function requestTick() {
-        if (!ticking) {
-            requestAnimationFrame(updateNavbarState);
-            ticking = true;
-        }
-    }
-
-    if (window.semifullScrollHandler) {
-        window.removeEventListener('scroll', window.semifullScrollHandler);
-    }
-
-    window.semifullScrollHandler = requestTick;
-    window.addEventListener('scroll', requestTick, { passive: true });
-    updateNavbarState();
-}
-
-// Expose to global window object
-window.initSemifullScrollDetection = initSemifullScrollDetection;
 
 function init() {
 	// disableAnimation()()		// TODO
