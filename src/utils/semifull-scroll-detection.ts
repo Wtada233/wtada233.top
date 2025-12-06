@@ -14,20 +14,21 @@ export function initSemifullScrollDetection(): void {
 			window.removeEventListener("scroll", window.semifullScrollHandler);
 			window.semifullScrollHandler = undefined;
 		}
-		navbar!.classList.add("scrolled");
+		navbar?.classList.add("scrolled");
 		return;
 	}
 
-	navbar!.classList.remove("scrolled");
+	navbar?.classList.remove("scrolled");
 
 	let ticking = false;
 
 	function updateNavbarState() {
 		const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 		const threshold = 50;
-		        if (scrollTop > threshold) {
-		            navbar!.classList.add("scrolled");		} else {
-			navbar!.classList.remove("scrolled");
+		if (scrollTop > threshold) {
+			navbar?.classList.add("scrolled");
+		} else {
+			navbar?.classList.remove("scrolled");
 		}
 		ticking = false;
 	}
