@@ -52,6 +52,7 @@ export const zh_TW: Translation = {
 	[Key.totalCategories]: "分類總數",
 	[Key.totalWords]: "總字數",
 	[Key.blogInfo]: "部落格資訊",
+	[Key.runningTime]: "運行時間",
 
 	[Key.share]: "分享",
 	[Key.shareToTwitter]: "分享到 Twitter",

@@ -46,6 +46,7 @@ export const en: Translation = {
 	[Key.totalCategories]: "Total Categories",
 	[Key.totalWords]: "Total Words",
 	[Key.blogInfo]: "Blog Information",
+	[Key.runningTime]: "Running Time",
 
 	[Key.relatedPosts]: "Related Posts",
 

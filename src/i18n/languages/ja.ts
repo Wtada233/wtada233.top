@@ -49,6 +49,7 @@ export const ja: Translation = {
 	[Key.totalCategories]: "全カテゴリ",
 	[Key.totalWords]: "総語数",
 	[Key.blogInfo]: "ブログ情報",
+	[Key.runningTime]: "稼働時間",
 
 	[Key.pinned]: "ピン留め",
 	[Key.pinnedToBottom]: "下部にピン留め",

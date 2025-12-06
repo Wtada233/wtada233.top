@@ -1,0 +1,29 @@
+---
+import WidgetLayout from "@components/widget/WidgetLayout.astro";
+import { runningTimeConfig } from "@configs/running-time";
+import I18nKey from "@/i18n/i18nKey";
+import { i18n } from "@/i18n/translation";
+---
+
+{runningTimeConfig.enableRunningTime && (
+    <WidgetLayout name={i18n(I18nKey.runningTime)}>
+        <div class="transition text-50 text-sm text-center my-4">
+            <p id="runningtime"></p>
+        </div>
+        <script type="text/javascript" define:vars={{startDate: runningTimeConfig.startDate}}>
+            function runtime(){
+                const t=new Date(startDate);
+                const n=new Date();
+                const s=n-t;
+                const e=Math.floor(s/1e3);
+                const o=Math.floor(e/86400);
+                const i=Math.floor(e%86400/3600);
+                const a=Math.floor(e%3600/60);
+                const r=e%60;
+                document.getElementById("runningtime").innerHTML=`⭐本站已运行: ${o}天${i}小时${a}分${r}秒 ☁️`
+            }
+            setInterval(runtime,1e3);
+            runtime(); // Call once immediately to avoid flicker
+        </script>
+    </WidgetLayout>
+)}

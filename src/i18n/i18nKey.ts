@@ -49,6 +49,7 @@ enum I18nKey {
 	totalCategories = "totalCategories",
 	totalWords = "totalWords",
 	blogInfo = "blogInfo",
+	runningTime = "runningTime",
 
 	share = "share",
 	shareToTwitter = "shareToTwitter",

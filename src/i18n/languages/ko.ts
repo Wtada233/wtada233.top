@@ -49,6 +49,7 @@ export const ko: Translation = {
 	[Key.totalCategories]: "총 카테고리",
 	[Key.totalWords]: "총 단어 수",
 	[Key.blogInfo]: "블로그 정보",
+	[Key.runningTime]: "운영 시간",
 
 	[Key.pinned]: "고정됨",
 	[Key.pinnedToBottom]: "하단 고정",

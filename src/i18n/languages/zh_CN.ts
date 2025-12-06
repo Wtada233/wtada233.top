@@ -46,6 +46,7 @@ export const zh_CN: Translation = {
 	[Key.totalCategories]: "分类总数",
 	[Key.totalWords]: "总字数",
 	[Key.blogInfo]: "博客信息",
+	[Key.runningTime]: "运行时间",
 	[Key.relatedPosts]: "相关文章",
 
 	[Key.pinned]: "置顶",

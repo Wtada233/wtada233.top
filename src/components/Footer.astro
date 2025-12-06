@@ -1,7 +1,7 @@
 ---
 
 import { profileConfig } from "../config";
-import { footerConfig } from "../configs/footer"; // Import footerConfig
+
 import { url } from "../utils/url-utils";
 
 const currentYear = new Date().getFullYear();
@@ -19,25 +19,6 @@ const currentYear = new Date().getFullYear();
         <a class="transition link text-[var(--primary)] font-medium" target="_blank" href="https://astro.build">Astro</a> &
         <a class="transition link text-[var(--primary)] font-medium" target="_blank" href="https://github.com/saicaca/fuwari">Fuwari</a>
     </div>
-    <div class="transition text-50 text-sm text-center">
-        {footerConfig.enableRunningTime && <p id="runningtime"> </p>}
-    </div>
-    {footerConfig.enableRunningTime && (
-        <script type="text/javascript" define:vars={{startDate: footerConfig.runningTimeStart}}>
-            function runtime(){
-                const t=new Date(startDate);
-                const n=new Date();
-                const s=n-t;
-                const e=Math.floor(s/1e3);
-                const o=Math.floor(e/86400);
-                const i=Math.floor(e%86400/3600);
-                const a=Math.floor(e%3600/60);
-                const r=e%60;
-                document.getElementById("runningtime").innerHTML=`⭐本站已运行: ${o}天${i}小时${a}分${r}秒 ☁️`
-            }
-            setInterval(runtime,1e3);
-            runtime(); // Call once immediately to avoid flicker
-        </script>
-    )}
+
 </div>
 

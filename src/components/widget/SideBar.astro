@@ -1,9 +1,11 @@
 ---
 import type { MarkdownHeading } from "astro";
 import { siteConfig } from "../../config";
+import { runningTimeConfig } from "../../configs/running-time";
 import { seriesConfig } from "../../configs/series";
 import I18nKey from "../../i18n/i18nKey";
 import { i18n } from "../../i18n/translation";
+import RunningTime from "../misc/RunningTime.astro";
 import BlogInfo from "./BlogInfo.astro";
 import Categories from "./Categories.astro";
 import Profile from "./Profile.astro";
@@ -32,6 +34,8 @@ const isPostsRoute = Astro.props.isPostsRoute;
         <Categories class="onload-animation" style="animation-delay: 150ms"></Categories>
         <Tag class="onload-animation" style="animation-delay: 200ms"></Tag>
         <BlogInfo class="onload-animation" style="animation-delay: 300ms"></BlogInfo>
+        <RunningTime class="onload-animation" style="animation-delay: 350ms"></RunningTime>
+
 
     </div>
 </div>
