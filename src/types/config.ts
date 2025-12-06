@@ -40,6 +40,7 @@ export type SiteConfig = {
 	showLastModified?: boolean;
 
 	favicon: Favicon[];
+	toc: TOCConfig;
 };
 
 export type Favicon = {
@@ -106,3 +107,8 @@ export type BlogPostData = {
 export type ExpressiveCodeConfig = {
 	theme: string;
 };
+
+export interface TOCConfig {
+	enable: boolean;
+	depth: number;
+}
