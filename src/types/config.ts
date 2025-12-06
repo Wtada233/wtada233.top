@@ -32,6 +32,9 @@ export type SiteConfig = {
 			text: string;
 			url?: string;
 		};
+		text?: {
+			enable: boolean;
+		};
 	};
 	navbar?: {
 		// Added navbar property to SiteConfig

@@ -45,6 +45,7 @@ const mainPanelTop = siteConfig.banner.enable
 	: "5.5rem";
 
 const isPostsRoute = Astro.url.pathname.startsWith(url("/posts/"));
+const isHomePageCheck = isHomePage(Astro.url.pathname);
 ---
 
 <Layout title={title} description={description} lang={lang} setOGTypeArticle={setOGTypeArticle}>
@@ -63,6 +64,12 @@ const isPostsRoute = Astro.url.pathname.startsWith(url("/posts/"));
                   src={siteConfig.banner.src} position={siteConfig.banner.position}
     >
     </ImageWrapper>
+    {isHomePageCheck && siteConfig.banner.text?.enable && (
+        <div class="banner-text-overlay absolute inset-0 flex flex-col justify-center items-center text-white text-center p-4 z-20 pointer-events-none">
+            <h1 class="text-6xl md:text-6xl font-bold drop-shadow-lg animate-fade-in-down" style="animation-delay: 0.2s;">{siteConfig.title}</h1>
+            <p class="mt-4 text-2xl md:text-2xl drop-shadow-lg animate-fade-in-up" style="animation-delay: 0.4s;">{siteConfig.subtitle}</p>
+        </div>
+    )}
 </div>}
 
 <!-- Main content -->
@@ -125,3 +132,32 @@ const isPostsRoute = Astro.url.pathname.startsWith(url("/posts/"));
     </div>
 </div>
 </Layout>
+
+<style>
+    @keyframes fade-in-down {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    @keyframes fade-in-up {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    .animate-fade-in-down {
+        animation: fade-in-down 0.8s ease-out forwards;
+    }
+    .animate-fade-in-up {
+        animation: fade-in-up 0.8s ease-out forwards;
+    }
+</style>

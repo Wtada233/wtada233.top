@@ -148,7 +148,7 @@ const bannerOffset =
 				<link rel="manifest" href="/manifest.webmanifest">
 
 			</head>
-	<body class=" min-h-screen transition " class:list={[{"lg:is-home": isHomePage, "enable-banner": enableBanner}]}
+	<body class=" min-h-screen transition " class:list={[{ "is-home": isHomePage, "enable-banner": enableBanner }]}
 		  data-overlayscrollbars-initialize
 	>
 		<div id="reading-progress-bar"></div>
@@ -413,9 +413,9 @@ const setup = () => {
 		const isHomePage = pathsEqual(visit.to.url, url('/'));
 
 		if (isHomePage) {
-			bodyElement!.classList.add('lg:is-home');
+			bodyElement!.classList.add('is-home');
 		} else {
-			bodyElement!.classList.remove('lg:is-home');
+			bodyElement!.classList.remove('is-home');
 		}
 
 		// Control banner text visibility based on page
@@ -491,7 +491,7 @@ function scrollFunction() {
 		const MAIN_PANEL_EXCESS_HEIGHT = MAIN_PANEL_OVERLAPS_BANNER_HEIGHT * 16			// The height the main panel overlaps the banner
 
 		let bannerHeight = BANNER_HEIGHT
-		if (document.body.classList.contains('lg:is-home') && window.innerWidth >= 1024) {
+		if (document.body.classList.contains('is-home')) {
 			bannerHeight = BANNER_HEIGHT_HOME
 		}
 		let threshold = window.innerHeight * (bannerHeight / 100) - NAVBAR_HEIGHT - MAIN_PANEL_EXCESS_HEIGHT - 16

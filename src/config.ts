@@ -28,6 +28,9 @@ export const siteConfig: SiteConfig = {
 			text: "Firewatch", // Credit text to be displayed
 			url: "https://store.steampowered.com/app/383870/Firewatch/", // (Optional) URL link to the original artwork or artist's page
 		},
+		text: {
+			enable: true, // Enable text banner
+		},
 	},
 
 	navbar: {
