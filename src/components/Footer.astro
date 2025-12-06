@@ -19,6 +19,9 @@ const currentYear = new Date().getFullYear();
         <a class="transition link text-[var(--primary)] font-medium" target="_blank" href="https://astro.build">Astro</a> &
         <a class="transition link text-[var(--primary)] font-medium" target="_blank" href="https://github.com/saicaca/fuwari">Fuwari</a>
     </div>
+    <div class="transition text-50 text-sm text-center">
+        {footerConfig.enableRunningTime && <p id="runningtime"> </p>}
+    </div>
     {footerConfig.enableRunningTime && (
         <script type="text/javascript" define:vars={{startDate: footerConfig.runningTimeStart}}>
             function runtime(){
@@ -36,8 +39,5 @@ const currentYear = new Date().getFullYear();
             runtime(); // Call once immediately to avoid flicker
         </script>
     )}
-    <div class="transition text-50 text-sm text-center">
-        {footerConfig.enableRunningTime && <p id="runningtime"> </p>}
-    </div>
 </div>
 
