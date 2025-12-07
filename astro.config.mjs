@@ -43,7 +43,7 @@ export default defineConfig({
 			smoothScrolling: true,
 			cache: true,
 			preload: true,
-			accessibility: true,
+			accessibility: false,
 			updateHead: true,
 			updateBodyClass: false,
 			globalInstance: true,
@@ -116,6 +116,7 @@ export default defineConfig({
 			},
 			workbox: {
 				globPatterns: ['**/*.{js,css,html,woff2}'], // Cache these file types
+				globIgnores: ['**/404.html'],
 				maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // Increase limit to 5 MB (sufficient for 3.6 MB font)
 				runtimeCaching: [{
 					urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp|woff2)$/,
