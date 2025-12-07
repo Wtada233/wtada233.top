@@ -123,7 +123,7 @@ export default defineConfig({
 					options: {
 						cacheName: 'fuwari-pages-cache',
 						expiration: {
-							maxEntries: 200, // Max 100 entries
+							maxEntries: 200, // Max 200 entries
 							maxAgeSeconds: 60 * 60 * 24 * 7, // 7 Days
 						},
 						cacheableResponse: {
