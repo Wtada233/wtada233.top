@@ -1,124 +1,165 @@
 <!-- src/components/SEOPredictor.svelte -->
 <script lang="ts">
-  import { url } from "@utils/url-utils";
+import { url } from "@utils/url-utils";
 
-  let inputUrl: string = '';
-  let isLoading: boolean = false;
-  let error: string | null = null;
-  let seoData: any = null; // This will hold parsed SEO data
+let inputUrl = "";
+let isLoading = false;
+let error: string | null = null;
+interface SeoData {
+	title: string | null;
+	metaDescription: string | null;
+	metaKeywords: string | null;
+	og: {
+		title: string | null;
+		description: string | null;
+		image: string | null;
+		url: string | null;
+	};
+	twitter: {
+		card: string | null;
+		title: string | null;
+		description: string | null;
+		image: string | null;
+	};
+	images: string[];
+	schema: unknown[]; // Use unknown for parsed JSON
+}
 
-  // Function to fetch and parse the URL
-  async function fetchSeoData() {
-    isLoading = true;
-    error = null;
-    seoData = null;
+let seoData: SeoData | null = null; // This will hold parsed SEO data
+// Function to fetch and parse the URL
+async function fetchSeoData() {
+	isLoading = true;
+	error = null;
+	seoData = null;
 
-    if (!inputUrl) {
-      error = "Please enter a URL.";
-      isLoading = false;
-      return;
-    }
+	if (!inputUrl) {
+		error = "Please enter a URL.";
+		isLoading = false;
+		return;
+	}
 
-    try {
-      // Use the Astro API endpoint to fetch the URL content
-      const apiUrl = url(`/api/fetch-page?url=${encodeURIComponent(inputUrl)}`);
-      const response = await fetch(apiUrl);
-      const contentType = response.headers.get('content-type');
+	try {
+		// Use the Astro API endpoint to fetch the URL content
+		const apiUrl = url(`/api/fetch-page?url=${encodeURIComponent(inputUrl)}`);
+		const response = await fetch(apiUrl);
+		const contentType = response.headers.get("content-type");
 
-      if (!response.ok) {
-        let errorMessage = `Failed to fetch URL: ${response.status} ${response.statusText}`;
-        if (contentType && contentType.includes('application/json')) {
-            const errorBody = await response.json();
-            errorMessage = errorBody.error || errorMessage;
-        }
-        throw new Error(errorMessage);
-      }
+		if (!response.ok) {
+			let errorMessage = `Failed to fetch URL: ${response.status} ${response.statusText}`;
+			if (contentType?.includes("application/json")) {
+				const errorBody = await response.json();
+				errorMessage = errorBody.error || errorMessage;
+			}
+			throw new Error(errorMessage);
+		}
 
-      // Check if the response is HTML
-      if (!contentType || !contentType.includes('text/html')) {
-        throw new Error(`The fetched URL is not HTML. Content-Type: ${contentType}`);
-      }
-      
-      const htmlString = await response.text();
-      
-      // Parse HTML string
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(htmlString, "text/html");
+		// Check if the response is HTML
+		if (!contentType || !contentType.includes("text/html")) {
+			throw new Error(
+				`The fetched URL is not HTML. Content-Type: ${contentType}`,
+			);
+		}
 
-      // Extract SEO data
-      const extractedData = extractSeoData(doc);
-      seoData = extractedData;
+		const htmlString = await response.text();
 
-    } catch (e: any) {
-      error = e.message;
-    } finally {
-      isLoading = false;
-    }
-  }
+		// Parse HTML string
+		const parser = new DOMParser();
+		const doc = parser.parseFromString(htmlString, "text/html");
 
-  // Function to extract SEO data from the parsed DOM
-  function extractSeoData(doc: Document) {
-    const data: any = {};
+		// Extract SEO data
+		const extractedData = extractSeoData(doc);
+		seoData = extractedData;
+	} catch (e: unknown) {
+		// Changed to unknown
+		error = e instanceof Error ? e.message : "An unknown error occurred."; // Type guard for Error
+	} finally {
+		isLoading = false;
+	}
+}
 
-    // Page Title
-    data.title = doc.title;
+// Function to extract SEO data from the parsed DOM
+function extractSeoData(doc: Document): SeoData {
+	// Added return type
+	const data: SeoData = {
+		// Changed to SeoData
+		title: null,
+		metaDescription: null,
+		metaKeywords: null,
+		og: { title: null, description: null, image: null, url: null },
+		twitter: { card: null, title: null, description: null, image: null },
+		images: [],
+		schema: [],
+	};
+	// Page Title
+	data.title = doc.title;
 
-    // Meta Description
-    data.metaDescription = getMetaContent(doc, 'name', 'description');
+	// Meta Description
+	data.metaDescription = getMetaContent(doc, "name", "description");
 
-    // Meta Keywords
-    data.metaKeywords = getMetaContent(doc, 'name', 'keywords');
+	// Meta Keywords
+	data.metaKeywords = getMetaContent(doc, "name", "keywords");
 
-    // Open Graph
-    data.og = {
-      title: getMetaContent(doc, 'property', 'og:title'),
-      description: getMetaContent(doc, 'property', 'og:description'),
-      image: getMetaContent(doc, 'property', 'og:image'),
-      url: getMetaContent(doc, 'property', 'og:url')
-    };
+	// Open Graph
+	data.og = {
+		title: getMetaContent(doc, "property", "og:title"),
+		description: getMetaContent(doc, "property", "og:description"),
+		image: getMetaContent(doc, "property", "og:image"),
+		url: getMetaContent(doc, "property", "og:url"),
+	};
 
-    // Twitter Cards
-    data.twitter = {
-      card: getMetaContent(doc, 'name', 'twitter:card'),
-      title: getMetaContent(doc, 'name', 'twitter:title'),
-      description: getMetaContent(doc, 'name', 'twitter:description'),
-      image: getMetaContent(doc, 'name', 'twitter:image')
-    };
+	// Twitter Cards
+	data.twitter = {
+		card: getMetaContent(doc, "name", "twitter:card"),
+		title: getMetaContent(doc, "name", "twitter:title"),
+		description: getMetaContent(doc, "name", "twitter:description"),
+		image: getMetaContent(doc, "name", "twitter:image"),
+	};
 
-    // Images
-    data.images = Array.from(doc.querySelectorAll('img'))
-                       .map(img => img.src)
-                       .filter(src => src); // Filter out empty src
+	// Images
+	data.images = Array.from(doc.querySelectorAll("img"))
+		.map((img) => img.src)
+		.filter((src) => src); // Filter out empty src
 
-    // Schema Markup (basic detection)
-    data.schema = Array.from(doc.querySelectorAll('script[type="application/ld+json"]'))
-                      .map(script => {
-                        try {
-                            return JSON.parse(script.textContent || '{}');
-                        } catch (e) {
-                            console.error("Error parsing Schema Markup:", e);
-                            return {};
-                        }
-                      });
+	// Schema Markup (basic detection)
+	data.schema = Array.from(
+		doc.querySelectorAll('script[type="application/ld+json"]'),
+	).map((script) => {
+		try {
+			return JSON.parse(script.textContent || "{}");
+		} catch (e) {
+			console.error("Error parsing Schema Markup:", e);
+			return {};
+		}
+	});
 
-    return data;
-  }
+	return data;
+}
 
-  // Helper function to get meta tag content
-  function getMetaContent(doc: Document, attributeName: string, attributeValue: string) {
-    const metaTag = doc.querySelector(`meta[${attributeName}="${attributeValue}"]`);
-    return metaTag ? metaTag.getAttribute('content') : null;
-  }
+// Helper function to get meta tag content
+function getMetaContent(
+	doc: Document,
+	attributeName: string,
+	attributeValue: string,
+) {
+	const metaTag = doc.querySelector(
+		`meta[${attributeName}="${attributeValue}"]`,
+	);
+	return metaTag ? metaTag.getAttribute("content") : null;
+}
 
-  // SERP Snippet preview helper function
-  function getSerpTitle(seoData: any, url: string) {
-    return seoData.og.title || seoData.title || url;
-  }
-
-  function getSerpDescription(seoData: any) {
-    return seoData.og.description || seoData.metaDescription || "No description available.";
-  }
-
+// SERP Snippet preview helper function
+function getSerpTitle(seoData: SeoData, url: string) {
+	// Changed to SeoData
+	return seoData.og.title || seoData.title || url;
+}
+function getSerpDescription(seoData: SeoData) {
+	// Changed to SeoData
+	return (
+		seoData.og.description ||
+		seoData.metaDescription ||
+		"No description available."
+	);
+}
 </script>
 
 <div class="p-4">
