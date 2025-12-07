@@ -50,8 +50,6 @@ export const siteConfig: SiteConfig = {
 		enable: true,
 		depth: 3,
 	},
-
-
 };
 
 export const navBarConfig: NavBarConfig = {

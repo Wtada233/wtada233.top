@@ -1,17 +1,11 @@
 ---
-import type { MarkdownHeading } from "astro";
-import { siteConfig } from "../../config";
-import { runningTimeConfig } from "../../configs/running-time";
 import { seriesConfig } from "../../configs/series";
-import I18nKey from "../../i18n/i18nKey";
-import { i18n } from "../../i18n/translation";
 import RunningTime from "../misc/RunningTime.astro";
 import BlogInfo from "./BlogInfo.astro";
 import Categories from "./Categories.astro";
 import Profile from "./Profile.astro";
 import Series from "./Series.astro";
 import Tag from "./Tags.astro";
-import WidgetLayout from "./WidgetLayout.astro";
 
 interface Props {
 	class?: string;
@@ -21,8 +15,8 @@ interface Props {
 
 const className = Astro.props.class;
 const series = Astro.props.series;
-const isPostsRoute = Astro.props.isPostsRoute;
 ---
+
 <div id="sidebar" class:list={[className, "w-full"]}>
     <div class="flex flex-col w-full gap-4 mb-4">
         <Profile></Profile>

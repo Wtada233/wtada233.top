@@ -24,7 +24,7 @@ if (!content || content.trim() === "") {
   </div>
 )}
 
-<script define:vars={{ content }}>
+<script is:inline define:vars={{ content }}>
   function initAITyping() {
     // Only run on post pages
     if (!window.location.pathname.includes('/posts/')) {

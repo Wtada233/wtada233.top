@@ -6,9 +6,11 @@ import { Icon } from "astro-icon/components";
 interface Props {
 	title: string;
 	url: string;
+	class?: string;
 }
 
 const { title, url } = Astro.props;
+const className = Astro.props.class;
 
 const encodedUrl = encodeURIComponent(url);
 const encodedTitle = encodeURIComponent(title);
@@ -17,7 +19,7 @@ const twitterShareUrl = `https://twitter.com/intent/tweet?text=${encodedTitle}&u
 const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
 ---
 
-<div class="share-buttons flex flex-wrap gap-2 onload-animation">
+<div class:list={["share-buttons flex flex-wrap gap-2 onload-animation", className]}>
   <span class="text-50 text-sm font-medium flex items-center pr-2">{i18n(I18nKey.share)}:</span>
   <button
     aria-label={i18n(I18nKey.shareToTwitter)}

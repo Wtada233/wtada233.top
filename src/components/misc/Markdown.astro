@@ -14,7 +14,7 @@ const uniqueId = `md-root-${Math.random().toString(36).slice(2)}`;
     <slot/>
 </div>
 
-<script define:vars={{ uniqueId }}>
+<script is:inline define:vars={{ uniqueId }}>
   const markdownRoot = document.getElementById(uniqueId);
 
   if (markdownRoot) {

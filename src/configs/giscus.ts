@@ -1,4 +1,6 @@
-export const giscusConfig = {
+import type { GiscusConfig } from "../types/config";
+
+export const giscusConfig: GiscusConfig = {
 	enabled: true,
 	repo: "Wtada233/fuwari-comments-wtada233.top",
 	repoId: "R_kgDOQcCOWQ",

@@ -26,7 +26,7 @@ const {
 
 <div id="giscus-container"></div>
 
-<script define:vars={{ repo, repoId, category, categoryId, mapping, reactionsEnabled, emitMetadata, inputPosition, lang }}>
+<script is:inline define:vars={{ repo, repoId, category, categoryId, mapping, reactionsEnabled, emitMetadata, inputPosition, lang }}>
   // Function to send a message to the Giscus iframe
   function sendMessage(message) {
     const iframe = document.querySelector('iframe.giscus-frame');

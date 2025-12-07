@@ -6,11 +6,11 @@ import { i18n } from "@/i18n/translation";
 ---
 
 {runningTimeConfig.enableRunningTime && (
-    <WidgetLayout name={i18n(I18nKey.runningTime)}>
+    <WidgetLayout id="running-time-widget" name={i18n(I18nKey.runningTime)}>
         <div class="transition text-50 text-sm text-center my-4">
             <p id="runningtime"></p>
         </div>
-        <script type="text/javascript" define:vars={{startDate: runningTimeConfig.startDate}}>
+        <script is:inline type="text/javascript" define:vars={{startDate: runningTimeConfig.startDate}}>
             function runtime(){
                 const t=new Date(startDate);
                 const n=new Date();

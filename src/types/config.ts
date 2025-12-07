@@ -44,7 +44,6 @@ export type SiteConfig = {
 
 	favicon: Favicon[];
 	toc: TOCConfig;
-
 };
 
 export type Favicon = {
@@ -116,3 +115,17 @@ export interface TOCConfig {
 	enable: boolean;
 	depth: number;
 }
+
+export interface GiscusConfig {
+	enabled: boolean;
+	repo: string;
+	repoId: string;
+	category: string;
+	categoryId: string;
+	mapping?: string;
+	reactionsEnabled?: boolean;
+	emitMetadata?: boolean;
+	inputPosition?: "top" | "bottom";
+	lang?: string;
+}
+
