@@ -23,6 +23,7 @@ interface Props {
 	setOGTypeArticle?: boolean;
 	series?: string;
 	headings?: MarkdownHeading[];
+	ogImage?: string;
 }
 
 let {
@@ -32,6 +33,7 @@ let {
 	setOGTypeArticle,
 	series,
 	headings = [],
+	ogImage,
 } = Astro.props;
 const hasBannerCredit =
 	siteConfig.banner.enable && siteConfig.banner.credit.enable;
@@ -45,7 +47,7 @@ const isPostsRoute = Astro.url.pathname.startsWith(url("/posts/"));
 const isHomePageCheck = isHomePage(Astro.url.pathname);
 ---
 
-<Layout title={title} description={description} lang={lang} setOGTypeArticle={setOGTypeArticle}>
+<Layout title={title} description={description} lang={lang} setOGTypeArticle={setOGTypeArticle} ogImage={ogImage}>
 
 <!-- Navbar -->
 <slot slot="head" name="head"></slot>

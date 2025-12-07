@@ -28,9 +28,10 @@ interface Props {
 	description?: string;
 	lang?: string;
 	setOGTypeArticle?: boolean;
+	ogImage?: string;
 }
 
-let { title, description, lang, setOGTypeArticle } = Astro.props;
+let { title, description, lang, setOGTypeArticle, ogImage } = Astro.props;
 
 // apply a class to the body element to decide the height of the banner, only used for initial page load
 // Swup can update the body for each page visit, but it's after the page transition, causing a delay for banner height change
@@ -67,14 +68,21 @@ const bannerOffsetByPosition = {
 const bannerOffset =
 	bannerOffsetByPosition[siteConfig.banner.position || "center"];
 
-let resolvedBannerImageUrl: string | undefined;
-if (siteConfig.banner.enable && siteConfig.banner.src) {
-	const bannerImage = await resolveImage(siteConfig.banner.src);
-	if (bannerImage?.src) {
-		resolvedBannerImageUrl = bannerImage.src;
+let finalImageUrl: string;
+
+if (ogImage) {
+	finalImageUrl = ogImage;
+} else {
+	let resolvedBannerImageUrl: string | undefined;
+	if (siteConfig.banner.enable && siteConfig.banner.src) {
+		const bannerImage = await resolveImage(siteConfig.banner.src);
+		if (bannerImage?.src) {
+			resolvedBannerImageUrl = new URL(bannerImage.src, Astro.site).href;
+		}
 	}
+	const fallbackImageUrl = new URL(url("/gemini-color.png"), Astro.site).href;
+	finalImageUrl = resolvedBannerImageUrl || fallbackImageUrl;
 }
-const finalImageUrl = resolvedBannerImageUrl || url("/gemini-color.png");
 ---
 
 <!DOCTYPE html>
