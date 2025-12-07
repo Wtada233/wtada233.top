@@ -44,7 +44,7 @@ export type SiteConfig = {
 
 	favicon: Favicon[];
 	toc: TOCConfig;
-	pwa?: PWAConfig;
+
 };
 
 export type Favicon = {
@@ -116,20 +116,3 @@ export interface TOCConfig {
 	enable: boolean;
 	depth: number;
 }
-
-export type PWAConfig = {
-	enable: boolean;
-	name: string;
-	short_name: string;
-	description: string;
-	start_url: string;
-	display: string;
-	background_color: string;
-	theme_color: string;
-	icons: {
-		src: string;
-		sizes: string;
-		type: string;
-		purpose: string;
-	}[];
-};

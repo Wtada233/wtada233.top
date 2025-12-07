@@ -16,7 +16,6 @@ import remarkGithubAdmonitionsToDirectives from "remark-github-admonitions-to-di
 import remarkMath from "remark-math";
 import remarkSectionize from "remark-sectionize";
 import { expressiveCodeConfig, siteConfig } from "./src/config.ts";
-import VitePWA from "@vite-pwa/astro";
 import { pluginLanguageBadge } from "./src/plugins/expressive-code/language-badge.ts";
 import { AdmonitionComponent } from "./src/plugins/rehype-component-admonition.mjs";
 import { GithubCardComponent } from "./src/plugins/rehype-component-github-card.mjs";
@@ -102,45 +101,7 @@ export default defineConfig({
 		}),
         svelte(),
 		sitemap(),
-		VitePWA({
-			registerType: 'autoUpdate',
-			manifest: {
-				name: siteConfig.pwa?.name,
-				short_name: siteConfig.pwa?.short_name,
-				description: siteConfig.pwa?.description,
-				theme_color: siteConfig.pwa?.theme_color,
-				background_color: siteConfig.pwa?.background_color,
-				display: siteConfig.pwa?.display,
-				start_url: siteConfig.pwa?.start_url,
-				icons: siteConfig.pwa?.icons,
-			},
-			workbox: {
-				globPatterns: ['**/*.{js,css,html,woff2}'], // Cache these file types
-				maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // Increase limit to 5 MB (sufficient for 3.6 MB font)
-				runtimeCaching: [{
-					urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp|woff2)$/,
-					handler: 'NetworkFirst', // Prioritize network, then fall back to cache
-					options: {
-						cacheName: 'fuwari-pages-cache',
-						expiration: {
-							maxEntries: 200, // Max 200 entries
-							maxAgeSeconds: 60 * 60 * 24 * 7, // 7 Days
-						},
-						cacheableResponse: {
-							statuses: [0, 200],
-						},
-					},
-				}],
 
-
-			},
-			devOptions: {
-				enabled: true, // Enable PWA in development for testing
-				// This option opt-in the PWA in dev server, and it can be used to test the PWA during development:
-				// `pnpm dev`
-				// You can also use `pnpm build` and `pnpm preview` to test the PWA in production mode.
-			},
-		}),
 	],
 	markdown: {
 		remarkPlugins: [
