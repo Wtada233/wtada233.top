@@ -1,0 +1,12 @@
+---
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import SEOPredictor from "@components/SEOPredictor.svelte";
+---
+
+<MainGridLayout title="SEO Preview Tool" description="Preview your website's SEO metadata and appearance in search engines.">
+    <div class="card-base p-6">
+        <h1 class="text-2xl font-bold mb-4">SEO Preview Tool</h1>
+        <SEOPredictor client:load />
+    </div>
+</MainGridLayout>
+
