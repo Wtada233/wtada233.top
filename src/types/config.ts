@@ -128,4 +128,3 @@ export interface GiscusConfig {
 	inputPosition?: "top" | "bottom";
 	lang?: string;
 }
-

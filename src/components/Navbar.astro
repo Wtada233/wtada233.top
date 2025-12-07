@@ -12,8 +12,7 @@ import NavMenuPanel from "./widget/NavMenuPanel.astro";
 
 const className = Astro.props.class;
 
-const navbarTransparentMode =
-	siteConfig.navbar?.transparentMode || "semi";
+const navbarTransparentMode = siteConfig.navbar?.transparentMode || "semi";
 const isHomePageCheck = isHomePage(Astro.url.pathname);
 
 let links: NavBarLink[] = navBarConfig.links.map(
