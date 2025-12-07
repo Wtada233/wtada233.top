@@ -89,3 +89,49 @@ export function initEffects(): void {
 		}, effectsConfig.throttleLimit),
 	);
 }
+
+export function initRippleEffect(): void {
+    const applyRipple = (event: MouseEvent) => {
+        const button = event.currentTarget as HTMLElement;
+        if (!button) return;
+
+        // Ensure button has ripple-container class, if not, add it for styling
+        if (!button.classList.add('ripple-container'));
+
+        // Remove any existing ripples to prevent multiple ripples on quick clicks
+        const existingRipples = button.querySelectorAll('.ripple');
+        existingRipples.forEach(r => r.remove());
+
+        const rect = button.getBoundingClientRect();
+        const diameter = Math.max(rect.width, rect.height);
+        const radius = diameter / 2;
+
+        const ripple = document.createElement('span');
+        ripple.classList.add('ripple');
+        
+        // Position the ripple at the click point
+        ripple.style.width = ripple.style.height = `${diameter}px`;
+        ripple.style.left = `${event.clientX - rect.left - radius}px`;
+        ripple.style.top = `${event.clientY - rect.top - radius}px`;
+
+        button.appendChild(ripple);
+
+        // Remove the ripple after animation ends
+        ripple.addEventListener('animationend', () => {
+            ripple.remove();
+        });
+    };
+
+    // Target elements for ripple effect
+    const rippleElements = document.querySelectorAll<HTMLElement>(
+        '.btn-regular, .btn-regular-dark, .btn-plain, .btn-card, .link'
+    );
+
+    rippleElements.forEach(element => {
+        // Prevent ripple effect if the element is disabled
+        if (!element.hasAttribute('disabled')) {
+            element.addEventListener('mousedown', applyRipple);
+        }
+    });
+}
+
