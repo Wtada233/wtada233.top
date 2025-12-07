@@ -265,7 +265,7 @@
     transform: scale(0);
     opacity: 0.7;
     background-color: var(--ripple-color, oklch(0.9 0.05 var(--hue))); /* Default ripple color, can be customized */
-    animation: ripple-animation 0.6s ease-out forwards;
+    animation: ripple-animation 0.8s ease-out forwards;
     pointer-events: none; /* Ensure ripple doesn't interfere with clicks on underlying elements */
 }
 
@@ -280,6 +280,19 @@
 :root.dark {
     --ripple-color: oklch(0.25 0.05 var(--hue)); /* Darker ripple for dark mode */
 }
+
+/* Scroll-triggered entrance animations */
+.scroll-animate {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.scroll-animate.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
 
 
 

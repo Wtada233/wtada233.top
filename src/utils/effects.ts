@@ -135,3 +135,77 @@ export function initRippleEffect(): void {
     });
 }
 
+export function initScrollAnimations(): void {
+    if (typeof window === "undefined") return;
+
+    const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('show');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, {
+        root: null, // viewport
+        rootMargin: '0px',
+        threshold: 0.1 // Trigger when 10% of the item is visible
+    });
+
+    const elementsToAnimate: Element[] = [];
+
+    // Target elements within post content
+    const postContainer = document.getElementById('post-container');
+    if (postContainer) {
+        // Collect main block-level children of markdown-content, but exclude those with onload-animation
+        const markdownContent = postContainer.querySelector('.markdown-content');
+        if (markdownContent) {
+            Array.from(markdownContent.children).forEach(child => {
+                if (!child.classList.contains('onload-animation')) { // Exclude if already animated on load
+                    elementsToAnimate.push(child);
+                }
+            });
+        }
+
+        // Collect other animated sections on the post page
+        const aiSummary = postContainer.querySelector('.ai-summary');
+        if (aiSummary && !aiSummary.classList.contains('onload-animation')) {
+             elementsToAnimate.push(aiSummary);
+        }
+        const licenseContainer = postContainer.querySelector('.license-container');
+        if (licenseContainer && !licenseContainer.classList.contains('onload-animation')) {
+            elementsToAnimate.push(licenseContainer);
+        }
+        const shareButtons = postContainer.querySelector('.share-buttons');
+        if (shareButtons && !shareButtons.classList.contains('onload-animation')) {
+            elementsToAnimate.push(shareButtons);
+        }
+        const relatedPosts = postContainer.querySelector('.related-posts'); // Assuming a class for RelatedPosts
+         if (relatedPosts && !relatedPosts.classList.contains('onload-animation')) {
+            elementsToAnimate.push(relatedPosts);
+        }
+
+        // Previous/Next post navigation (if they exist)
+        const prevNextNav = postContainer.querySelector('.flex.flex-col.md\\:flex-row.justify-between.mb-4.gap-4.overflow-hidden.w-full');
+        if (prevNextNav && !prevNextNav.classList.contains('onload-animation')) {
+            elementsToAnimate.push(prevNextNav);
+        }
+    }
+
+    // Also collect elements that still have the `scroll-animate` class manually applied
+    document.querySelectorAll('.scroll-animate').forEach(element => {
+        if (!elementsToAnimate.includes(element)) { // Avoid duplicates
+            elementsToAnimate.push(element);
+        }
+    });
+
+    elementsToAnimate.forEach(element => {
+        // Add scroll-animate class if it's not already there and not part of onload-animation
+        if (!element.classList.contains('scroll-animate') && !element.classList.contains('onload-animation')) {
+            element.classList.add('scroll-animate');
+        }
+        observer.observe(element);
+    });
+}
+
+
+

@@ -214,7 +214,7 @@ import {
 	MAIN_PANEL_OVERLAPS_BANNER_HEIGHT
 } from "../constants/constants";
 import { siteConfig } from '../config';
-import { initEffects, initRippleEffect } from '../utils/effects.ts';
+import { initEffects, initRippleEffect, initScrollAnimations } from '../utils/effects.ts';
 import { initSemifullScrollDetection } from '../utils/semifull-scroll-detection';
 
 /* Preload fonts */
@@ -354,6 +354,7 @@ function init() {
 	showBanner();
 	initSemifullScrollDetection(); // Call initSemifullScrollDetection on initial load
 	initRippleEffect(); // Initialize ripple effect
+	initScrollAnimations(); // Initialize scroll-triggered animations
 }
 
 /* Load settings when entering the site */
@@ -395,6 +396,7 @@ const setup = () => {
 		initSemifullScrollDetection(); // Call on content replace
 		updateReadingProgressBar(); // New: Update progress bar on content replace
 		initRippleEffect(); // Re-initialize ripple effect after content replacement
+		initScrollAnimations(); // Re-initialize scroll-triggered animations after content replacement
 	});
 	window.swup.hooks.on('visit:start', (visit: {to: {url: string}}) => {
 		// change banner height immediately when a link is clicked
