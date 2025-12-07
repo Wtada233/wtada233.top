@@ -214,7 +214,7 @@ import {
 	MAIN_PANEL_OVERLAPS_BANNER_HEIGHT
 } from "../constants/constants";
 import { siteConfig } from '../config';
-import { initEffects, initRippleEffect, initScrollAnimations } from '../utils/effects.ts';
+import { initEffects, initRippleEffect, initScrollAnimations, destroyRippleEffect, destroyScrollAnimations } from '../utils/effects.ts';
 import { initSemifullScrollDetection } from '../utils/semifull-scroll-detection';
 
 /* Preload fonts */
@@ -387,11 +387,14 @@ const setup = () => {
 		if (!navbar || !document.body.classList.contains('lg:is-home')) {
 			return
 		}
-		if (document.body.scrollTop >= threshold || document.documentElement.scrollTop >= threshold) {
-			navbar.classList.add('navbar-hidden')
-		}
+		// Removed: navbar.classList.add('navbar-hidden')
 	})
 	window.swup.hooks.on('content:replace', () => {
+		// --- Cleanup previous page's effects ---
+		destroyRippleEffect();
+		destroyScrollAnimations();
+		// --- End Cleanup ---
+
 		initCustomScrollbar();
 		initSemifullScrollDetection(); // Call on content replace
 		updateReadingProgressBar(); // New: Update progress bar on content replace

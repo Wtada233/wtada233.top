@@ -90,10 +90,21 @@ export function initEffects(): void {
 	);
 }
 
+let _rippleDelegateHandler: ((event: MouseEvent) => void) | undefined;
+
 export function initRippleEffect(): void {
-	const applyRipple = (event: MouseEvent) => {
-		const button = event.currentTarget as HTMLElement;
-		if (!button) return;
+	// Remove existing delegate handler if any, to prevent duplicates
+	if (_rippleDelegateHandler) {
+		document.body.removeEventListener("mousedown", _rippleDelegateHandler);
+	}
+
+	_rippleDelegateHandler = (event: MouseEvent) => {
+		const target = event.target as HTMLElement;
+		const button = target.closest(
+			".btn-regular, .btn-regular-dark, .btn-plain, .btn-card, .link",
+		) as HTMLElement;
+
+		if (!button || button.hasAttribute("disabled")) return;
 
 		// Ensure button has ripple-container class, if not, add it for styling
 		button.classList.add("ripple-container");
@@ -124,21 +135,28 @@ export function initRippleEffect(): void {
 		});
 	};
 
-	// Target elements for ripple effect
-	const rippleElements = document.querySelectorAll<HTMLElement>(
-		".btn-regular, .btn-regular-dark, .btn-plain, .btn-card, .link",
-	);
-
-	rippleElements.forEach((element) => {
-		// Prevent ripple effect if the element is disabled
-		if (!element.hasAttribute("disabled")) {
-			element.addEventListener("mousedown", applyRipple);
-		}
-	});
+	// Attach the single delegated listener to document.body
+	document.body.addEventListener("mousedown", _rippleDelegateHandler);
 }
+
+export function destroyRippleEffect(): void {
+	if (_rippleDelegateHandler) {
+		document.body.removeEventListener("mousedown", _rippleDelegateHandler);
+		_rippleDelegateHandler = undefined;
+	}
+	// Also clean up any lingering ripple elements that might not have finished their animation
+	document.querySelectorAll(".ripple").forEach(r => r.remove());
+}
+
+let _scrollAnimationObserver: IntersectionObserver | undefined;
 
 export function initScrollAnimations(): void {
 	if (typeof window === "undefined") return;
+
+	// Disconnect existing observer if any
+	if (_scrollAnimationObserver) {
+		_scrollAnimationObserver.disconnect();
+	}
 
 	const observer = new IntersectionObserver(
 		(entries, observer) => {
@@ -155,6 +173,9 @@ export function initScrollAnimations(): void {
 			threshold: 0.1, // Trigger when 10% of the item is visible
 		},
 	);
+
+	// Store the observer instance
+	_scrollAnimationObserver = observer;
 
 	const elementsToAnimate: Element[] = [];
 
@@ -220,4 +241,11 @@ export function initScrollAnimations(): void {
 		}
 		observer.observe(element);
 	});
+}
+
+export function destroyScrollAnimations(): void {
+	if (_scrollAnimationObserver) {
+		_scrollAnimationObserver.disconnect();
+		_scrollAnimationObserver = undefined;
+	}
 }

@@ -6,7 +6,7 @@ export function initSemifullScrollDetection(): void {
 	const transparentMode = navbar.getAttribute("data-transparent-mode");
 	if (transparentMode !== "semifull") return;
 
-	const isHomePage = navbar.getAttribute("data-is-home") === "true";
+	const isHomePage = document.body.classList.contains("is-home");
 
 	// If not on the homepage, remove scroll listener and set to scrolled state
 	if (!isHomePage) {
