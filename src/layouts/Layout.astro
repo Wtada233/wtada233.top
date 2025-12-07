@@ -382,7 +382,7 @@ const setup = () => {
 		if (!bannerEnabled) {
 			return
 		}
-		let threshold = window.innerHeight * (BANNER_HEIGHT / 100) - 72 - 16
+		// let threshold = window.innerHeight * (BANNER_HEIGHT / 100) - 72 - 16 // Removed as unused
 		let navbar = document.getElementById('navbar-wrapper')
 		if (!navbar || !document.body.classList.contains('lg:is-home')) {
 			return

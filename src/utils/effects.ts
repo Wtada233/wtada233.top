@@ -145,7 +145,9 @@ export function destroyRippleEffect(): void {
 		_rippleDelegateHandler = undefined;
 	}
 	// Also clean up any lingering ripple elements that might not have finished their animation
-	document.querySelectorAll(".ripple").forEach(r => r.remove());
+	document.querySelectorAll(".ripple").forEach((r) => {
+		r.remove();
+	});
 }
 
 let _scrollAnimationObserver: IntersectionObserver | undefined;
