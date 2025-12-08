@@ -1,5 +1,11 @@
 export const effectsConfig = {
-	enable: true,
+	enable: true, // Master switch for all effects
+	ripple: {
+		enable: true, // Enable/disable ripple effect
+	},
+	scrollAnimation: {
+		enable: true, // Enable/disable scroll-triggered entrance animations
+	},
 	click: {
 		sizeRange: {
 			min: 5,

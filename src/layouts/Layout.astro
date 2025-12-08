@@ -233,8 +233,13 @@ import {
 	MAIN_PANEL_OVERLAPS_BANNER_HEIGHT
 } from "../constants/constants";
 import { siteConfig } from '../config';
-import { initEffects, initRippleEffect, initScrollAnimations, destroyRippleEffect, destroyScrollAnimations } from '../utils/effects.ts';
+import { initEffects } from '../utils/effects';
+import { destroyRippleEffect, initRippleEffect } from '../utils/animations/ripple';
+import { destroyScrollAnimations, initScrollAnimations } from '../utils/animations/scroll';
 import { initSemifullScrollDetection } from '../utils/semifull-scroll-detection';
+
+import '../styles/animations/ripple.css';
+import '../styles/animations/scroll.css';
 
 /* Preload fonts */
 // (async function() {
