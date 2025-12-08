@@ -87,6 +87,9 @@
           "type": "number",
           "default": 0
         },
+        "scroll_effects": {
+          "type": "boolean"
+        },
         "ai": {
           "type": "string",
           "default": ""

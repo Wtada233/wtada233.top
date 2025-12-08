@@ -1,12 +1,26 @@
 import { effectsConfig } from "../../configs/effects";
 
+declare global {
+	interface Window {
+		postScrollEffects?: boolean;
+	}
+}
+
 let _scrollAnimationObserver: IntersectionObserver | undefined;
 
 export function initScrollAnimations(): void {
+	const isPostPage = window.location.pathname.includes("/posts/");
+	let pageAllowsScroll = true;
+
+	if (isPostPage && typeof window.postScrollEffects !== "undefined") {
+		pageAllowsScroll = window.postScrollEffects;
+	}
+
 	if (
 		typeof window === "undefined" ||
 		!effectsConfig.enable ||
-		!effectsConfig.scrollAnimation.enable
+		!effectsConfig.scrollAnimation.enable ||
+		!pageAllowsScroll
 	)
 		return;
 

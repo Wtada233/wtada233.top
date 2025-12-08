@@ -4,7 +4,7 @@ export const effectsConfig = {
 		enable: true, // Enable/disable ripple effect
 	},
 	scrollAnimation: {
-		enable: false, // Enable/disable scroll-triggered entrance animations
+		enable: true, // Enable/disable scroll-triggered entrance animations
 	},
 	click: {
 		sizeRange: {
