@@ -8,6 +8,7 @@ category: "Tech"
 draft: false
 series: "该博客搭建"
 ai: "这篇博客没有AI概括因为到处找代码搬并疯狂修bug的我和AI也差不多了，所以我自己写了一个（"
+order: 1
 ---
 
 这个博客基于 [Fuwari](https://github.com/saicaca/fuwari) 主题，并进行了大量个性化改造。本指南概述了各项功能的实现原理。
