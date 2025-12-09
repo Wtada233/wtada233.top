@@ -3,7 +3,20 @@ import { effectsConfig } from "../../configs/effects";
 let _rippleDelegateHandler: ((event: MouseEvent) => void) | undefined;
 
 export function initRippleEffect(): void {
-	if (!effectsConfig.enable || !effectsConfig.ripple.enable) return;
+	const isPostPage = window.location.pathname.includes("/posts/");
+	let pageAllowsEffects = true;
+
+	if (isPostPage && typeof window.postEffects !== "undefined") {
+		pageAllowsEffects = window.postEffects;
+	}
+
+	if (
+		!effectsConfig.enable ||
+		!effectsConfig.ripple.enable ||
+		!pageAllowsEffects
+	)
+		return;
+
 	// Remove existing delegate handler if any, to prevent duplicates
 	if (_rippleDelegateHandler) {
 		document.body.removeEventListener("mousedown", _rippleDelegateHandler);

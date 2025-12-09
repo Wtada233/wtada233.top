@@ -72,6 +72,10 @@ export function initEffects(): void {
 	};
 
 	document.addEventListener("click", (e) => {
+		const isPostPage = window.location.pathname.includes("/posts/");
+		if (isPostPage && window.postEffects === false) {
+			return;
+		}
 		// Use pageX/pageY to get the position relative to the whole page
 		const x = e.pageX;
 		const y = e.pageY;
@@ -83,6 +87,10 @@ export function initEffects(): void {
 	document.addEventListener(
 		"mousemove",
 		throttle((e: MouseEvent) => {
+			const isPostPage = window.location.pathname.includes("/posts/");
+			if (isPostPage && window.postEffects === false) {
+				return;
+			}
 			const x = e.pageX;
 			const y = e.pageY;
 			createParticle(x, y, false);

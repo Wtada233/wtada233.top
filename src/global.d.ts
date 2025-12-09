@@ -13,6 +13,7 @@ declare global {
 			options: (config: { excerptLength: number }) => Promise<void>;
 		};
 		semifullScrollHandler?: () => void;
+		postEffects?: boolean;
 	}
 }
 

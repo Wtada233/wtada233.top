@@ -46,7 +46,7 @@ const coverWidth = "28%";
 
 const { remarkPluginFrontmatter } = await entry.render();
 const scrollAnimationEnabled =
-	(entry.data.scroll_effects ?? effectsConfig.scrollAnimation.enable) &&
+	(entry.data.effects ?? effectsConfig.scrollAnimation.enable) &&
 	effectsConfig.enable;
 ---
 <div class:list={["card-base flex flex-col-reverse md:flex-col w-full rounded-[var(--radius-large)] overflow-hidden relative", scrollAnimationEnabled && "scroll-animate", className]} style={style}>
