@@ -47,10 +47,6 @@ export const siteConfig: SiteConfig = {
 		//   sizes: '32x32',              // (Optional) Size of the favicon, set only if you have favicons of different sizes
 		// }
 	],
-	toc: {
-		enable: true,
-		depth: 3,
-	},
 };
 
 export const navBarConfig: NavBarConfig = {
