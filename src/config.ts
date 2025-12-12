@@ -56,8 +56,8 @@ export const navBarConfig: NavBarConfig = {
 		LinkPreset.About,
 		...(seriesConfig.enabled ? [LinkPreset.Series] : []),
 		{
-			name: "别人的网页..?",
-			url: "/sites/",
+			name: "友链",
+			url: "/friends/",
 			external: false, // Show an external link icon and will open in a new tab
 		},
 		{
