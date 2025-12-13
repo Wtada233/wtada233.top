@@ -5,6 +5,7 @@ import type {
 	NavBarConfig,
 	ProfileConfig,
 	SiteConfig,
+	CommentConfig,
 } from "./types/config";
 import { LinkPreset } from "./types/config";
 
@@ -106,8 +107,8 @@ export const expressiveCodeConfig: ExpressiveCodeConfig = {
 };
 
 export const commentConfig: CommentConfig = {
-  twikoo: {
-    envId: 'https://twikoo.wtada233.top',
-    lang: 'zh-CN',
-  },
-}
+	twikoo: {
+		envId: "https://twikoo.wtada233.top",
+		lang: "zh-CN",
+	},
+};

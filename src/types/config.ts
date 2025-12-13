@@ -124,11 +124,11 @@ export interface GiscusConfig {
 }
 
 export type CommentConfig = {
-    twikoo?: TwikooConfig
-}
+	twikoo?: TwikooConfig;
+};
 
 type TwikooConfig = {
-    envId: string
-    region?: string
-    lang?: string
-}
+	envId: string;
+	region?: string;
+	lang?: string;
+};

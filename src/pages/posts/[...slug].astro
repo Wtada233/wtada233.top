@@ -1,5 +1,6 @@
 ---
 import path from "node:path";
+import Comment from "@components/comment/index.astro"; // twikoo评论
 import AISummary from "@components/misc/AISummary.astro";
 import License from "@components/misc/License.astro";
 import Markdown from "@components/misc/Markdown.astro";
@@ -23,7 +24,6 @@ import { pinningConfig } from "../../configs/pinning";
 import { shareButtonsConfig } from "../../configs/share-buttons";
 import { formatDateToYYYYMMDD } from "../../utils/date-utils";
 import { resolveImage } from "../../utils/image-utils";
-import Comment from "@components/comment/index.astro"  // twikoo评论
 
 dayjs.extend(utc);
 
