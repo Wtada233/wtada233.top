@@ -14,12 +14,10 @@ import { Icon } from "astro-icon/components";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { licenseConfig } from "src/config";
-import Giscus from "../../components/misc/Giscus.astro"; // Restored original Giscus import
 import ImageWrapper from "../../components/misc/ImageWrapper.astro";
 import PostMetadata from "../../components/PostMeta.astro";
 import { profileConfig, siteConfig } from "../../config";
 import { aiSummaryConfig } from "../../configs/ai-summary";
-import { giscusConfig } from "../../configs/giscus";
 import { outdatedReminderConfig } from "../../configs/outdated-reminder";
 import { pinningConfig } from "../../configs/pinning";
 import { shareButtonsConfig } from "../../configs/share-buttons";
@@ -195,19 +193,6 @@ const jsonLd = {
   }
             <RelatedPosts posts={relatedPosts}></RelatedPosts>
 
-            {giscusConfig.enabled && (
-                <Giscus
-                   repo={giscusConfig.repo}
-                   repoId={giscusConfig.repoId}
-                   category={giscusConfig.category}
-                   categoryId={giscusConfig.categoryId}
-                   mapping={giscusConfig.mapping}
-                   reactionsEnabled={giscusConfig.reactionsEnabled}
-                   emitMetadata={giscusConfig.emitMetadata}
-                   inputPosition={giscusConfig.inputPosition}
-                   lang={giscusConfig.lang}
-                />
-            )}
     <br />
 
     <div class="flex flex-col md:flex-row justify-between mb-4 gap-4 overflow-hidden w-full">

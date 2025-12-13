@@ -41,7 +41,7 @@ https://blog.fis.ink/posts/35/
 
 - **文章系列功能**：通过在 frontmatter 中添加 `series` 字段，将多篇文章归入一个系列。同一系列的文章将显示在侧边栏的“系列”小部件中，并拥有一个专门的系列聚合页面。
 
-- **Giscus 评论系统**：文章页面集成了基于 GitHub Discussions 的 [Giscus](https://giscus.app/) 评论系统。访问者可以使用他们的 GitHub 账户轻松发表评论和互动。
+- **评论系统**：文章页面集成了基于 Twikoo 的评论系统。访问者可以轻松发表评论和互动。
 
 - **AI概括**：魔改的fishcpy AI概括，静态的，生成好概括复制到文章信息ai字段中。
 
