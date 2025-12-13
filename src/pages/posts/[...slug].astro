@@ -23,6 +23,7 @@ import { pinningConfig } from "../../configs/pinning";
 import { shareButtonsConfig } from "../../configs/share-buttons";
 import { formatDateToYYYYMMDD } from "../../utils/date-utils";
 import { resolveImage } from "../../utils/image-utils";
+import Comment from "@components/comment/index.astro"  // twikoo评论
 
 dayjs.extend(utc);
 
@@ -193,6 +194,8 @@ const jsonLd = {
   }
             <RelatedPosts posts={relatedPosts}></RelatedPosts>
 
+    <br />
+    <Comment post={entry}></Comment>
     <br />
 
     <div class="flex flex-col md:flex-row justify-between mb-4 gap-4 overflow-hidden w-full">

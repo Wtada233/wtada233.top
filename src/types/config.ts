@@ -122,3 +122,13 @@ export interface GiscusConfig {
 	inputPosition?: "top" | "bottom";
 	lang?: string;
 }
+
+export type CommentConfig = {
+    twikoo?: TwikooConfig
+}
+
+type TwikooConfig = {
+    envId: string
+    region?: string
+    lang?: string
+}
