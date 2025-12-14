@@ -82,9 +82,7 @@ if (ogImage) {
 ---
 
 <!DOCTYPE html>
-<html lang={siteLang} class="bg-[var(--page-bg)] transition text-[14px] md:text-[16px]"
-	  data-overlayscrollbars-initialize
->
+<html lang={siteLang} class="bg-[var(--page-bg)] transition text-[14px] md:text-[16px]" data-overlayscrollbars-initialize>
 	<head>
 
 		<title>{pageTitle}</title>
@@ -153,16 +151,11 @@ if (ogImage) {
 			'page-width': `${PAGE_WIDTH}rem`,
 		}}></style>  <!-- defines global css variables. This will be applied to <html> <body> and some other elements idk why -->
 
-
 		<slot name="head"></slot>
-
 		<link rel="preload" href="/hk4e_zh-cn.woff2" as="font" type="font/woff2" crossorigin>
-
-				<link rel="alternate" type="application/rss+xml" title={profileConfig.name} href={`${Astro.site}rss.xml`}/>
-
-
-
-			</head>
+		<link rel="alternate" type="application/rss+xml" title={profileConfig.name} href={`${Astro.site}rss.xml`}/>
+                <script is:inline defer src="https://umami.wtada233.top/script.js" data-website-id="aecb3d93-5dcb-4bcc-823a-331faa0dddac"></script>
+	</head>
 	<body class=" min-h-screen transition " class:list={[{ "is-home": isHomePage, "enable-banner": enableBanner }]}
 		  data-overlayscrollbars-initialize
 	>
@@ -619,5 +612,3 @@ if (window.swup) {
 	document.addEventListener("swup:enable", setup)
 }
 </script>
-
-<script defer src="https://umami.wtada233.top/script.js" data-website-id="aecb3d93-5dcb-4bcc-823a-331faa0dddac"></script>

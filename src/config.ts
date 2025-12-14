@@ -1,11 +1,11 @@
 import { seriesConfig } from "./configs/series";
 import type {
+	CommentConfig,
 	ExpressiveCodeConfig,
 	LicenseConfig,
 	NavBarConfig,
 	ProfileConfig,
 	SiteConfig,
-	CommentConfig,
 } from "./types/config";
 import { LinkPreset } from "./types/config";
 
