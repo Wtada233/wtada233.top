@@ -4,6 +4,7 @@ import RunningTime from "../misc/RunningTime.astro";
 import BlogInfo from "./BlogInfo.astro";
 import Categories from "./Categories.astro";
 import Profile from "./Profile.astro";
+import UmamiStats from "./UmamiStats.astro";
 import Series from "./Series.astro";
 import Tag from "./Tags.astro";
 
@@ -27,6 +28,7 @@ const series = Astro.props.series;
 	</div>
         <Categories class="onload-animation" style="animation-delay: 150ms"></Categories>
         <Tag class="onload-animation" style="animation-delay: 200ms"></Tag>
+        <UmamiStats class="onload-animation" style="animation-delay: 200ms"></UmamiStats>
         <BlogInfo class="onload-animation" style="animation-delay: 300ms"></BlogInfo>
         <RunningTime class="onload-animation" style="animation-delay: 350ms"></RunningTime>
 
