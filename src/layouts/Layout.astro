@@ -249,6 +249,17 @@ import '../styles/animations/scroll.css';
 
 function trackUmamiPageview() {
 	if (!umamiConfig.enabled || typeof window.umami === 'undefined') return;
+
+    const currentUrl = window.location.href;
+    const now = Date.now();
+
+    if (currentUrl === window.lastTrackedUrl && (now - window.lastTrackTimestamp) < 1000) {
+        return;
+    }
+
+    window.lastTrackedUrl = currentUrl;
+    window.lastTrackTimestamp = now;
+
 	try {
 		window.umami.track();
 	} catch (error) {
@@ -383,12 +394,13 @@ function init() {
 	initRippleEffect(); // Initialize ripple effect
 	initScrollAnimations(); // Initialize scroll-triggered animations
     initCommentComponent();  // 调用initCommentComponent()函数，twikoo
-	trackUmamiPageview();
 }
 
 /* Load settings when entering the site */
 init();
 initEffects(); // This was already here, keeping it.
+
+document.addEventListener('DOMContentLoaded', trackUmamiPageview);
 
 const setup = () => {
 	// TODO: temp solution to change the height of the banner
