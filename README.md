@@ -45,14 +45,19 @@ https://blog.fis.ink/posts/35/
 
 - **AI概括**：魔改的fishcpy AI概括，静态的，生成好概括复制到文章信息ai字段中。
 
+- **网站统计 (Umami Analytics)**: 集成了 Umami V2 进行网站流量统计，并在侧边栏显示统计小部件。
+
 ## 如何使用
+
+大部分配置项都已模块化并移至 `src/configs` 目录下，可以很方便地进行修改。
+
+主要的站点配置在 `src/config.ts`。
 
 ```
 git clone https://github.com/Wtada233/wtada233.top
-vim wtada233.top/src/config.ts
-#自定义
+# 根据需要修改 src/config.ts 和 src/configs/ 目录下的配置文件
 pnpm install
-npm run build
+pnpm build
 ```
 
 ## 📄 许可证

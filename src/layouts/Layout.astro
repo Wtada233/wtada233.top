@@ -1,5 +1,6 @@
 ---
 import ConfigCarrier from "@components/ConfigCarrier.astro";
+import { umamiConfig } from "@configs/umami";
 import { profileConfig, siteConfig } from "@/config";
 import {
 	AUTO_MODE,
@@ -154,7 +155,9 @@ if (ogImage) {
 		<slot name="head"></slot>
 		<link rel="preload" href="/hk4e_zh-cn.woff2" as="font" type="font/woff2" crossorigin>
 		<link rel="alternate" type="application/rss+xml" title={profileConfig.name} href={`${Astro.site}rss.xml`}/>
-                <script is:inline defer src="https://umami.wtada233.top/script.js" data-website-id="aecb3d93-5dcb-4bcc-823a-331faa0dddac"></script>
+		{umamiConfig.enabled && (
+			<script is:inline defer src={umamiConfig.scriptUrl} data-website-id={umamiConfig.websiteId}></script>
+		)}
 	</head>
 	<body class=" min-h-screen transition " class:list={[{ "is-home": isHomePage, "enable-banner": enableBanner }]}
 		  data-overlayscrollbars-initialize

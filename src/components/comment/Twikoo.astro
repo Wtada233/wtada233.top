@@ -1,12 +1,14 @@
 ---
-import { commentConfig } from "@/config";
+import { twikooConfig } from "@configs/twikoo";
 
 interface Props {
 	path: string;
 }
 
+const { enabled, ...restOfTwikooConfig } = twikooConfig;
+
 const config = {
-	...commentConfig.twikoo,
+	...restOfTwikooConfig,
 	el: "#tcomment",
 	path: Astro.props.path,
 };

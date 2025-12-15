@@ -1,6 +1,5 @@
 import { seriesConfig } from "./configs/series";
 import type {
-	CommentConfig,
 	ExpressiveCodeConfig,
 	LicenseConfig,
 	NavBarConfig,
@@ -104,11 +103,4 @@ export const expressiveCodeConfig: ExpressiveCodeConfig = {
 	// Note: Some styles (such as background color) are being overridden, see the astro.config.mjs file.
 	// Please select a dark theme, as this blog theme currently only supports dark background color
 	theme: "github-dark",
-};
-
-export const commentConfig: CommentConfig = {
-	twikoo: {
-		envId: "https://twikoo.wtada233.top",
-		lang: "zh-CN",
-	},
 };
