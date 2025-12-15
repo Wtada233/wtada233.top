@@ -156,7 +156,7 @@ if (ogImage) {
 		<link rel="preload" href="/hk4e_zh-cn.woff2" as="font" type="font/woff2" crossorigin>
 		<link rel="alternate" type="application/rss+xml" title={profileConfig.name} href={`${Astro.site}rss.xml`}/>
 		{umamiConfig.enabled && (
-			<script is:inline defer src={umamiConfig.scriptUrl} data-website-id={umamiConfig.websiteId}></script>
+			<script is:inline defer src={umamiConfig.scriptUrl} data-website-id={umamiConfig.websiteId} data-auto-track="false" data-do-not-track="true"></script>
 		)}
 	</head>
 	<body class=" min-h-screen transition " class:list={[{ "is-home": isHomePage, "enable-banner": enableBanner }]}
@@ -216,6 +216,7 @@ import {
 	// SizeObserverPlugin,
 	// ClickScrollPlugin
 } from 'overlayscrollbars';
+import { umamiConfig } from "../configs/umami";
 import {getHue, getStoredTheme, setHue, setTheme} from "../utils/setting-utils";
 import {pathsEqual, url} from "../utils/url-utils";
 import {
@@ -246,7 +247,14 @@ import '../styles/animations/scroll.css';
 // 	}
 // })();
 
-
+function trackUmamiPageview() {
+	if (!umamiConfig.enabled || typeof window.umami === 'undefined') return;
+	try {
+		window.umami.track();
+	} catch (error) {
+		console.error('Manual Umami tracking failed:', error);
+	}
+}
 
 const bannerEnabled = !!document.getElementById('banner-wrapper')
 
@@ -374,7 +382,8 @@ function init() {
 	initSemifullScrollDetection(); // Call initSemifullScrollDetection on initial load
 	initRippleEffect(); // Initialize ripple effect
 	initScrollAnimations(); // Initialize scroll-triggered animations
-        initCommentComponent();  // 调用initCommentComponent()函数，twikoo
+    initCommentComponent();  // 调用initCommentComponent()函数，twikoo
+	trackUmamiPageview();
 }
 
 /* Load settings when entering the site */
@@ -421,6 +430,7 @@ const setup = () => {
 		updateReadingProgressBar(); // New: Update progress bar on content replace
 		initRippleEffect(); // Re-initialize ripple effect after content replacement
 		initScrollAnimations(); // Re-initialize scroll-triggered animations after content replacement
+		trackUmamiPageview();
 	});
 	window.swup.hooks.on('visit:start', (visit: {to: {url: string}}) => {
 		// change banner height immediately when a link is clicked
