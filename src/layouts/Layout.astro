@@ -574,6 +574,17 @@ function updateReadingProgressBar() {
 // Initial update on DOMContentLoaded
 document.addEventListener('DOMContentLoaded', updateReadingProgressBar);
 
+
+document.addEventListener('astro:before-swap', () => {
+    const twikooScript = document.querySelector('script[src="/twikoo/twikoo.min.js"]');
+    if (twikooScript) {
+        twikooScript.remove();
+    }
+    if (window.twikoo) {
+        delete window.twikoo;
+    }
+});
+
 </script>
 
 <script>
