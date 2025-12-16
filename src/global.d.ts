@@ -14,6 +14,10 @@ declare global {
 		};
 		semifullScrollHandler?: () => void;
 		postEffects?: boolean;
+		twikoo?: any;
+		umami?: any;
+		lastTrackTimestamp?: number;
+		lastTrackedUrl?: string;
 	}
 }
 

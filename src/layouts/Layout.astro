@@ -254,7 +254,11 @@ function trackUmamiPageview() {
     const currentUrl = window.location.href;
     const now = Date.now();
 
-    if (currentUrl === window.lastTrackedUrl && (now - window.lastTrackTimestamp) < 1000) {
+    if (
+        currentUrl === window.lastTrackedUrl &&
+        typeof window.lastTrackTimestamp !== 'undefined' &&
+        (now - window.lastTrackTimestamp) < 1000
+    ) {
         return;
     }
 
@@ -270,23 +274,55 @@ function trackUmamiPageview() {
 
 const bannerEnabled = !!document.getElementById('banner-wrapper')
 
-function setClickOutsideToClose(panel: string, ignores: string[]) {
-	document.addEventListener("click", event => {
-		let panelDom = document.getElementById(panel);
-		let tDom = event.target;
-		if (!(tDom instanceof Node)) return;		// Ensure the event target is an HTML Node
-		for (let ig of ignores) {
-			let ie = document.getElementById(ig)
-			if (ie == tDom || (ie?.contains(tDom))) {
-				return;
-			}
-		}
-		panelDom!.classList.add("float-panel-closed");
-	});
+let globalClickOutsideHandler: ((event: MouseEvent) => void) | undefined;
+function registerGlobalClickOutsideHandler() {
+    if (globalClickOutsideHandler) {
+        document.removeEventListener("click", globalClickOutsideHandler);
+    }
+    globalClickOutsideHandler = (event: MouseEvent) => {
+        const target = event.target as Node;
+        const panels = [
+            { id: "display-setting", ignoreSwitches: ["display-settings-switch"] },
+            { id: "nav-menu-panel", ignoreSwitches: ["nav-menu-switch"] },
+            { id: "search-panel", ignoreSwitches: ["search-panel", "search-bar", "search-switch"] }
+        ];
+
+        for (const panelConfig of panels) {
+            const panelDom = document.getElementById(panelConfig.id);
+            if (!panelDom || panelDom.classList.contains("float-panel-closed")) continue;
+
+            let shouldIgnore = false;
+            if (target === panelDom || panelDom.contains(target)) {
+                shouldIgnore = true; // Clicked inside the panel
+            } else {
+                for (const switchId of panelConfig.ignoreSwitches) {
+                    const switchDom = document.getElementById(switchId);
+                    if (switchDom && (target === switchDom || switchDom.contains(target))) {
+                        shouldIgnore = true; // Clicked on the switch button
+                        break;
+                    }
+                }
+            }
+
+            if (!shouldIgnore) {
+                panelDom.classList.add("float-panel-closed");
+            }
+        }
+    };
+    document.addEventListener("click", globalClickOutsideHandler);
 }
-setClickOutsideToClose("display-setting", ["display-setting", "display-settings-switch"])
-setClickOutsideToClose("nav-menu-panel", ["nav-menu-panel", "nav-menu-switch"])
-setClickOutsideToClose("search-panel", ["search-panel", "search-bar", "search-switch"])
+
+function unregisterGlobalClickOutsideHandler() {
+    if (globalClickOutsideHandler) {
+        document.removeEventListener("click", globalClickOutsideHandler);
+        globalClickOutsideHandler = undefined;
+    }
+}
+
+
+
+
+
 
 
 function loadTheme() {
@@ -396,6 +432,7 @@ function init() {
 	initScrollAnimations(); // Initialize scroll-triggered animations
     initCommentComponent();  // 调用initCommentComponent()函数，twikoo
     fetchUmamiStats(); // Fetch Umami stats on initial load
+    registerGlobalClickOutsideHandler(); // Register global click outside handler
 }
 
 /* Load settings when entering the site */
@@ -587,6 +624,7 @@ document.addEventListener('astro:before-swap', () => {
     if (window.twikoo) {
         delete window.twikoo;
     }
+    unregisterGlobalClickOutsideHandler(); // Unregister global click outside handler
 });
 
 </script>
