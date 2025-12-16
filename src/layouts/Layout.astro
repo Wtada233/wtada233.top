@@ -230,6 +230,7 @@ import { initEffects } from '../utils/effects';
 import { destroyRippleEffect, initRippleEffect } from '../utils/animations/ripple';
 import { destroyScrollAnimations, initScrollAnimations } from '../utils/animations/scroll';
 import { initSemifullScrollDetection } from '../utils/semifull-scroll-detection';
+import { fetchUmamiStats } from '../utils/umami-utils';
 
 import '../styles/animations/ripple.css';
 import '../styles/animations/scroll.css';
@@ -394,6 +395,7 @@ function init() {
 	initRippleEffect(); // Initialize ripple effect
 	initScrollAnimations(); // Initialize scroll-triggered animations
     initCommentComponent();  // 调用initCommentComponent()函数，twikoo
+    fetchUmamiStats(); // Fetch Umami stats on initial load
 }
 
 /* Load settings when entering the site */
@@ -443,6 +445,7 @@ const setup = () => {
 		initRippleEffect(); // Re-initialize ripple effect after content replacement
 		initScrollAnimations(); // Re-initialize scroll-triggered animations after content replacement
 		trackUmamiPageview();
+        fetchUmamiStats(); // Re-fetch Umami stats on content replace
 	});
 	window.swup.hooks.on('visit:start', (visit: {to: {url: string}}) => {
 		// change banner height immediately when a link is clicked
@@ -492,6 +495,7 @@ const setup = () => {
 			heightExtend.classList.remove('hidden')
 		}
 		updateReadingProgressBar(); // New: Update progress bar on page view
+        fetchUmamiStats(); // Re-fetch Umami stats on page view
 	});
 	window.swup.hooks.on('visit:end', (_visit: {to: {url: string}}) => {
 		setTimeout(() => {

@@ -97,29 +97,44 @@ onMount(() => {
 		if (keywordMobile) search(keywordMobile, false);
 	};
 
+	const onPagefindReady = () => {
+		initializeSearch();
+	};
+
+	const onPagefindLoadError = () => {
+		console.warn(
+			"Pagefind load error event received. Search functionality will be limited.",
+		);
+		initializeSearch(); // Initialize with pagefindLoaded as false
+	};
+
+	let fallbackTimeoutId: NodeJS.Timeout | null = null;
+
 	if (import.meta.env.DEV) {
 		console.warn(
 			"Pagefind is not available in development mode. Using mock data.",
 		);
 		initializeSearch();
 	} else {
-		document.addEventListener("pagefindready", () => {
-			initializeSearch();
-		});
-		document.addEventListener("pagefindloaderror", () => {
-			console.warn(
-				"Pagefind load error event received. Search functionality will be limited.",
-			);
-			initializeSearch(); // Initialize with pagefindLoaded as false
-		});
+		document.addEventListener("pagefindready", onPagefindReady);
+		document.addEventListener("pagefindloaderror", onPagefindLoadError);
 
 		// Fallback in case events are not caught or pagefind is already loaded by the time this script runs
-		setTimeout(() => {
+		fallbackTimeoutId = setTimeout(() => {
 			if (!initialized) {
 				initializeSearch();
 			}
 		}, 2000); // Adjust timeout as needed
 	}
+
+	return () => {
+		// Cleanup function
+		document.removeEventListener("pagefindready", onPagefindReady);
+		document.removeEventListener("pagefindloaderror", onPagefindLoadError);
+		if (fallbackTimeoutId) {
+			clearTimeout(fallbackTimeoutId);
+		}
+	};
 });
 
 $: if (initialized && keywordDesktop) {

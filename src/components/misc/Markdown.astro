@@ -44,7 +44,8 @@ const uniqueId = `md-root-${Math.random().toString(36).slice(2)}`;
       }
     };
 
-    const clearAllCopyTimeouts = () => {
+    const cleanupMarkdownListeners = () => {
+      // Clear any pending timeouts for the copy button
       const copyButtons = markdownRoot.querySelectorAll(".copy-btn");
       copyButtons.forEach(button => {
         const timeoutId = button.getAttribute("data-timeout-id");
@@ -54,9 +55,14 @@ const uniqueId = `md-root-${Math.random().toString(36).slice(2)}`;
           button.removeAttribute("data-timeout-id");
         }
       });
+
+      // Remove the main click listener
+      markdownRoot.removeEventListener("click", handleClick);
+      // Remove the cleanup listener itself
+      document.removeEventListener('astro:before-swap', cleanupMarkdownListeners);
     };
 
     markdownRoot.addEventListener("click", handleClick);
-    document.addEventListener('astro:before-swap', clearAllCopyTimeouts);
+    document.addEventListener('astro:before-swap', cleanupMarkdownListeners);
   }
 </script>

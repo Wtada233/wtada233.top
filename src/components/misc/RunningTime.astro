@@ -11,6 +11,7 @@ import { i18n } from "@/i18n/translation";
             <p id="runningtime"></p>
         </div>
         <script is:inline type="text/javascript" define:vars={{startDate: runningTimeConfig.startDate}}>
+            let runningTimeInterval;
             function runtime(){
                 const t=new Date(startDate);
                 const n=new Date();
@@ -20,10 +21,27 @@ import { i18n } from "@/i18n/translation";
                 const i=Math.floor(e%86400/3600);
                 const a=Math.floor(e%3600/60);
                 const r=e%60;
-                document.getElementById("runningtime").innerHTML=`⭐本站已运行: ${o}天${i}小时${a}分${r}秒 ☁️`
+                const runningTimeElement = document.getElementById("runningtime");
+                if (runningTimeElement) {
+                    runningTimeElement.innerHTML=`⭐本站已运行: ${o}天${i}小时${a}分${r}秒 ☁️`;
+                }
             }
-            setInterval(runtime,1e3);
-            runtime(); // Call once immediately to avoid flicker
+            
+            function initRunningTime() {
+                if (runningTimeInterval) {
+                    clearInterval(runningTimeInterval);
+                }
+                runtime(); // Call once immediately to avoid flicker
+                runningTimeInterval = setInterval(runtime, 1000);
+            }
+
+            initRunningTime();
+
+            document.addEventListener('astro:before-swap', () => {
+                if (runningTimeInterval) {
+                    clearInterval(runningTimeInterval);
+                }
+            }, { once: true });
         </script>
     </WidgetLayout>
 )}

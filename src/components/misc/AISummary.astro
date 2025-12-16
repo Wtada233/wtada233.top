@@ -25,31 +25,29 @@ if (!content || content.trim() === "") {
 )}
 
 <script is:inline define:vars={{ content }}>
+  let typeWriterTimeout;
+  let startTypingTimeout;
+
   function initAITyping() {
     // Only run on post pages
     if (!window.location.pathname.includes('/posts/')) {
       return;
     }
 
-    // Since this script is tied to this component, we can be more specific.
-    // This assumes only one AI summary per page.
     const textElement = document.querySelector('.ai-summary .ai-explanation');
     
     if (!textElement) {
       return;
     }
 
-    // Check if already initialized
     if (textElement.hasAttribute('data-initialized')) {
       return;
     }
 
-    // The 'content' variable is now directly available from `define:vars`
     if (!content) {
       return;
     }
 
-    // Mark as initialized
     textElement.setAttribute('data-initialized', 'true');
     textElement.textContent = '';
     textElement.classList.remove('typing-complete');
@@ -61,18 +59,28 @@ if (!content || content.trim() === "") {
       if (index < content.length) {
         textElement.textContent += content.charAt(index);
         index++;
-        setTimeout(typeWriter, typeSpeed);
+        typeWriterTimeout = setTimeout(typeWriter, typeSpeed);
       } else {
         textElement.classList.add('typing-complete');
       }
     }
     
     // Delay to start typing for dramatic effect
-    setTimeout(typeWriter, 800);
+    startTypingTimeout = setTimeout(typeWriter, 800);
+  }
+
+  function cleanupAITyping() {
+    clearTimeout(typeWriterTimeout);
+    clearTimeout(startTypingTimeout);
+    document.removeEventListener('astro:page-load', initAITyping);
+    document.removeEventListener('astro:before-swap', cleanupAITyping);
   }
 
   // Run on initial page load and subsequent navigations
   document.addEventListener('astro:page-load', initAITyping);
-  // Also run immediately in case astro:page-load was missed (e.g., initial non-transitioned load)
+  // Also run immediately in case astro:page-load was missed
   initAITyping();
+
+  // Add cleanup listener
+  document.addEventListener('astro:before-swap', cleanupAITyping);
 </script>

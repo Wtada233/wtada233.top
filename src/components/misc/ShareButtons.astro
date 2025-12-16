@@ -56,12 +56,12 @@ const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encoded
 </div>
 
 <script is:inline>
-  (() => {
+  function initializeShareButtons() {
     const shareButtonsContainer = document.querySelector('.share-buttons');
     if (!shareButtonsContainer) return;
 
     // Use a single listener on the container
-    shareButtonsContainer.addEventListener('click', (event) => {
+    const handleShareButtonClick = (event) => {
       const copyButton = event.target.closest('.copy-link-btn');
       if (!copyButton) return;
 
@@ -85,19 +85,35 @@ const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encoded
           alert('Failed to copy link: ' + err.message);
         });
       }
-    });
+    };
+    
+    shareButtonsContainer.addEventListener('click', handleShareButtonClick);
 
-    // Cleanup timeouts on page navigation
-    document.addEventListener('astro:before-swap', () => {
+    // Cleanup function for timeouts and the click listener itself
+    const cleanupShareButtons = () => {
+        shareButtonsContainer.removeEventListener('click', handleShareButtonClick);
+
         const copyButton = shareButtonsContainer.querySelector('.copy-link-btn');
         if (copyButton) {
             const timeoutId = copyButton.getAttribute('data-timeout-id');
             if (timeoutId) {
                 clearTimeout(parseInt(timeoutId));
+                copyButton.classList.remove('copied'); // Ensure visual state is reset
+                copyButton.removeAttribute('data-timeout-id');
             }
         }
-    });
-  })();
+        document.removeEventListener('astro:before-swap', cleanupShareButtons);
+        document.removeEventListener('astro:page-load', initializeShareButtons);
+    };
+
+    // Listen for page swap to clean up
+    document.addEventListener('astro:before-swap', cleanupShareButtons);
+  }
+
+  // Initialize on page load
+  document.addEventListener('astro:page-load', initializeShareButtons);
+  // Also run immediately in case astro:page-load was missed (e.g., initial non-transitioned load)
+  initializeShareButtons();
 </script>
 
 <br />
