@@ -25,37 +25,35 @@ if (!content || content.trim() === "") {
 )}
 
 <script is:inline define:vars={{ content }}>
-  let typeWriterTimeout;
-  let startTypingTimeout;
-
-  function initAITyping() {
-    // Only run on post pages
-    if (!window.location.pathname.includes('/posts/')) {
-      return;
-    }
-
+  function runAITypingAnimation() {
     const textElement = document.querySelector('.ai-summary .ai-explanation');
     
-    if (!textElement) {
+    // Exit if conditions are not met
+    if (!textElement || !content || !window.location.pathname.includes('/posts/')) {
       return;
     }
 
-    if (textElement.hasAttribute('data-initialized')) {
-      return;
+    // Prevent re-initialization
+    if (textElement.hasAttribute('data-ai-typing-initialized')) {
+        return;
     }
+    textElement.setAttribute('data-ai-typing-initialized', 'true');
 
-    if (!content) {
-      return;
-    }
-
-    textElement.setAttribute('data-initialized', 'true');
     textElement.textContent = '';
     textElement.classList.remove('typing-complete');
     
     let index = 0;
     const typeSpeed = 30; // ms
     
+    let typeWriterTimeout;
+    
     function typeWriter() {
+      // Race condition safety check: If element is no longer in the DOM, stop everything.
+      if (!document.body.contains(textElement)) {
+        clearTimeout(typeWriterTimeout);
+        return;
+      }
+
       if (index < content.length) {
         textElement.textContent += content.charAt(index);
         index++;
@@ -66,21 +64,17 @@ if (!content || content.trim() === "") {
     }
     
     // Delay to start typing for dramatic effect
-    startTypingTimeout = setTimeout(typeWriter, 800);
+    const startTypingTimeout = setTimeout(typeWriter, 800);
+
+    // Proper cleanup for Astro's View Transitions.
+    // This listener is added on each page load and automatically removed after the next swap.
+    document.addEventListener('astro:before-swap', () => {
+      clearTimeout(startTypingTimeout);
+      clearTimeout(typeWriterTimeout);
+    }, { once: true });
   }
 
-  function cleanupAITyping() {
-    clearTimeout(typeWriterTimeout);
-    clearTimeout(startTypingTimeout);
-    document.removeEventListener('astro:page-load', initAITyping);
-    document.removeEventListener('astro:before-swap', cleanupAITyping);
-  }
-
-  // Run on initial page load and subsequent navigations
-  document.addEventListener('astro:page-load', initAITyping);
-  // Also run immediately in case astro:page-load was missed
-  initAITyping();
-
-  // Add cleanup listener
-  document.addEventListener('astro:before-swap', cleanupAITyping);
+  // Run on initial page load and on subsequent page transitions
+  document.addEventListener('astro:page-load', runAITypingAnimation);
+  runAITypingAnimation(); // Also run for the very first page load
 </script>

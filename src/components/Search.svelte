@@ -88,6 +88,7 @@ const search = async (keyword: string, isDesktop: boolean): Promise<void> => {
 
 onMount(() => {
 	const initializeSearch = () => {
+		if (initialized) return;
 		initialized = true;
 		pagefindLoaded =
 			typeof window !== "undefined" &&
@@ -108,32 +109,36 @@ onMount(() => {
 		initializeSearch(); // Initialize with pagefindLoaded as false
 	};
 
-	let fallbackTimeoutId: NodeJS.Timeout | null = null;
-
 	if (import.meta.env.DEV) {
 		console.warn(
 			"Pagefind is not available in development mode. Using mock data.",
 		);
 		initializeSearch();
 	} else {
-		document.addEventListener("pagefindready", onPagefindReady);
-		document.addEventListener("pagefindloaderror", onPagefindLoadError);
-
-		// Fallback in case events are not caught or pagefind is already loaded by the time this script runs
-		fallbackTimeoutId = setTimeout(() => {
-			if (!initialized) {
-				initializeSearch();
-			}
-		}, 2000); // Adjust timeout as needed
+		// If pagefind is already loaded and ready when this component mounts
+		if (window.pagefind && typeof window.pagefind.search === "function") {
+			initializeSearch();
+		} else {
+			// Otherwise, set up listeners
+			document.addEventListener("pagefindready", onPagefindReady);
+			document.addEventListener("pagefindloaderror", onPagefindLoadError);
+		}
 	}
+
+	const handleResize = () => {
+		if (window.innerWidth < 1024) {
+			const panel = document.getElementById("search-panel");
+			panel?.classList.add("float-panel-closed");
+		}
+	};
+
+	window.addEventListener("resize", handleResize);
 
 	return () => {
 		// Cleanup function
 		document.removeEventListener("pagefindready", onPagefindReady);
 		document.removeEventListener("pagefindloaderror", onPagefindLoadError);
-		if (fallbackTimeoutId) {
-			clearTimeout(fallbackTimeoutId);
-		}
+		window.removeEventListener("resize", handleResize);
 	};
 });
 

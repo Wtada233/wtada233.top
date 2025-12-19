@@ -16,22 +16,52 @@ const config = {
 
 <div id="tcomment"></div>
 <script is:inline define:vars={{ config }}>
-function loadTwikoo() {
-
-  // 动态加载 Twikoo 脚本，并在加载完成后执行 twikoo.init
-
-  const script = document.createElement('script');
-  script.src = '/twikoo/twikoo.min.js';
-  script.defer = true;
-  script.onload = () => {
-    if (window.twikoo) {
-      window.twikoo.init(config);
+  function initTwikooForPost() {
+    const commentContainer = document.getElementById('tcomment');
+    // If the container is not on the page or has already been initialized, do nothing.
+    if (!commentContainer || commentContainer.hasAttribute('data-twikoo-initialized')) {
+      return;
     }
-  };
-  // script.onerror = () => {
-  //   console.error('Twikoo script load failed');
-  // };
-  document.body.appendChild(script);
-}
-  document.addEventListener("loadComment", loadTwikoo, { once: true }); // 监听加载评论事件，但是我们只能监听一次，从而避免多次触发。
+
+    // Function to initialize Twikoo once the main script is loaded.
+    const doInit = () => {
+      if (window.twikoo) {
+        window.twikoo.init(config);
+        commentContainer.setAttribute('data-twikoo-initialized', 'true');
+      }
+    };
+
+    // If Twikoo script is already loaded (e.g., from a previous page), init directly.
+    if (window.twikoo) {
+      doInit();
+      return;
+    }
+    
+    // Otherwise, load the script and init on load.
+    // Use a unique id for the script to prevent duplicates.
+    const scriptId = 'twikoo-main-script';
+    if (document.getElementById(scriptId)) {
+        return;
+    }
+
+    const script = document.createElement('script');
+    script.id = scriptId;
+    script.src = '/twikoo/twikoo.min.js';
+    script.defer = true;
+    script.onload = doInit;
+    script.onerror = () => console.error('Twikoo script could not be loaded.');
+    document.body.appendChild(script);
+
+    // Astro-specific cleanup: Mark for re-initialization on next page load.
+    // This allows the init function to run again on a different post page.
+    document.addEventListener('astro:before-swap', () => {
+        if(commentContainer) {
+            commentContainer.removeAttribute('data-twikoo-initialized');
+        }
+    }, { once: true });
+  }
+
+  // Run on initial page load and on subsequent page transitions.
+  document.addEventListener('astro:page-load', initTwikooForPost);
+  initTwikooForPost(); // Also run for the very first page load.
 </script>

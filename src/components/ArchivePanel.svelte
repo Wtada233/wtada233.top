@@ -7,15 +7,32 @@ import { getPostUrlBySlug } from "../utils/url-utils";
 
 export let sortedPosts: Post[] = [];
 
-const params = new URLSearchParams(window.location.search);
-export let tags: string[] = params.has("tag") ? params.getAll("tag") : [];
-export let categories: string[] = params.has("category")
-	? params.getAll("category")
-	: [];
-export let series: string[] = params.has("series")
-	? params.getAll("series")
-	: [];
-const uncategorized = params.get("uncategorized");
+let tags: string[] = [];
+let categories: string[] = [];
+let series: string[] = [];
+let uncategorized: string | null = null;
+
+function updateFiltersFromURL() {
+	const params = new URLSearchParams(window.location.search);
+	tags = params.has("tag") ? params.getAll("tag") : [];
+	categories = params.has("category") ? params.getAll("category") : [];
+	series = params.has("series") ? params.getAll("series") : [];
+	uncategorized = params.get("uncategorized");
+}
+
+onMount(() => {
+	// Initial load
+	updateFiltersFromURL();
+
+	// Listen for Astro's page load event for subsequent navigations
+	const handlePageLoad = () => updateFiltersFromURL();
+	document.addEventListener("astro:page-load", handlePageLoad);
+
+	// Cleanup the event listener when the component is destroyed
+	return () => {
+		document.removeEventListener("astro:page-load", handlePageLoad);
+	};
+});
 
 interface Post {
 	slug: string;

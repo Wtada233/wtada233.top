@@ -414,13 +414,6 @@ function showBanner() {
 let backToTopBtn = document.getElementById('back-to-top-btn');
 let navbar = document.getElementById('navbar-wrapper')
 
-// 专用于创建loadComment的事件，即通知评论组件进行一次加载
-function initCommentComponent() {
-  const event = new Event("loadComment");
-  document.dispatchEvent(event);
-}
-// twikoo评论
-
 function init() {
 	// disableAnimation()()		// TODO
 	loadTheme();
@@ -430,7 +423,6 @@ function init() {
 	initSemifullScrollDetection(); // Call initSemifullScrollDetection on initial load
 	initRippleEffect(); // Initialize ripple effect
 	initScrollAnimations(); // Initialize scroll-triggered animations
-    initCommentComponent();  // 调用initCommentComponent()函数，twikoo
     fetchUmamiStats(); // Fetch Umami stats on initial load
     registerGlobalClickOutsideHandler(); // Register global click outside handler
 }
@@ -476,7 +468,6 @@ const setup = () => {
 		// --- End Cleanup ---
 
 		initCustomScrollbar();
-                initCommentComponent(); // 添加代码调用
 		initSemifullScrollDetection(); // Call on content replace
 		updateReadingProgressBar(); // New: Update progress bar on content replace
 		initRippleEffect(); // Re-initialize ripple effect after content replacement
