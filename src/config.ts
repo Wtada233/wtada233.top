@@ -54,11 +54,7 @@ export const navBarConfig: NavBarConfig = {
 		LinkPreset.Archive,
 		LinkPreset.About,
 		...(seriesConfig.enabled ? [LinkPreset.Series] : []),
-		{
-			name: "友链",
-			url: "/friends/",
-			external: false, // Show an external link icon and will open in a new tab
-		},
+		LinkPreset.Friends,
 		{
 			name: "QQ交流群",
 			url: "https://qm.qq.com/cgi-bin/qm/qr?k=L1oKGqOXks5BfCnmXICVHK12fp6idgXJ&jump_from=webapi&authKey=0wKKiYFigxhrOpUAvWu4DzoU8oEc7U6JSnBF3rMGo5Zq8PgxPKppLb+pe0Z4GByD",
