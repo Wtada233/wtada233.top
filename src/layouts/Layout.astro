@@ -484,6 +484,7 @@ const setup = () => {
 		initScrollAnimations(); // Re-initialize scroll-triggered animations after content replacement
 		trackUmamiPageview();
         fetchUmamiStats(); // Re-fetch Umami stats on content replace
+        registerGlobalClickOutsideHandler(); // Re-register global click outside handler
 	});
 	window.swup.hooks.on('visit:start', (visit: {to: {url: string}}) => {
 		// change banner height immediately when a link is clicked
