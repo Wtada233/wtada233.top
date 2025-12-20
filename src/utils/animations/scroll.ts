@@ -52,7 +52,6 @@ export function initScrollAnimations(): void {
 		// Disabling per-element scroll animation for markdown content children.
 		// Animating hundreds/thousands of paragraphs in long articles causes severe performance issues (lag)
 		// on both mobile and desktop. The content will now appear normally without entrance animations.
-		/*
 		const markdownContent = postContainer.querySelector(".markdown-content");
 		const isMobile = window.matchMedia("(max-width: 768px)").matches;
 		if (markdownContent && !isMobile) {
@@ -63,7 +62,6 @@ export function initScrollAnimations(): void {
 				}
 			});
 		}
-		*/
 
 		// Collect other animated sections on the post page
 		const aiSummary = postContainer.querySelector(".ai-summary");
