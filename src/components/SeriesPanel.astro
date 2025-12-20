@@ -1,5 +1,4 @@
 ---
-import { UNCATEGORIZED } from "@constants/constants";
 import { seriesConfig } from "../configs/series";
 import I18nKey from "../i18n/i18nKey";
 import { i18n } from "../i18n/translation";
@@ -29,9 +28,9 @@ const groups: { category: string; series: Series[] }[] = (() => {
 			grouped: { [category: string]: { [seriesName: string]: Series } },
 			post,
 		) => {
-			const category = post.data.category || UNCATEGORIZED;
-			const series = post.data.series || UNCATEGORIZED;
-			if (category === UNCATEGORIZED || series === UNCATEGORIZED) {
+			const category = post.data.category || i18n(I18nKey.uncategorized);
+			const series = post.data.series;
+			if (!series) {
 				return grouped;
 			}
 			if (!grouped[category]) {

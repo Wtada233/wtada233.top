@@ -92,6 +92,7 @@ function loadButtonScript() {
 }
 
 loadButtonScript();
+document.addEventListener('astro:page-load', loadButtonScript);
 </script>
 
 {import.meta.env.PROD && <script is:inline define:vars={{scriptUrl: url('/pagefind/pagefind.js')}}>
