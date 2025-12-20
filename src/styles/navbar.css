@@ -86,8 +86,8 @@
 }
 
 @media (max-width: 1023px) {
-    .glass-mode #banner-wrapper ~ * #navbar[data-transparent-mode="semi"][data-is-home="true"] > div,
-    .glass-mode body:has(#banner-wrapper) #navbar[data-transparent-mode="semi"][data-is-home="true"] > div {
+    .glass-mode #banner-wrapper ~ * #navbar[data-transparent-mode="semi"] > div,
+    .glass-mode body:has(#banner-wrapper) #navbar[data-transparent-mode="semi"] > div {
         backdrop-filter: blur(var(--blur-2xl)) !important;
         background: rgba(242, 242, 247, 0.8) !important;
         border: 1px solid rgba(255, 255, 255, var(--opacity-55)) !important;
@@ -96,8 +96,8 @@
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
     }
 
-    .glass-mode #banner-wrapper ~ * #navbar[data-transparent-mode="full"][data-is-home="true"] > div,
-    .glass-mode body:has(#banner-wrapper) #navbar[data-transparent-mode="full"][data-is-home="true"] > div {
+    .glass-mode #banner-wrapper ~ * #navbar[data-transparent-mode="full"] > div,
+    .glass-mode body:has(#banner-wrapper) #navbar[data-transparent-mode="full"] > div {
         backdrop-filter: none !important;
         background: transparent !important;
         border: none !important;
@@ -106,8 +106,8 @@
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
     }
 
-    .glass-mode #banner-wrapper ~ * #navbar[data-transparent-mode="semifull"][data-is-home="true"] > div,
-    .glass-mode body:has(#banner-wrapper) #navbar[data-transparent-mode="semifull"][data-is-home="true"] > div {
+    .glass-mode #banner-wrapper ~ * #navbar[data-transparent-mode="semifull"] > div,
+    .glass-mode body:has(#banner-wrapper) #navbar[data-transparent-mode="semifull"] > div {
         backdrop-filter: none !important;
         background: transparent !important;
         border: 1px solid transparent !important;
@@ -116,8 +116,8 @@
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
     }
 
-    .glass-mode #banner-wrapper ~ * #navbar[data-transparent-mode="semifull"][data-is-home="true"].scrolled > div,
-    .glass-mode body:has(#banner-wrapper) #navbar[data-transparent-mode="semifull"][data-is-home="true"].scrolled > div {
+    .glass-mode #banner-wrapper ~ * #navbar[data-transparent-mode="semifull"].scrolled > div,
+    .glass-mode body:has(#banner-wrapper) #navbar[data-transparent-mode="semifull"].scrolled > div {
         backdrop-filter: blur(var(--blur-2xl)) !important;
         background: rgba(242, 242, 247, 0.8) !important;
         border: 1px solid rgba(255, 255, 255, var(--opacity-55)) !important;
@@ -128,7 +128,7 @@
 }
 
 @media (max-width: 1023px) {
-    .glass-mode body.wallpaper-transparent #navbar[data-transparent-mode="semi"][data-is-home="true"] > div {
+    .glass-mode body.wallpaper-transparent #navbar[data-transparent-mode="semi"] > div {
         backdrop-filter: blur(var(--blur-2xl)) !important;
         background: rgba(242, 242, 247, 0.8) !important;
         border: 1px solid rgba(255, 255, 255, var(--opacity-55)) !important;
@@ -137,7 +137,7 @@
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
     }
 
-    .glass-mode body.wallpaper-transparent #navbar[data-transparent-mode="full"][data-is-home="true"] > div {
+    .glass-mode body.wallpaper-transparent #navbar[data-transparent-mode="full"] > div {
         backdrop-filter: none !important;
         background: transparent !important;
         border: none !important;
@@ -146,7 +146,7 @@
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
     }
 
-    .glass-mode body.wallpaper-transparent #navbar[data-transparent-mode="semifull"][data-is-home="true"] > div {
+    .glass-mode body.wallpaper-transparent #navbar[data-transparent-mode="semifull"] > div {
         backdrop-filter: blur(var(--blur-2xl)) !important;
         background: rgba(242, 242, 247, 0.8) !important;
         border: 1px solid rgba(255, 255, 255, var(--opacity-55)) !important;
@@ -155,7 +155,7 @@
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
     }
 
-    .glass-mode body.wallpaper-transparent #navbar[data-transparent-mode="semifull"][data-is-home="true"].scrolled > div {
+    .glass-mode body.wallpaper-transparent #navbar[data-transparent-mode="semifull"].scrolled > div {
         backdrop-filter: blur(var(--blur-2xl)) !important;
         background: rgba(242, 242, 247, 0.8) !important;
         border: 1px solid rgba(255, 255, 255, var(--opacity-55)) !important;
@@ -222,29 +222,29 @@
 }
 
 @media (max-width: 1023px) {
-    :root.dark.glass-mode #banner-wrapper ~ * #navbar[data-transparent-mode="semi"][data-is-home="true"] > div,
-    :root.dark.glass-mode body:has(#banner-wrapper) #navbar[data-transparent-mode="semi"][data-is-home="true"] > div {
+    :root.dark.glass-mode #banner-wrapper ~ * #navbar[data-transparent-mode="semi"] > div,
+    :root.dark.glass-mode body:has(#banner-wrapper) #navbar[data-transparent-mode="semi"] > div {
         background: rgba(44, 44, 46, 0.8) !important;
         border: 1px solid rgba(0, 0, 0, var(--opacity-55)) !important;
         box-shadow: var(--shadow-navbar-dark) !important;
     }
 
-    :root.dark.glass-mode #banner-wrapper ~ * #navbar[data-transparent-mode="full"][data-is-home="true"] > div,
-    :root.dark.glass-mode body:has(#banner-wrapper) #navbar[data-transparent-mode="full"][data-is-home="true"] > div {
+    :root.dark.glass-mode #banner-wrapper ~ * #navbar[data-transparent-mode="full"] > div,
+    :root.dark.glass-mode body:has(#banner-wrapper) #navbar[data-transparent-mode="full"] > div {
         background: transparent !important;
         border: none !important;
         box-shadow: none !important;
     }
 
-    :root.dark.glass-mode #banner-wrapper ~ * #navbar[data-transparent-mode="semifull"][data-is-home="true"] > div,
-    :root.dark.glass-mode body:has(#banner-wrapper) #navbar[data-transparent-mode="semifull"][data-is-home="true"] > div {
+    :root.dark.glass-mode #banner-wrapper ~ * #navbar[data-transparent-mode="semifull"] > div,
+    :root.dark.glass-mode body:has(#banner-wrapper) #navbar[data-transparent-mode="semifull"] > div {
         background: transparent !important;
         border: 1px solid transparent !important;
         box-shadow: none !important;
     }
 
-    :root.dark.glass-mode #banner-wrapper ~ * #navbar[data-transparent-mode="semifull"][data-is-home="true"].scrolled > div,
-    :root.dark.glass-mode body:has(#banner-wrapper) #navbar[data-transparent-mode="semifull"][data-is-home="true"].scrolled > div {
+    :root.dark.glass-mode #banner-wrapper ~ * #navbar[data-transparent-mode="semifull"].scrolled > div,
+    :root.dark.glass-mode body:has(#banner-wrapper) #navbar[data-transparent-mode="semifull"].scrolled > div {
         background: rgba(44, 44, 46, 0.8) !important;
         border: 1px solid rgba(0, 0, 0, var(--opacity-55)) !important;
         box-shadow: var(--shadow-navbar-dark) !important;
@@ -252,25 +252,25 @@
 }
 
 @media (max-width: 1023px) {
-    :root.dark.glass-mode body.wallpaper-transparent #navbar[data-transparent-mode="semi"][data-is-home="true"] > div {
+    :root.dark.glass-mode body.wallpaper-transparent #navbar[data-transparent-mode="semi"] > div {
         background: rgba(44, 44, 46, 0.8) !important;
         border: 1px solid rgba(0, 0, 0, var(--opacity-55)) !important;
         box-shadow: var(--shadow-navbar-dark) !important;
     }
 
-    :root.dark.glass-mode body.wallpaper-transparent #navbar[data-transparent-mode="full"][data-is-home="true"] > div {
+    :root.dark.glass-mode body.wallpaper-transparent #navbar[data-transparent-mode="full"] > div {
         background: transparent !important;
         border: none !important;
         box-shadow: none !important;
     }
 
-    :root.dark.glass-mode body.wallpaper-transparent #navbar[data-transparent-mode="semifull"][data-is-home="true"] > div {
+    :root.dark.glass-mode body.wallpaper-transparent #navbar[data-transparent-mode="semifull"] > div {
         background: rgba(44, 44, 46, 0.8) !important;
         border: 1px solid rgba(0, 0, 0, var(--opacity-55)) !important;
         box-shadow: var(--shadow-navbar-dark) !important;
     }
 
-    :root.dark.glass-mode body.wallpaper-transparent #navbar[data-transparent-mode="semifull"][data-is-home="true"].scrolled > div {
+    :root.dark.glass-mode body.wallpaper-transparent #navbar[data-transparent-mode="semifull"].scrolled > div {
         background: rgba(44, 44, 46, 0.8) !important;
         border: 1px solid rgba(0, 0, 0, var(--opacity-55)) !important;
         box-shadow: var(--shadow-navbar-dark) !important;
@@ -361,43 +361,43 @@
 }
 
 @media (max-width: 1023px) {
-    .glass-mode #navbar[data-is-home="true"] .dropdown-content {
+    .glass-mode #navbar .dropdown-content {
         backdrop-filter: blur(var(--blur-2xl)) !important;
         background: rgba(255, 255, 255, var(--opacity-90)) !important;
         border: 1px solid rgba(255, 255, 255, var(--opacity-90)) !important;
         box-shadow: var(--shadow-navbar) !important;
     }
     
-    .glass-mode #navbar[data-is-home="true"] ~ * #display-setting,
-    .glass-mode #navbar[data-is-home="true"] #display-setting {
+    .glass-mode #navbar ~ * #display-setting,
+    .glass-mode #navbar #display-setting {
         backdrop-filter: blur(var(--blur-2xl)) !important;
         background: rgba(255, 255, 255, var(--opacity-90)) !important;
         border: 1px solid rgba(255, 255, 255, var(--opacity-90)) !important;
         box-shadow: var(--shadow-navbar) !important;
     }
     
-    .glass-mode #navbar[data-is-home="true"] #wallpaper-mode-panel .float-panel {
+    .glass-mode #navbar #wallpaper-mode-panel .float-panel {
         backdrop-filter: blur(var(--blur-2xl)) !important;
         background: rgba(255, 255, 255, var(--opacity-90)) !important;
         border: 1px solid rgba(255, 255, 255, var(--opacity-90)) !important;
         box-shadow: var(--shadow-navbar) !important;
     }
     
-    .glass-mode #navbar[data-is-home="true"] #theme-mode-panel .float-panel {
+    .glass-mode #navbar #theme-mode-panel .float-panel {
         backdrop-filter: blur(var(--blur-2xl)) !important;
         background: rgba(255, 255, 255, var(--opacity-90)) !important;
         border: 1px solid rgba(255, 255, 255, var(--opacity-90)) !important;
         box-shadow: var(--shadow-navbar) !important;
     }
     
-    .glass-mode #navbar[data-is-home="true"] #nav-menu-panel {
+    .glass-mode #navbar #nav-menu-panel {
         backdrop-filter: blur(var(--blur-2xl)) !important;
         background: rgba(255, 255, 255, var(--opacity-90)) !important;
         border: 1px solid rgba(255, 255, 255, var(--opacity-90)) !important;
         box-shadow: var(--shadow-navbar) !important;
     }
     
-    .glass-mode #navbar[data-is-home="true"] #search-panel {
+    .glass-mode #navbar #search-panel {
         backdrop-filter: blur(var(--blur-2xl)) !important;
         background: rgba(255, 255, 255, var(--opacity-90)) !important;
         border: 1px solid rgba(255, 255, 255, var(--opacity-90)) !important;
@@ -444,38 +444,38 @@
 }
 
 @media (max-width: 1023px) {
-    :root.dark.glass-mode #navbar[data-is-home="true"] .dropdown-content {
+    :root.dark.glass-mode #navbar .dropdown-content {
         background: rgba(0, 0, 0, var(--opacity-90)) !important;
         border: 1px solid rgba(0, 0, 0, var(--opacity-90)) !important;
         box-shadow: var(--shadow-navbar-dark) !important;
     }
     
-    :root.dark.glass-mode #navbar[data-is-home="true"] ~ * #display-setting,
-    :root.dark.glass-mode #navbar[data-is-home="true"] #display-setting {
+    :root.dark.glass-mode #navbar ~ * #display-setting,
+    :root.dark.glass-mode #navbar #display-setting {
         background: rgba(0, 0, 0, var(--opacity-90)) !important;
         border: 1px solid rgba(0, 0, 0, var(--opacity-90)) !important;
         box-shadow: var(--shadow-navbar-dark) !important;
     }
     
-    :root.dark.glass-mode #navbar[data-is-home="true"] #wallpaper-mode-panel .float-panel {
+    :root.dark.glass-mode #navbar #wallpaper-mode-panel .float-panel {
         background: rgba(0, 0, 0, var(--opacity-90)) !important;
         border: 1px solid rgba(0, 0, 0, var(--opacity-90)) !important;
         box-shadow: var(--shadow-navbar-dark) !important;
     }
     
-    :root.dark.glass-mode #navbar[data-is-home="true"] #theme-mode-panel .float-panel {
+    :root.dark.glass-mode #navbar #theme-mode-panel .float-panel {
         background: rgba(0, 0, 0, var(--opacity-90)) !important;
         border: 1px solid rgba(0, 0, 0, var(--opacity-90)) !important;
         box-shadow: var(--shadow-navbar-dark) !important;
     }
     
-    :root.dark.glass-mode #navbar[data-is-home="true"] #nav-menu-panel {
+    :root.dark.glass-mode #navbar #nav-menu-panel {
         background: rgba(0, 0, 0, var(--opacity-90)) !important;
         border: 1px solid rgba(0, 0, 0, var(--opacity-90)) !important;
         box-shadow: var(--shadow-navbar-dark) !important;
     }
     
-    :root.dark.glass-mode #navbar[data-is-home="true"] #search-panel {
+    :root.dark.glass-mode #navbar #search-panel {
         background: rgba(0, 0, 0, var(--opacity-90)) !important;
         border: 1px solid rgba(0, 0, 0, var(--opacity-90)) !important;
         box-shadow: var(--shadow-navbar-dark) !important;
