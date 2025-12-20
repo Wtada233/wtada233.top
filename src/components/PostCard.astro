@@ -67,6 +67,9 @@ const displayDescription = description || remarkPluginFrontmatter.excerpt;
 			{pinningConfig.enabled && order === -1 &&
 				<span class="text-gray-400 text-2xl ml-2 font-medium">[置底]</span>
 			}
+			{entry.data.effects === false &&
+				<span class="text-red-500 text-2xl ml-2 font-medium">[禁用效果]</span>
+			}
             <Icon class="inline text-[2rem] text-[var(--primary)] md:hidden translate-y-0.5 absolute" name="material-symbols:chevron-right-rounded" ></Icon>
             <Icon class="text-[var(--primary)] text-[2rem] transition hidden md:inline absolute translate-y-0.5 opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0" name="material-symbols:chevron-right-rounded"></Icon>
         </a>
