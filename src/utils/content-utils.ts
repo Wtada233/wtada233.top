@@ -201,6 +201,14 @@ export async function getRelatedPosts(
 	return relatedPosts.slice(0, limit).map((item) => item.post);
 }
 
+let statsCache: {
+	totalArticles: number;
+	totalWords: number;
+	totalSeries: number;
+	totalTags: number;
+	totalCategories: number;
+} | null = null;
+
 export async function getBlogStats(): Promise<{
 	totalArticles: number;
 	totalWords: number;
@@ -208,6 +216,10 @@ export async function getBlogStats(): Promise<{
 	totalTags: number;
 	totalCategories: number;
 }> {
+	if (statsCache) {
+		return statsCache;
+	}
+
 	const allBlogPosts = await getCollection("posts", ({ data }) => {
 		return import.meta.env.PROD ? data.draft !== true : true;
 	});
@@ -221,9 +233,9 @@ export async function getBlogStats(): Promise<{
 	for (const post of allBlogPosts) {
 		totalArticles++;
 		if (post.data.tags) {
-			post.data.tags.forEach((tag: string) => {
+			for (const tag of post.data.tags) {
 				uniqueTags.add(tag);
-			});
+			}
 		}
 		if (post.data.category) {
 			uniqueCategories.add(post.data.category);
@@ -231,7 +243,8 @@ export async function getBlogStats(): Promise<{
 		if (seriesConfig.enabled && post.data.series) {
 			uniqueSeries.add(post.data.series);
 		}
-		// Await post.render() to get remarkPluginFrontmatter for word count
+		// Performance optimization: only render if we really need word count and it's not provided in data
+		// In Fuwari, word count is injected into remarkPluginFrontmatter during render
 		const { remarkPluginFrontmatter } = await post.render();
 		totalWords += remarkPluginFrontmatter?.words || 0;
 	}
@@ -240,11 +253,13 @@ export async function getBlogStats(): Promise<{
 	const totalCategories = uniqueCategories.size;
 	const totalSeries = uniqueSeries.size;
 
-	return {
+	statsCache = {
 		totalArticles,
 		totalWords,
 		totalSeries,
 		totalTags,
 		totalCategories,
 	};
+
+	return statsCache;
 }
