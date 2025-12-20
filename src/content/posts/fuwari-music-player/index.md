@@ -8,6 +8,7 @@ category: "Tech"
 draft: false
 series: "该博客搭建"
 ai: "本文是一篇详细的技术教程，指导读者如何为一个基于Astro框架的博客添加一个魔改版的“Fuwari”音乐播放器（基于APlayer）。文章从基础准备工作入手，包括添加APlayer库文件、设置功能开关，然后详细讲解了如何配置播放列表和核心的`MasterMusic.js`文件。最关键的部分在于，教程利用Astro的页面生命周期事件（`astro:before-swap` 和 `astro:page-load`），实现了在页面跳转时无缝续播音乐的功能，极大地提升了用户体验。此外，文章还提供了播放器的自定义CSS样式，包括深色模式适配，最终完成一个功能完善且与博客主题融合的音乐播放器。"
+effects: false
 ---
 
 # 一个低调的音乐播放器有多可怕（
