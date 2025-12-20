@@ -193,13 +193,10 @@
     color: var(--primary);
 }
 
-.ai-summary .ai-title .ai-title-left i {
-    margin-right: 3px;
-    display: flex;
-    color: var(--primary);
+.ai-summary .ai-title .ai-title-left img {
+    margin-right: 6px;
     border-radius: 20px;
-    justify-content: center;
-    align-items: center;
+    display: block;
 }
 
 .ai-summary .ai-title .ai-title-left .ai-title-text {
