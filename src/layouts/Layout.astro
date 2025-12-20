@@ -153,7 +153,6 @@ if (ogImage) {
 		}}></style>  <!-- defines global css variables. This will be applied to <html> <body> and some other elements idk why -->
 
 		<slot name="head"></slot>
-		<link rel="preload" href="/hk4e_zh-cn.woff2" as="font" type="font/woff2" crossorigin>
 		<link rel="alternate" type="application/rss+xml" title={profileConfig.name} href={`${Astro.site}rss.xml`}/>
 		{umamiConfig.enabled && (
 			<script is:inline defer src={umamiConfig.scriptUrl} data-website-id={umamiConfig.websiteId} data-auto-track="false" data-do-not-track="true"></script>
@@ -681,3 +680,9 @@ if (window.swup) {
 	document.addEventListener("swup:enable", setup)
 }
 </script>
+
+<style>
+body {
+        font-family: -apple-system, BlurMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "MicrosoftO Sans", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
+}
+</style>
