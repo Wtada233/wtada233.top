@@ -1,5 +1,6 @@
 ---
 import ConfigCarrier from "@components/ConfigCarrier.astro";
+import { fontConfig } from "@configs/font";
 import { umamiConfig } from "@configs/umami";
 import { profileConfig, siteConfig } from "@/config";
 import {
@@ -693,13 +694,17 @@ if (window.swup) {
 }
 </script>
 
-<style is:global>
-@font-face {
-  font-family: 'MiSans-Heavy';
-  src: url('/MiSans-Heavy.woff2') format('woff2');
-  font-display: swap;
-}
-body {
-        font-family: 'MiSans-Heavy', -apple-system, BlurMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "MicrosoftO Sans", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
-}
-</style>
+<style is:global set:html={`
+${fontConfig.enable ? fontConfig.fonts.map((font) => `
+    @font-face {
+        font-family: '${font.name}';
+        src: url('${font.src}') format('${font.type}');
+        font-weight: ${font.weight};
+        font-style: ${font.style};
+        font-display: ${font.display};
+    }
+`).join('') : ''}
+    body {
+        font-family: ${fontConfig.family};
+    }
+`}></style>
