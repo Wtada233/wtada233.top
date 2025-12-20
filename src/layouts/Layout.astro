@@ -693,8 +693,13 @@ if (window.swup) {
 }
 </script>
 
-<style>
+<style is:global>
+@font-face {
+  font-family: 'MiSans-Heavy';
+  src: url('/MiSans-Heavy.woff2') format('woff2');
+  font-display: swap;
+}
 body {
-        font-family: -apple-system, BlurMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "MicrosoftO Sans", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
+        font-family: 'MiSans-Heavy', -apple-system, BlurMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "MicrosoftO Sans", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
 }
 </style>
