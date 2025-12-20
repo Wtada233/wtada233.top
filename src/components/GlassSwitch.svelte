@@ -4,6 +4,7 @@ import { onMount } from "svelte";
 let isGlassMode = false;
 
 function applyGlassMode() {
+	if (typeof document === "undefined") return;
 	if (isGlassMode) {
 		document.documentElement.classList.add("glass-mode");
 	} else {
@@ -13,12 +14,16 @@ function applyGlassMode() {
 
 function toggleGlassMode() {
 	isGlassMode = !isGlassMode;
-	localStorage.setItem("glassMode", String(isGlassMode));
+	if (typeof localStorage !== "undefined") {
+		localStorage.setItem("glassMode", String(isGlassMode));
+	}
 	applyGlassMode();
 }
 
 onMount(() => {
-	isGlassMode = localStorage.getItem("glassMode") === "true";
+	isGlassMode =
+		typeof localStorage !== "undefined" &&
+		localStorage.getItem("glassMode") === "true";
 	applyGlassMode();
 });
 </script>

@@ -13,6 +13,7 @@ let series: string[] = [];
 let uncategorized: string | null = null;
 
 function updateFiltersFromURL() {
+	if (typeof window === "undefined") return;
 	const params = new URLSearchParams(window.location.search);
 	tags = params.has("tag") ? params.getAll("tag") : [];
 	categories = params.has("category") ? params.getAll("category") : [];
