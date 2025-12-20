@@ -142,19 +142,23 @@ onMount(() => {
 	};
 });
 
-$: if (initialized && keywordDesktop) {
-	(async () => {
-		await search(keywordDesktop, true);
-	})();
+let searchTimeout: ReturnType<typeof setTimeout>;
+
+const debounceSearch = (keyword: string, isDesktop: boolean) => {
+	clearTimeout(searchTimeout);
+	searchTimeout = setTimeout(() => {
+		search(keyword, isDesktop);
+	}, 300);
+};
+
+$: if (initialized && keywordDesktop !== undefined) {
+	debounceSearch(keywordDesktop, true);
 }
 
-$: if (initialized && keywordMobile) {
-	(async () => {
-		await search(keywordMobile, false);
-	})();
+$: if (initialized && keywordMobile !== undefined) {
+	debounceSearch(keywordMobile, false);
 }
 </script>
-
 <!-- search bar for desktop view -->
 <div id="search-bar" class="hidden lg:flex transition-all items-center h-11 mr-2 rounded-lg
       bg-black/[0.04] hover:bg-black/[0.06] focus-within:bg-black/[0.06]

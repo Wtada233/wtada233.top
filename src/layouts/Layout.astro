@@ -583,10 +583,18 @@ function scrollFunction() {
 		}
 	}
 }
-window.onscroll = () => {
-	scrollFunction();
-	updateReadingProgressBar();
-}
+
+let isTicking = false;
+window.addEventListener('scroll', () => {
+	if (!isTicking) {
+		window.requestAnimationFrame(() => {
+			scrollFunction();
+			updateReadingProgressBar();
+			isTicking = false;
+		});
+		isTicking = true;
+	}
+});
 
 window.onresize = () => {
 	// calculate the --banner-height-extend, which needs to be a multiple of 4 to avoid blurry text
