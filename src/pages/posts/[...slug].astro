@@ -73,7 +73,7 @@ const jsonLd = {
 		: siteConfig.lang.replace("_", "-"),
 };
 ---
-<MainGridLayout title={entry.data.title} description={entry.data.description} lang={entry.data.lang} setOGTypeArticle={true} series={entry.data.series} headings={headings} ogImage={ogImage}>
+<MainGridLayout title={entry.data.title} description={entry.data.description} keywords={entry.data.tags.join(", ")} lang={entry.data.lang} setOGTypeArticle={true} series={entry.data.series} headings={headings} ogImage={ogImage}>
     <script define:vars={{ effects: entry.data.effects }} is:inline>
         window.postEffects = effects;
     </script>
