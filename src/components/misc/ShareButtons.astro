@@ -111,7 +111,6 @@ const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encoded
   }
 
   // Initialize on page load
-  document.addEventListener('astro:page-load', initializeShareButtons);
   // Also run immediately in case astro:page-load was missed (e.g., initial non-transitioned load)
   initializeShareButtons();
 </script>

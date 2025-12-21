@@ -58,11 +58,9 @@ const uniqueId = `md-root-${Math.random().toString(36).slice(2)}`;
 
       // Remove the main click listener
       markdownRoot.removeEventListener("click", handleClick);
-      // Remove the cleanup listener itself
-      document.removeEventListener('astro:before-swap', cleanupMarkdownListeners);
     };
 
     markdownRoot.addEventListener("click", handleClick);
-    document.addEventListener('astro:before-swap', cleanupMarkdownListeners);
+    document.addEventListener('astro:before-swap', cleanupMarkdownListeners, { once: true });
   }
 </script>
