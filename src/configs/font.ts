@@ -6,7 +6,7 @@ export const fontConfig = {
 	fonts: [
 		{
 			name: "MiSans-Regular",
-			src: "/MiSans-Regular.woff2", // 相对于 public 目录
+			src: "/MiSans-Regular.min.woff2", // 相对于 public 目录
 			type: "woff2",
 			weight: "normal",
 			style: "normal",
