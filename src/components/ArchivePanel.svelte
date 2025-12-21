@@ -24,15 +24,6 @@ function updateFiltersFromURL() {
 onMount(() => {
 	// Initial load
 	updateFiltersFromURL();
-
-	// Listen for Astro's page load event for subsequent navigations
-	const handlePageLoad = () => updateFiltersFromURL();
-	document.addEventListener("astro:page-load", handlePageLoad);
-
-	// Cleanup the event listener when the component is destroyed
-	return () => {
-		document.removeEventListener("astro:page-load", handlePageLoad);
-	};
 });
 
 interface Post {
