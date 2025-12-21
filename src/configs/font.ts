@@ -5,9 +5,9 @@ export const fontConfig = {
 	// 字体列表
 	fonts: [
 		{
-			name: "MiSans-Heavy",
-			src: "/MiSans-Heavy.woff2", // 相对于 public 目录
-			type: "woff2",
+			name: "MiSans-Regular",
+			src: "/MiSans-Regular.ttf", // 相对于 public 目录
+			type: "truetype",
 			weight: "normal",
 			style: "normal",
 			display: "swap",
@@ -15,5 +15,5 @@ export const fontConfig = {
 	],
 	// 全局字体族设置
 	family:
-		"'MiSans-Heavy', -apple-system, BlurMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'MicrosoftO Sans', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif",
+		"'MiSans-Regular', -apple-system, BlurMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'MicrosoftO Sans', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif",
 };
