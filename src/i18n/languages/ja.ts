@@ -59,6 +59,8 @@ export const ja: Translation = {
 	[Key.shareToFacebook]: "Facebookで共有",
 	[Key.copyLink]: "リンクをコピー",
 
+	[Key.toc]: "目次",
+
 	[Key.pageNotFoundTitle]: "ページが見つかりません",
 	[Key.pageNotFoundHeading]: "ページが見つかりません",
 	[Key.pageNotFoundDescription]:

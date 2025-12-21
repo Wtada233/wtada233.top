@@ -57,6 +57,8 @@ export const zh_CN: Translation = {
 	[Key.shareToFacebook]: "分享到 Facebook",
 	[Key.copyLink]: "复制链接",
 
+	[Key.toc]: "目录",
+
 	[Key.pageNotFoundTitle]: "页面未找到",
 	[Key.pageNotFoundHeading]: "页面走丢了",
 	[Key.pageNotFoundDescription]:

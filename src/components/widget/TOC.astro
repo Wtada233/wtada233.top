@@ -1,0 +1,101 @@
+---
+import type { MarkdownHeading } from "astro";
+import { i18n } from "../../i18n/translation";
+import I18nKey from "../../i18n/i18nKey";
+
+interface Props {
+    headings?: MarkdownHeading[];
+    class?: string;
+    style?: string;
+}
+
+const { headings, class: className, style } = Astro.props;
+
+// 检查是否为文章页面
+const isPost = Astro.url.pathname.includes('/posts/');
+---
+
+{isPost && headings && headings.length > 0 && (
+<div id="toc-widget" class:list={["fixed top-24 right-4 2xl:right-16 z-40 hidden lg:block transition-all duration-500 opacity-0 translate-x-10 pointer-events-none data-[visible=true]:opacity-100 data-[visible=true]:translate-x-0 data-[visible=true]:pointer-events-auto", className]} style={style}>
+    <div class="card-base p-4 w-56 2xl:w-64 max-h-[calc(100vh-8rem)] overflow-y-auto hide-scrollbar shadow-lg">
+        <div class="font-bold text-lg mb-2 pl-4 border-l-4 border-[var(--primary)] relative transition-colors text-90">
+            {i18n(I18nKey.toc)}
+        </div>
+        <ul class="flex flex-col gap-1 text-sm text-75">
+            {headings.map((heading) => (
+                <li class="transition hover:text-[var(--primary)]" style={{ paddingLeft: `${Math.max(0, heading.depth - 1) * 0.5}rem` }}>
+                    <a href={`#${heading.slug}`} class="toc-link block py-1 truncate transition-colors border-l-2 border-transparent pl-2 hover:border-[var(--primary)]" data-slug={heading.slug}>
+                        {heading.text}
+                    </a>
+                </li>
+            ))}
+        </ul>
+    </div>
+</div>
+)}
+
+<script>
+function initTOC() {
+    const tocWidget = document.getElementById('toc-widget');
+    if (!tocWidget) return;
+
+    // Visibility Toggle
+    const toggleVisibility = () => {
+        const threshold = 300; // 稍微增加阈值
+        if (window.scrollY > threshold) {
+            tocWidget.dataset.visible = "true";
+        } else {
+            tocWidget.dataset.visible = "false";
+        }
+    };
+    window.addEventListener('scroll', toggleVisibility, { passive: true });
+    toggleVisibility();
+
+    // Active Link Highlighting
+    const links = tocWidget.querySelectorAll('a.toc-link');
+    const sections = Array.from(links).map(link => {
+        const slug = link.getAttribute('data-slug');
+        return document.getElementById(slug || '');
+    }).filter((el): el is HTMLElement => el !== null);
+
+    if (sections.length === 0) return;
+
+    const observerCallback = (entries: IntersectionObserverEntry[]) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const id = entry.target.id;
+                const link = tocWidget.querySelector(`a[data-slug="${id}"]`);
+                if (link) {
+                    tocWidget.querySelectorAll('.toc-link').forEach(l => {
+                        l.classList.remove('text-[var(--primary)]', 'font-bold', 'border-[var(--primary)]');
+                        l.classList.add('border-transparent');
+                    });
+                    link.classList.add('text-[var(--primary)]', 'font-bold', 'border-[var(--primary)]');
+                    link.classList.remove('border-transparent');
+                }
+            }
+        });
+    };
+
+    const observer = new IntersectionObserver(observerCallback, {
+        rootMargin: '-5% 0px -85% 0px',
+        threshold: 0
+    });
+
+    sections.forEach(section => observer.observe(section));
+
+    // Cleanup for Swup
+    const cleanup = () => {
+        window.removeEventListener('scroll', toggleVisibility);
+        observer.disconnect();
+        document.removeEventListener('swup:content:replace', cleanup);
+    };
+    document.addEventListener('swup:content:replace', cleanup);
+}
+
+// Initial init
+initTOC();
+
+// Support for Swup and View Transitions
+document.addEventListener('astro:page-load', initTOC);
+</script>

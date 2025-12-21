@@ -58,6 +58,8 @@ export const en: Translation = {
 	[Key.shareToFacebook]: "Share to Facebook",
 	[Key.copyLink]: "Copy Link",
 
+	[Key.toc]: "Table of Contents",
+
 	[Key.pageNotFoundTitle]: "Page Not Found",
 	[Key.pageNotFoundHeading]: "Page Lost in Space",
 	[Key.pageNotFoundDescription]:

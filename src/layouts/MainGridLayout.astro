@@ -3,6 +3,7 @@ import BackToTop from "@components/control/BackToTop.astro";
 import Footer from "@components/Footer.astro";
 import Navbar from "@components/Navbar.astro";
 import SideBar from "@components/widget/SideBar.astro";
+import TOC from "@components/widget/TOC.astro";
 import type { MarkdownHeading } from "astro";
 import { Icon } from "astro-icon/components";
 import ImageWrapper from "../components/misc/ImageWrapper.astro";
@@ -26,8 +27,16 @@ interface Props {
 	ogImage?: string;
 }
 
-let { title, description, keywords, lang, setOGTypeArticle, series, ogImage } =
-	Astro.props;
+let {
+	title,
+	description,
+	keywords,
+	lang,
+	setOGTypeArticle,
+	series,
+	headings,
+	ogImage,
+} = Astro.props;
 const hasBannerCredit =
 	siteConfig.banner.enable && siteConfig.banner.credit.enable;
 const hasBannerLink = !!siteConfig.banner.credit.url;
@@ -86,7 +95,8 @@ const isHomePageCheck = isHomePage(Astro.url.pathname);
 
             <SideBar class="mb-4 col-span-1" series={ series } isPostsRoute={isPostsRoute}></SideBar>
 
-            <main id="main" class="transition-swup-fade col-span-1 lg:col-start-2 lg:col-end-3 overflow-hidden lg:row-start-1">
+            <main id="main" class="transition-swup-fade col-span-1 lg:col-start-2 lg:col-end-3 lg:row-start-1">
+                <TOC headings={headings}></TOC>
                 <div id="content-wrapper" class="onload-animation">
                     <slot></slot>
                 </div>
