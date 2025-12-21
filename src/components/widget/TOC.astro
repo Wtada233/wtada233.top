@@ -1,57 +1,124 @@
 ---
 import type { MarkdownHeading } from "astro";
-import { i18n } from "../../i18n/translation";
+import { Icon } from "astro-icon/components";
 import I18nKey from "../../i18n/i18nKey";
+import { i18n } from "../../i18n/translation";
 
 interface Props {
-    headings?: MarkdownHeading[];
-    class?: string;
-    style?: string;
+	headings?: MarkdownHeading[];
+	class?: string;
+	style?: string;
 }
 
 const { headings, class: className, style } = Astro.props;
 
 // 检查是否为文章页面
-const isPost = Astro.url.pathname.includes('/posts/');
+const isPost = Astro.url.pathname.includes("/posts/");
 ---
 
 {isPost && headings && headings.length > 0 && (
-<div id="toc-widget" class:list={["fixed top-24 right-4 2xl:right-16 z-40 hidden lg:block transition-all duration-500 opacity-0 translate-x-10 pointer-events-none data-[visible=true]:opacity-100 data-[visible=true]:translate-x-0 data-[visible=true]:pointer-events-auto", className]} style={style}>
-    <div class="card-base p-4 w-56 2xl:w-64 max-h-[calc(100vh-8rem)] overflow-y-auto hide-scrollbar shadow-lg">
-        <div class="font-bold text-lg mb-2 pl-4 border-l-4 border-[var(--primary)] relative transition-colors text-90">
-            {i18n(I18nKey.toc)}
+<div id="toc-container" class="lg:block hidden">
+    <!-- 展开状态的 TOC -->
+    <div id="toc-widget" 
+        class:list={[
+            "fixed top-24 right-4 2xl:right-16 z-50 transition-all duration-500 opacity-0 translate-x-10 pointer-events-none",
+            className
+        ]} 
+        style={style}
+    >
+        <div class="card-base p-4 w-56 2xl:w-64 max-h-[calc(100vh-8rem)] overflow-y-auto hide-scrollbar shadow-lg relative">
+            <button id="toc-close-btn" class="absolute top-3 right-3 text-75 hover:text-[var(--primary)] transition-colors active:scale-90 z-[60] p-1" aria-label="Close TOC">
+                <Icon name="material-symbols:close-rounded" class="text-xl pointer-events-none" />
+            </button>
+            <div class="font-bold text-lg mb-2 pl-4 border-l-4 border-[var(--primary)] relative transition-colors text-90 pr-8">
+                {i18n(I18nKey.toc)}
+            </div>
+            <ul class="flex flex-col gap-1 text-sm text-75">
+                {headings.map((heading) => (
+                    <li class="transition hover:text-[var(--primary)]" style={{ paddingLeft: `${Math.max(0, heading.depth - 1) * 0.5}rem` }}>
+                        <a href={`#${heading.slug}`} class="toc-link block py-1 truncate transition-colors border-l-2 border-transparent pl-2 hover:border-[var(--primary)]" data-slug={heading.slug}>
+                            {heading.text}
+                        </a>
+                    </li>
+                ))}
+            </ul>
         </div>
-        <ul class="flex flex-col gap-1 text-sm text-75">
-            {headings.map((heading) => (
-                <li class="transition hover:text-[var(--primary)]" style={{ paddingLeft: `${Math.max(0, heading.depth - 1) * 0.5}rem` }}>
-                    <a href={`#${heading.slug}`} class="toc-link block py-1 truncate transition-colors border-l-2 border-transparent pl-2 hover:border-[var(--primary)]" data-slug={heading.slug}>
-                        {heading.text}
-                    </a>
-                </li>
-            ))}
-        </ul>
     </div>
+
+    <!-- 隐藏状态下的展开按钮 -->
+    <button id="toc-show-btn" 
+        class="fixed top-24 right-0 z-50 bg-[var(--card-bg)] border border-[var(--line-divider)] border-r-0 rounded-l-xl p-2 shadow-lg text-[var(--primary)] transition-all duration-500 translate-x-12 opacity-0 pointer-events-none hover:pr-4"
+        aria-label="Show TOC"
+    >
+        <Icon name="material-symbols:chevron-left-rounded" class="text-2xl" />
+    </button>
 </div>
 )}
+
+<style is:global>
+    /* 核心逻辑：用户隐藏优先级最高 */
+    #toc-widget[data-user-hidden="true"] {
+        opacity: 0 !important;
+        transform: translateX(2.5rem) !important;
+        pointer-events: none !important;
+    }
+    
+    /* 滚动可见性逻辑 */
+    #toc-widget[data-visible="true"]:not([data-user-hidden="true"]) {
+        opacity: 1;
+        transform: translateX(0);
+        pointer-events: auto;
+    }
+
+    /* 展开按钮逻辑 */
+    #toc-show-btn[data-visible="true"][data-user-hidden="true"] {
+        opacity: 1;
+        transform: translateX(0);
+        pointer-events: auto;
+    }
+</style>
 
 <script>
 function initTOC() {
     const tocWidget = document.getElementById('toc-widget');
-    if (!tocWidget) return;
+    const showBtn = document.getElementById('toc-show-btn');
+    const closeBtn = document.getElementById('toc-close-btn');
+    if (!tocWidget || !showBtn || !closeBtn) return;
 
-    // Visibility Toggle
+    // 状态加载
+    const isUserHidden = localStorage.getItem('toc-user-hidden') === 'true';
+    if (isUserHidden) {
+        tocWidget.setAttribute('data-user-hidden', 'true');
+        showBtn.setAttribute('data-user-hidden', 'true');
+    }
+
     const toggleVisibility = () => {
-        const threshold = 300; // 稍微增加阈值
-        if (window.scrollY > threshold) {
-            tocWidget.dataset.visible = "true";
-        } else {
-            tocWidget.dataset.visible = "false";
-        }
+        const threshold = 300;
+        const visible = window.scrollY > threshold ? "true" : "false";
+        tocWidget.setAttribute('data-visible', visible);
+        showBtn.setAttribute('data-visible', visible);
     };
+
+    // 手动关闭
+    closeBtn.onclick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        tocWidget.setAttribute('data-user-hidden', 'true');
+        showBtn.setAttribute('data-user-hidden', 'true');
+        localStorage.setItem('toc-user-hidden', 'true');
+    };
+
+    // 手动开启
+    showBtn.onclick = () => {
+        tocWidget.removeAttribute('data-user-hidden');
+        showBtn.removeAttribute('data-user-hidden');
+        localStorage.setItem('toc-user-hidden', 'false');
+    };
+
     window.addEventListener('scroll', toggleVisibility, { passive: true });
     toggleVisibility();
 
-    // Active Link Highlighting
+    // 目录高亮逻辑
     const links = tocWidget.querySelectorAll('a.toc-link');
     const sections = Array.from(links).map(link => {
         const slug = link.getAttribute('data-slug');
@@ -78,13 +145,12 @@ function initTOC() {
     };
 
     const observer = new IntersectionObserver(observerCallback, {
-        rootMargin: '-5% 0px -85% 0px',
+        rootMargin: '-5% 0px -80% 0px',
         threshold: 0
     });
 
     sections.forEach(section => observer.observe(section));
 
-    // Cleanup for Swup
     const cleanup = () => {
         window.removeEventListener('scroll', toggleVisibility);
         observer.disconnect();
@@ -93,9 +159,6 @@ function initTOC() {
     document.addEventListener('swup:content:replace', cleanup);
 }
 
-// Initial init
 initTOC();
-
-// Support for Swup and View Transitions
 document.addEventListener('astro:page-load', initTOC);
 </script>
