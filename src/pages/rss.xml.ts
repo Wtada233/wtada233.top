@@ -29,7 +29,7 @@ export async function GET(context: APIContext): Promise<Response> {
 			let renderedContent = parser.render(cleanedContent);
 
 			// Process images to ensure they have absolute URLs and use the correct build path
-			const imgRegex = /src="([^"]+)"/g;
+			const imgRegex = /src=["']([^"']+)["']/g;
 			const matches = [...renderedContent.matchAll(imgRegex)];
 			const replacements = new Map<string, string>();
 

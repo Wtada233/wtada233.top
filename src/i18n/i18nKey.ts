@@ -21,6 +21,11 @@ enum I18nKey {
 	postCount = "postCount",
 	postsCount = "postsCount",
 
+	byTime = "byTime",
+	bySeries = "bySeries",
+	byCategory = "byCategory",
+	byTag = "byTag",
+
 	numberOfSeries = "numberOfSeries",
 	numberOfArticles = "numberOfArticles",
 
@@ -41,6 +46,7 @@ enum I18nKey {
 
 	pinned = "pinned",
 	pinnedToBottom = "pinnedToBottom",
+	disabledEffects = "disabledEffects",
 
 	// Blog Stats
 	totalArticles = "totalArticles",

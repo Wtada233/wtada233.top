@@ -1,19 +1,19 @@
 ---
 import type { MarkdownHeading } from "astro";
-import { i18n } from "../../i18n/translation";
-import I18nKey from "../../i18n/i18nKey";
 import { Icon } from "astro-icon/components";
+import I18nKey from "../../i18n/i18nKey";
+import { i18n } from "../../i18n/translation";
 
 interface Props {
-    headings?: MarkdownHeading[];
-    class?: string;
-    style?: string;
+	headings?: MarkdownHeading[];
+	class?: string;
+	style?: string;
 }
 
 const { headings, class: className, style } = Astro.props;
 
 // 检查是否为文章页面
-const isPost = Astro.url.pathname.includes('/posts/');
+const isPost = Astro.url.pathname.includes("/posts/");
 ---
 
 {isPost && headings && headings.length > 0 && (

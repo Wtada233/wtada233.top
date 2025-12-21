@@ -24,6 +24,11 @@ export const ja: Translation = {
 	[Key.postCount]: "件の投稿",
 	[Key.postsCount]: "件の投稿",
 
+	[Key.byTime]: "時間順",
+	[Key.bySeries]: "シリーズ順",
+	[Key.byCategory]: "カテゴリ順",
+	[Key.byTag]: "タグ順",
+
 	[Key.numberOfSeries]: "{n} シリーズ",
 	[Key.numberOfArticles]: "{n} 記事",
 
@@ -53,6 +58,7 @@ export const ja: Translation = {
 
 	[Key.pinned]: "ピン留め",
 	[Key.pinnedToBottom]: "下部にピン留め",
+	[Key.disabledEffects]: "エフェクト無効",
 
 	[Key.share]: "共有",
 	[Key.shareToTwitter]: "Twitterで共有",

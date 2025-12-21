@@ -198,22 +198,22 @@ $: {
 		<button
 			class="btn-regular h-9 px-4 rounded-lg text-sm"
 			class:active={currentView === "time"}
-			on:click={() => (currentView = "time")}>按时间</button
+			on:click={() => (currentView = "time")}>{i18n(I18nKey.byTime)}</button
 		>
 		<button
 			class="btn-regular h-9 px-4 rounded-lg text-sm"
 			class:active={currentView === "series"}
-			on:click={() => (currentView = "series")}>按系列</button
+			on:click={() => (currentView = "series")}>{i18n(I18nKey.bySeries)}</button
 		>
 		<button
 			class="btn-regular h-9 px-4 rounded-lg text-sm"
 			class:active={currentView === "category"}
-			on:click={() => (currentView = "category")}>按分类</button
+			on:click={() => (currentView = "category")}>{i18n(I18nKey.byCategory)}</button
 		>
 		<button
 			class="btn-regular h-9 px-4 rounded-lg text-sm"
 			class:active={currentView === "tags"}
-			on:click={() => (currentView = "tags")}>按标签</button
+			on:click={() => (currentView = "tags")}>{i18n(I18nKey.byTag)}</button
 		>
 	</div>
 

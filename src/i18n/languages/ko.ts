@@ -24,6 +24,11 @@ export const ko: Translation = {
 	[Key.postCount]: "게시물",
 	[Key.postsCount]: "게시물",
 
+	[Key.byTime]: "시간별",
+	[Key.bySeries]: "시리즈별",
+	[Key.byCategory]: "카테고리별",
+	[Key.byTag]: "태그별",
+
 	[Key.numberOfSeries]: "{n} 시리즈",
 	[Key.numberOfArticles]: "{n} 게시물",
 
@@ -53,6 +58,7 @@ export const ko: Translation = {
 
 	[Key.pinned]: "고정됨",
 	[Key.pinnedToBottom]: "하단 고정",
+	[Key.disabledEffects]: "효과 비활성화",
 
 	[Key.share]: "공유",
 	[Key.shareToTwitter]: "트위터에 공유",

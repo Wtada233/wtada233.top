@@ -24,6 +24,11 @@ export const zh_CN: Translation = {
 	[Key.postCount]: "篇文章",
 	[Key.postsCount]: "篇文章",
 
+	[Key.byTime]: "按时间",
+	[Key.bySeries]: "按系列",
+	[Key.byCategory]: "按分类",
+	[Key.byTag]: "按标签",
+
 	[Key.numberOfSeries]: "{n}个系列",
 	[Key.numberOfArticles]: "{n}篇文章",
 
@@ -51,6 +56,7 @@ export const zh_CN: Translation = {
 
 	[Key.pinned]: "置顶",
 	[Key.pinnedToBottom]: "置底",
+	[Key.disabledEffects]: "禁用效果",
 
 	[Key.share]: "分享",
 	[Key.shareToTwitter]: "分享到 Twitter",

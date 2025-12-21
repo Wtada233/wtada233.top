@@ -24,8 +24,13 @@ export const zh_TW: Translation = {
 	[Key.postCount]: "篇文章",
 	[Key.postsCount]: "篇文章",
 
-	[Key.numberOfSeries]: "個系列",
-	[Key.numberOfArticles]: "篇文章",
+	[Key.byTime]: "按時間",
+	[Key.bySeries]: "按系列",
+	[Key.byCategory]: "按分類",
+	[Key.byTag]: "按標籤",
+
+	[Key.numberOfSeries]: "{n}個系列",
+	[Key.numberOfArticles]: "{n}篇文章",
 
 	[Key.themeColor]: "主題色",
 
@@ -44,6 +49,7 @@ export const zh_TW: Translation = {
 
 	[Key.pinned]: "置頂",
 	[Key.pinnedToBottom]: "置底",
+	[Key.disabledEffects]: "禁用效果",
 
 	// 部落格統計
 	[Key.totalArticles]: "文章總數",

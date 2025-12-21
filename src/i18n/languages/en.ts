@@ -24,6 +24,11 @@ export const en: Translation = {
 	[Key.postCount]: "post",
 	[Key.postsCount]: "posts",
 
+	[Key.byTime]: "By Time",
+	[Key.bySeries]: "By Series",
+	[Key.byCategory]: "By Category",
+	[Key.byTag]: "By Tag",
+
 	[Key.numberOfSeries]: "{n} series",
 	[Key.numberOfArticles]: "{n} articles",
 
@@ -52,6 +57,7 @@ export const en: Translation = {
 
 	[Key.pinned]: "Pinned",
 	[Key.pinnedToBottom]: "Pinned to bottom",
+	[Key.disabledEffects]: "Disabled Effects",
 
 	[Key.share]: "Share",
 	[Key.shareToTwitter]: "Share to Twitter",
