@@ -1,5 +1,4 @@
 @import './variables.styl';
-@import './effects.css';
 @import './markdown.css';
 
 @tailwind components;
@@ -236,10 +235,3 @@
     z-index: 1000; /* Ensure it's above other elements */
     transition: width 0.1s ease-out; /* Smooth transition for width change */
 }
-
-
-
-
-
-
-

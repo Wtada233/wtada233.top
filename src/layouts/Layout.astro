@@ -1,5 +1,6 @@
 ---
 import ConfigCarrier from "@components/ConfigCarrier.astro";
+import EffectsCanvas from "@components/misc/EffectsCanvas.astro";
 import { fontConfig } from "@configs/font";
 import { umamiConfig } from "@configs/umami";
 import { profileConfig, siteConfig } from "@/config";
@@ -173,6 +174,7 @@ if (ogImage) {
 	<body class=" min-h-screen transition " class:list={[{ "is-home": isHomePage, "enable-banner": enableBanner }]}
 		  data-overlayscrollbars-initialize
 	>
+		<EffectsCanvas />
 		<div id="reading-progress-bar"></div>
 		<ConfigCarrier></ConfigCarrier>
 		<slot />
@@ -237,7 +239,6 @@ import {
 	MAIN_PANEL_OVERLAPS_BANNER_HEIGHT
 } from "../constants/constants";
 import { siteConfig } from '../config';
-import { initEffects } from '../utils/effects';
 import { destroyRippleEffect, initRippleEffect } from '../utils/animations/ripple';
 import { destroyScrollAnimations, initScrollAnimations } from '../utils/animations/scroll';
 import { initSemifullScrollDetection } from '../utils/semifull-scroll-detection';
@@ -440,7 +441,6 @@ function init() {
 
 /* Load settings when entering the site */
 init();
-initEffects(); // This was already here, keeping it.
 
 document.addEventListener('DOMContentLoaded', trackUmamiPageview);
 
