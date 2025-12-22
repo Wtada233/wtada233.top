@@ -233,12 +233,12 @@ import {
 	BANNER_HEIGHT_EXTEND,
 	MAIN_PANEL_OVERLAPS_BANNER_HEIGHT
 } from "../constants/constants";
-import { siteConfig } from '../config';
 import { destroyRippleEffect, initRippleEffect } from '../utils/animations/ripple';
 import { destroyScrollAnimations, initScrollAnimations } from '../utils/animations/scroll';
 import { initSemifullScrollDetection } from '../utils/semifull-scroll-detection';
 import { fetchUmamiStats } from '../utils/umami-utils';
 import { registerGlobalClickOutsideHandler, unregisterGlobalClickOutsideHandler } from '../utils/global-click-handler';
+import { showBanner } from '../utils/banner-display-initializer';
 
 import '../styles/animations/ripple.css';
 import '../styles/animations/scroll.css';
@@ -281,18 +281,6 @@ function trackUmamiPageview() {
 }
 
 const bannerEnabled = !!document.getElementById('banner-wrapper')
-
-function showBanner() {
-	if (!siteConfig.banner.enable) return;
-
-	const banner = document.getElementById('banner');
-	if (!banner) {
-		console.error('Banner element not found');
-		return;
-	}
-
-	banner.classList.remove('opacity-0', 'scale-105');
-}
 
 let backToTopBtn = document.getElementById('back-to-top-btn');
 let navbar = document.getElementById('navbar-wrapper')
