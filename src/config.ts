@@ -17,7 +17,7 @@ export const siteConfig: SiteConfig = {
 		"Wtada233的个人博客，内容很杂。主要是折腾Linux相关。本站使用Fuwari搭建，欢迎在Github提交PR！| 在线状态：uptime.wtada233.top",
 	themeColor: {
 		hue: 280, // Default hue for the theme color, from 0 to 360. e.g. red: 0, teal: 200, cyan: 250, pink: 345
-		fixed: true, // Hide the theme color picker for visitors
+		fixed: false, // Hide the theme color picker for visitors
 	},
 	banner: {
 		enable: true,
