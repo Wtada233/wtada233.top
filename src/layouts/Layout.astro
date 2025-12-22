@@ -229,6 +229,7 @@ import {
 	// SizeObserverPlugin,
 	// ClickScrollPlugin
 } from 'overlayscrollbars';
+import { loadTheme, loadHue } from "../utils/theme-initializer";
 import { umamiConfig } from "../configs/umami";
 import {getHue, getStoredTheme, setHue, setTheme} from "../utils/setting-utils";
 import {pathsEqual, url} from "../utils/url-utils";
@@ -336,15 +337,6 @@ function unregisterGlobalClickOutsideHandler() {
 
 
 
-
-function loadTheme() {
-	const theme = getStoredTheme()
-	setTheme(theme)
-}
-
-function loadHue() {
-	setHue(getHue())
-}
 
 function initCustomScrollbar() {
 	const bodyElement = document.querySelector('body');
