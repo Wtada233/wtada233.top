@@ -225,7 +225,6 @@ if (ogImage) {
 import 'overlayscrollbars/overlayscrollbars.css';
 import { loadTheme, loadHue } from "../utils/theme-initializer";
 import { initCustomScrollbar } from "../utils/scrollbar-initializer";
-import { umamiConfig } from "../configs/umami";
 import {pathsEqual, url} from "../utils/url-utils";
 import {
 	BANNER_HEIGHT,
@@ -237,6 +236,7 @@ import { destroyRippleEffect, initRippleEffect } from '../utils/animations/rippl
 import { destroyScrollAnimations, initScrollAnimations } from '../utils/animations/scroll';
 import { initSemifullScrollDetection } from '../utils/semifull-scroll-detection';
 import { fetchUmamiStats } from '../utils/umami-utils';
+import { trackUmamiPageview } from '../utils/umami-tracker';
 import { registerGlobalClickOutsideHandler, unregisterGlobalClickOutsideHandler } from '../utils/global-click-handler';
 import { showBanner } from '../utils/banner-display-initializer';
 
@@ -255,30 +255,6 @@ import '../styles/animations/scroll.css';
 // 		console.log("Failed to load fonts:", error);
 // 	}
 // })();
-
-function trackUmamiPageview() {
-	if (!umamiConfig.enabled || typeof window.umami === 'undefined') return;
-
-    const currentUrl = window.location.href;
-    const now = Date.now();
-
-    if (
-        currentUrl === window.lastTrackedUrl &&
-        typeof window.lastTrackTimestamp !== 'undefined' &&
-        (now - window.lastTrackTimestamp) < 1000
-    ) {
-        return;
-    }
-
-    window.lastTrackedUrl = currentUrl;
-    window.lastTrackTimestamp = now;
-
-	try {
-		window.umami.track();
-	} catch (error) {
-		console.error('Manual Umami tracking failed:', error);
-	}
-}
 
 const bannerEnabled = !!document.getElementById('banner-wrapper')
 
@@ -300,8 +276,6 @@ function init() {
 
 /* Load settings when entering the site */
 init();
-
-document.addEventListener('DOMContentLoaded', trackUmamiPageview);
 
 const setup = () => {
 	// TODO: temp solution to change the height of the banner
