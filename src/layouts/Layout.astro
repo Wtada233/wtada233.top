@@ -234,7 +234,6 @@ import {
 } from "../constants/constants";
 import { destroyRippleEffect, initRippleEffect } from '../utils/animations/ripple';
 import { destroyScrollAnimations, initScrollAnimations } from '../utils/animations/scroll';
-import { initSemifullScrollDetection } from '../utils/semifull-scroll-detection';
 import { fetchUmamiStats } from '../utils/umami-utils';
 import { trackUmamiPageview } from '../utils/umami-tracker';
 import { registerGlobalClickOutsideHandler, unregisterGlobalClickOutsideHandler } from '../utils/global-click-handler';
@@ -267,7 +266,7 @@ function init() {
 	loadHue();
 	initCustomScrollbar();
 	showBanner();
-	initSemifullScrollDetection(); // Call initSemifullScrollDetection on initial load
+
 	initRippleEffect(); // Initialize ripple effect
 	initScrollAnimations(); // Initialize scroll-triggered animations
     fetchUmamiStats(); // Fetch Umami stats on initial load
@@ -312,7 +311,7 @@ const setup = () => {
 		// --- End Cleanup ---
 
 		initCustomScrollbar();
-		initSemifullScrollDetection(); // Call on content replace
+
 		updateReadingProgressBar(); // New: Update progress bar on content replace
 		initRippleEffect(); // Re-initialize ripple effect after content replacement
 		initScrollAnimations(); // Re-initialize scroll-triggered animations after content replacement
@@ -358,8 +357,7 @@ const setup = () => {
 			heightExtend.classList.remove('hidden')
 		}
 
-		// Re-initialize semifull scroll detection on visit:start
-		initSemifullScrollDetection();
+
 	});
 	window.swup.hooks.on('page:view', () => {
 		// hide the temp high element when the transition is done

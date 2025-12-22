@@ -36,10 +36,7 @@ export type SiteConfig = {
 			enable: boolean;
 		};
 	};
-	navbar?: {
-		// Added navbar property to SiteConfig
-		transparentMode?: "semi" | "full" | "semifull";
-	};
+
 	showLastModified?: boolean;
 
 	favicon: Favicon[];

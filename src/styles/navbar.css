@@ -6,38 +6,8 @@
 }
 
 @media (min-width: 1024px) {
-    .glass-mode #banner-wrapper ~ * #navbar[data-transparent-mode="semi"] > div,
-    .glass-mode body:has(#banner-wrapper) #navbar[data-transparent-mode="semi"] > div {
-        backdrop-filter: blur(var(--blur-2xl)) !important;
-        background: rgba(242, 242, 247, 0.8) !important;
-        border: 1px solid rgba(255, 255, 255, var(--opacity-55)) !important;
-        border-radius: 0 0 0.75rem 0.75rem !important;
-        box-shadow: var(--shadow-navbar) !important;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    }
-
-    .glass-mode #banner-wrapper ~ * #navbar[data-transparent-mode="full"] > div,
-    .glass-mode body:has(#banner-wrapper) #navbar[data-transparent-mode="full"] > div {
-        backdrop-filter: none !important;
-        background: transparent !important;
-        border: none !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    }
-
-    .glass-mode #banner-wrapper ~ * #navbar[data-transparent-mode="semifull"] > div,
-    .glass-mode body:has(#banner-wrapper) #navbar[data-transparent-mode="semifull"] > div {
-        backdrop-filter: none !important;
-        background: transparent !important;
-        border: 1px solid transparent !important;
-        border-radius: 0 0 0.75rem 0.75rem !important;
-        box-shadow: none !important;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    }
-
-    .glass-mode #banner-wrapper ~ * #navbar[data-transparent-mode="semifull"].scrolled > div,
-    .glass-mode body:has(#banner-wrapper) #navbar[data-transparent-mode="semifull"].scrolled > div {
+    .glass-mode #banner-wrapper ~ * #navbar > div,
+    .glass-mode body:has(#banner-wrapper) #navbar > div {
         backdrop-filter: blur(var(--blur-2xl)) !important;
         background: rgba(242, 242, 247, 0.8) !important;
         border: 1px solid rgba(255, 255, 255, var(--opacity-55)) !important;
@@ -48,34 +18,7 @@
 }
 
 @media (min-width: 1024px) {
-    .glass-mode body.wallpaper-transparent #navbar[data-transparent-mode="semi"] > div {
-        backdrop-filter: blur(var(--blur-2xl)) !important;
-        background: rgba(242, 242, 247, 0.8) !important;
-        border: 1px solid rgba(255, 255, 255, var(--opacity-55)) !important;
-        border-radius: 0 0 0.75rem 0.75rem !important;
-        box-shadow: var(--shadow-navbar) !important;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    }
-
-    .glass-mode body.wallpaper-transparent #navbar[data-transparent-mode="full"] > div {
-        backdrop-filter: none !important;
-        background: transparent !important;
-        border: none !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    }
-
-    .glass-mode body.wallpaper-transparent #navbar[data-transparent-mode="semifull"] > div {
-        backdrop-filter: blur(var(--blur-2xl)) !important;
-        background: rgba(242, 242, 247, 0.8) !important;
-        border: 1px solid rgba(255, 255, 255, var(--opacity-55)) !important;
-        border-radius: 0 0 0.75rem 0.75rem !important;
-        box-shadow: var(--shadow-navbar) !important;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    }
-
-    .glass-mode body.wallpaper-transparent #navbar[data-transparent-mode="semifull"].scrolled > div {
+    .glass-mode body.wallpaper-transparent #navbar > div {
         backdrop-filter: blur(var(--blur-2xl)) !important;
         background: rgba(242, 242, 247, 0.8) !important;
         border: 1px solid rgba(255, 255, 255, var(--opacity-55)) !important;
@@ -86,38 +29,8 @@
 }
 
 @media (max-width: 1023px) {
-    .glass-mode #banner-wrapper ~ * #navbar[data-transparent-mode="semi"] > div,
-    .glass-mode body:has(#banner-wrapper) #navbar[data-transparent-mode="semi"] > div {
-        backdrop-filter: blur(var(--blur-2xl)) !important;
-        background: rgba(242, 242, 247, 0.8) !important;
-        border: 1px solid rgba(255, 255, 255, var(--opacity-55)) !important;
-        border-radius: 0 0 0.75rem 0.75rem !important;
-        box-shadow: var(--shadow-navbar) !important;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    }
-
-    .glass-mode #banner-wrapper ~ * #navbar[data-transparent-mode="full"] > div,
-    .glass-mode body:has(#banner-wrapper) #navbar[data-transparent-mode="full"] > div {
-        backdrop-filter: none !important;
-        background: transparent !important;
-        border: none !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    }
-
-    .glass-mode #banner-wrapper ~ * #navbar[data-transparent-mode="semifull"] > div,
-    .glass-mode body:has(#banner-wrapper) #navbar[data-transparent-mode="semifull"] > div {
-        backdrop-filter: none !important;
-        background: transparent !important;
-        border: 1px solid transparent !important;
-        border-radius: 0 0 0.75rem 0.75rem !important;
-        box-shadow: none !important;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    }
-
-    .glass-mode #banner-wrapper ~ * #navbar[data-transparent-mode="semifull"].scrolled > div,
-    .glass-mode body:has(#banner-wrapper) #navbar[data-transparent-mode="semifull"].scrolled > div {
+    .glass-mode #banner-wrapper ~ * #navbar > div,
+    .glass-mode body:has(#banner-wrapper) #navbar > div {
         backdrop-filter: blur(var(--blur-2xl)) !important;
         background: rgba(242, 242, 247, 0.8) !important;
         border: 1px solid rgba(255, 255, 255, var(--opacity-55)) !important;
@@ -128,34 +41,7 @@
 }
 
 @media (max-width: 1023px) {
-    .glass-mode body.wallpaper-transparent #navbar[data-transparent-mode="semi"] > div {
-        backdrop-filter: blur(var(--blur-2xl)) !important;
-        background: rgba(242, 242, 247, 0.8) !important;
-        border: 1px solid rgba(255, 255, 255, var(--opacity-55)) !important;
-        border-radius: 0 0 0.75rem 0.75rem !important;
-        box-shadow: var(--shadow-navbar) !important;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    }
-
-    .glass-mode body.wallpaper-transparent #navbar[data-transparent-mode="full"] > div {
-        backdrop-filter: none !important;
-        background: transparent !important;
-        border: none !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    }
-
-    .glass-mode body.wallpaper-transparent #navbar[data-transparent-mode="semifull"] > div {
-        backdrop-filter: blur(var(--blur-2xl)) !important;
-        background: rgba(242, 242, 247, 0.8) !important;
-        border: 1px solid rgba(255, 255, 255, var(--opacity-55)) !important;
-        border-radius: 0 0 0.75rem 0.75rem !important;
-        box-shadow: var(--shadow-navbar) !important;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    }
-
-    .glass-mode body.wallpaper-transparent #navbar[data-transparent-mode="semifull"].scrolled > div {
+    .glass-mode body.wallpaper-transparent #navbar > div {
         backdrop-filter: blur(var(--blur-2xl)) !important;
         background: rgba(242, 242, 247, 0.8) !important;
         border: 1px solid rgba(255, 255, 255, var(--opacity-55)) !important;
@@ -166,29 +52,8 @@
 }
 
 @media (min-width: 1024px) {
-    :root.dark.glass-mode #banner-wrapper ~ * #navbar[data-transparent-mode="semi"] > div,
-    :root.dark.glass-mode body:has(#banner-wrapper) #navbar[data-transparent-mode="semi"] > div {
-        background: rgba(44, 44, 46, 0.8) !important;
-        border: 1px solid rgba(0, 0, 0, var(--opacity-55)) !important;
-        box-shadow: var(--shadow-navbar-dark) !important;
-    }
-
-    :root.dark.glass-mode #banner-wrapper ~ * #navbar[data-transparent-mode="full"] > div,
-    :root.dark.glass-mode body:has(#banner-wrapper) #navbar[data-transparent-mode="full"] > div {
-        background: transparent !important;
-        border: none !important;
-        box-shadow: none !important;
-    }
-
-    :root.dark.glass-mode #banner-wrapper ~ * #navbar[data-transparent-mode="semifull"] > div,
-    :root.dark.glass-mode body:has(#banner-wrapper) #navbar[data-transparent-mode="semifull"] > div {
-        background: transparent !important;
-        border: 1px solid transparent !important;
-        box-shadow: none !important;
-    }
-
-    :root.dark.glass-mode #banner-wrapper ~ * #navbar[data-transparent-mode="semifull"].scrolled > div,
-    :root.dark.glass-mode body:has(#banner-wrapper) #navbar[data-transparent-mode="semifull"].scrolled > div {
+    :root.dark.glass-mode #banner-wrapper ~ * #navbar > div,
+    :root.dark.glass-mode body:has(#banner-wrapper) #navbar > div {
         background: rgba(44, 44, 46, 0.8) !important;
         border: 1px solid rgba(0, 0, 0, var(--opacity-55)) !important;
         box-shadow: var(--shadow-navbar-dark) !important;
@@ -196,25 +61,7 @@
 }
 
 @media (min-width: 1024px) {
-    :root.dark.glass-mode body.wallpaper-transparent #navbar[data-transparent-mode="semi"] > div {
-        background: rgba(44, 44, 46, 0.8) !important;
-        border: 1px solid rgba(0, 0, 0, var(--opacity-55)) !important;
-        box-shadow: var(--shadow-navbar-dark) !important;
-    }
-
-    :root.dark.glass-mode body.wallpaper-transparent #navbar[data-transparent-mode="full"] > div {
-        background: transparent !important;
-        border: none !important;
-        box-shadow: none !important;
-    }
-
-    :root.dark.glass-mode body.wallpaper-transparent #navbar[data-transparent-mode="semifull"] > div {
-        background: rgba(44, 44, 46, 0.8) !important;
-        border: 1px solid rgba(0, 0, 0, var(--opacity-55)) !important;
-        box-shadow: var(--shadow-navbar-dark) !important;
-    }
-
-    :root.dark.glass-mode body.wallpaper-transparent #navbar[data-transparent-mode="semifull"].scrolled > div {
+    :root.dark.glass-mode body.wallpaper-transparent #navbar > div {
         background: rgba(44, 44, 46, 0.8) !important;
         border: 1px solid rgba(0, 0, 0, var(--opacity-55)) !important;
         box-shadow: var(--shadow-navbar-dark) !important;
@@ -222,29 +69,8 @@
 }
 
 @media (max-width: 1023px) {
-    :root.dark.glass-mode #banner-wrapper ~ * #navbar[data-transparent-mode="semi"] > div,
-    :root.dark.glass-mode body:has(#banner-wrapper) #navbar[data-transparent-mode="semi"] > div {
-        background: rgba(44, 44, 46, 0.8) !important;
-        border: 1px solid rgba(0, 0, 0, var(--opacity-55)) !important;
-        box-shadow: var(--shadow-navbar-dark) !important;
-    }
-
-    :root.dark.glass-mode #banner-wrapper ~ * #navbar[data-transparent-mode="full"] > div,
-    :root.dark.glass-mode body:has(#banner-wrapper) #navbar[data-transparent-mode="full"] > div {
-        background: transparent !important;
-        border: none !important;
-        box-shadow: none !important;
-    }
-
-    :root.dark.glass-mode #banner-wrapper ~ * #navbar[data-transparent-mode="semifull"] > div,
-    :root.dark.glass-mode body:has(#banner-wrapper) #navbar[data-transparent-mode="semifull"] > div {
-        background: transparent !important;
-        border: 1px solid transparent !important;
-        box-shadow: none !important;
-    }
-
-    :root.dark.glass-mode #banner-wrapper ~ * #navbar[data-transparent-mode="semifull"].scrolled > div,
-    :root.dark.glass-mode body:has(#banner-wrapper) #navbar[data-transparent-mode="semifull"].scrolled > div {
+    :root.dark.glass-mode #banner-wrapper ~ * #navbar > div,
+    :root.dark.glass-mode body:has(#banner-wrapper) #navbar > div {
         background: rgba(44, 44, 46, 0.8) !important;
         border: 1px solid rgba(0, 0, 0, var(--opacity-55)) !important;
         box-shadow: var(--shadow-navbar-dark) !important;
@@ -252,25 +78,7 @@
 }
 
 @media (max-width: 1023px) {
-    :root.dark.glass-mode body.wallpaper-transparent #navbar[data-transparent-mode="semi"] > div {
-        background: rgba(44, 44, 46, 0.8) !important;
-        border: 1px solid rgba(0, 0, 0, var(--opacity-55)) !important;
-        box-shadow: var(--shadow-navbar-dark) !important;
-    }
-
-    :root.dark.glass-mode body.wallpaper-transparent #navbar[data-transparent-mode="full"] > div {
-        background: transparent !important;
-        border: none !important;
-        box-shadow: none !important;
-    }
-
-    :root.dark.glass-mode body.wallpaper-transparent #navbar[data-transparent-mode="semifull"] > div {
-        background: rgba(44, 44, 46, 0.8) !important;
-        border: 1px solid rgba(0, 0, 0, var(--opacity-55)) !important;
-        box-shadow: var(--shadow-navbar-dark) !important;
-    }
-
-    :root.dark.glass-mode body.wallpaper-transparent #navbar[data-transparent-mode="semifull"].scrolled > div {
+    :root.dark.glass-mode body.wallpaper-transparent #navbar > div {
         background: rgba(44, 44, 46, 0.8) !important;
         border: 1px solid rgba(0, 0, 0, var(--opacity-55)) !important;
         box-shadow: var(--shadow-navbar-dark) !important;
