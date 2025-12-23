@@ -1,87 +1,52 @@
+import { z } from "zod";
 import type { AUTO_MODE, DARK_MODE, LIGHT_MODE } from "@constants/constants";
+import {
+  SiteConfigSchema,
+  NavBarConfigSchema,
+  ProfileConfigSchema,
+  LicenseConfigSchema,
+  ExpressiveCodeConfigSchema,
+  GiscusConfigSchema,
+  NavBarLinkSchema,
+  AiSummaryConfigSchema,
+  BlogInfoConfigSchema,
+  EffectsConfigSchema,
+  FontConfigSchema,
+  FriendsConfigSchema,
+  OutdatedReminderConfigSchema,
+  PinningConfigSchema,
+  RelatedPostsConfigSchema,
+  RunningTimeConfigSchema,
+  SeriesConfigSchema,
+  ShareButtonsConfigSchema,
+  TwikooConfigSchema,
+  UmamiConfigSchema,
+} from "./config.schema";
 
-export type SiteConfig = {
-	title: string;
-	subtitle: string;
+export { LinkPreset } from "./enums";
 
-	lang:
-		| "en"
-		| "zh_CN"
-		| "zh_TW"
-		| "ja"
-		| "ko"
-		| "es"
-		| "th"
-		| "vi"
-		| "tr"
-		| "id";
+export type SiteConfig = z.infer<typeof SiteConfigSchema>;
+export type Favicon = SiteConfig["favicon"][number];
+export type NavBarLink = z.infer<typeof NavBarLinkSchema>;
+export type NavBarConfig = z.infer<typeof NavBarConfigSchema>;
+export type ProfileConfig = z.infer<typeof ProfileConfigSchema>;
+export type LicenseConfig = z.infer<typeof LicenseConfigSchema>;
+export type ExpressiveCodeConfig = z.infer<typeof ExpressiveCodeConfigSchema>;
+export type GiscusConfig = z.infer<typeof GiscusConfigSchema>;
 
-	keywords: string; // 新增：SEO 关键词
-	description: string; // 新增：站点描述
-
-	themeColor: {
-		hue: number;
-		fixed: boolean;
-	};
-	banner: {
-		enable: boolean;
-		src: string;
-		position?: "top" | "center" | "bottom";
-		credit: {
-			enable: boolean;
-			text: string;
-			url?: string;
-		};
-		text?: {
-			enable: boolean;
-		};
-	};
-
-	showLastModified?: boolean;
-
-	favicon: Favicon[];
-};
-
-export type Favicon = {
-	src: string;
-	theme?: "light" | "dark";
-	sizes?: string;
-};
-
-export enum LinkPreset {
-	Home = 0,
-	Archive = 1,
-	About = 2,
-	Friends = 3,
-	Series = 4,
-}
-
-export type NavBarLink = {
-	name: string;
-	url: string;
-	external?: boolean;
-};
-
-export type NavBarConfig = {
-	links: (NavBarLink | LinkPreset)[];
-};
-
-export type ProfileConfig = {
-	avatar?: string;
-	name: string;
-	bio?: string;
-	links: {
-		name: string;
-		url: string;
-		icon: string;
-	}[];
-};
-
-export type LicenseConfig = {
-	enable: boolean;
-	name: string;
-	url: string;
-};
+export type AiSummaryConfig = z.infer<typeof AiSummaryConfigSchema>;
+export type BlogInfoConfig = z.infer<typeof BlogInfoConfigSchema>;
+export type EffectsConfig = z.infer<typeof EffectsConfigSchema>;
+export type FontConfig = z.infer<typeof FontConfigSchema>;
+export type FriendsConfig = z.infer<typeof FriendsConfigSchema>;
+export type OutdatedReminderConfig = z.infer<typeof OutdatedReminderConfigSchema>;
+export type PinningConfig = z.infer<typeof PinningConfigSchema>;
+export type RelatedPostsConfig = z.infer<typeof RelatedPostsConfigSchema>;
+export type RunningTimeConfig = z.infer<typeof RunningTimeConfigSchema>;
+export type SeriesConfig = z.infer<typeof SeriesConfigSchema>;
+export type ShareButtonsConfig = z.infer<typeof ShareButtonsConfigSchema>;
+export type TwikooConfig = z.infer<typeof TwikooConfigSchema>;
+export type UmamiConfig = z.infer<typeof UmamiConfigSchema>;
 
 export type LIGHT_DARK_MODE =
 	| typeof LIGHT_MODE
@@ -103,20 +68,3 @@ export type BlogPostData = {
 	nextTitle?: string;
 	nextSlug?: string;
 };
-
-export type ExpressiveCodeConfig = {
-	theme: string;
-};
-
-export interface GiscusConfig {
-	enabled: boolean;
-	repo: string;
-	repoId: string;
-	category: string;
-	categoryId: string;
-	mapping?: string;
-	reactionsEnabled?: boolean;
-	emitMetadata?: boolean;
-	inputPosition?: "top" | "bottom";
-	lang?: string;
-}
