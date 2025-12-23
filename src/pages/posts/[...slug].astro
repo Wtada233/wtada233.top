@@ -46,10 +46,7 @@ const relatedPosts = await getRelatedPosts(entry, allPosts, 5); // New: Get rela
 
 let ogImage: string | undefined;
 if (entry.data.image) {
-	const coverImage = await resolveImage(
-		entry.data.image,
-		path.join("content/posts/", getDir(entry.id)),
-	);
+	const coverImage = await resolveImage(entry.data.image, path.join("content/posts/", getDir(entry.id)));
 	if (coverImage?.src) {
 		ogImage = new URL(coverImage.src, Astro.site).href;
 	}
@@ -68,9 +65,7 @@ const jsonLd = {
 		url: Astro.site,
 	},
 	datePublished: formatDateToYYYYMMDD(entry.data.published),
-	inLanguage: entry.data.lang
-		? entry.data.lang.replace("_", "-")
-		: siteConfig.lang.replace("_", "-"),
+	inLanguage: entry.data.lang ? entry.data.lang.replace("_", "-") : siteConfig.lang.replace("_", "-"),
 };
 ---
 <MainGridLayout title={entry.data.title} description={entry.data.description} keywords={entry.data.tags.join(", ")} lang={entry.data.lang} setOGTypeArticle={true} series={entry.data.series} headings={headings} ogImage={ogImage}>

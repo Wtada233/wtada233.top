@@ -21,9 +21,7 @@ function toggleGlassMode() {
 }
 
 onMount(() => {
-	isGlassMode =
-		typeof localStorage !== "undefined" &&
-		localStorage.getItem("glassMode") === "true";
+	isGlassMode = typeof localStorage !== "undefined" && localStorage.getItem("glassMode") === "true";
 	applyGlassMode();
 });
 </script>

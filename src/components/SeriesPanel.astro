@@ -23,32 +23,26 @@ const groups: { category: string; series: Series[] }[] = (() => {
 	if (!seriesConfig.enabled) {
 		return [];
 	}
-	const groupedSeries = posts.reduce(
-		(
-			grouped: { [category: string]: { [seriesName: string]: Series } },
-			post,
-		) => {
-			const category = post.data.category || i18n(I18nKey.uncategorized);
-			const series = post.data.series;
-			if (!series) {
-				return grouped;
-			}
-			if (!grouped[category]) {
-				grouped[category] = {};
-			}
-			if (!grouped[category][series]) {
-				grouped[category][series] = {
-					count: 0,
-					name: series,
-					posts: [],
-				};
-			}
-			grouped[category][series].count++;
-			grouped[category][series].posts.push(post);
+	const groupedSeries = posts.reduce((grouped: { [category: string]: { [seriesName: string]: Series } }, post) => {
+		const category = post.data.category || i18n(I18nKey.uncategorized);
+		const series = post.data.series;
+		if (!series) {
 			return grouped;
-		},
-		{},
-	);
+		}
+		if (!grouped[category]) {
+			grouped[category] = {};
+		}
+		if (!grouped[category][series]) {
+			grouped[category][series] = {
+				count: 0,
+				name: series,
+				posts: [],
+			};
+		}
+		grouped[category][series].count++;
+		grouped[category][series].posts.push(post);
+		return grouped;
+	}, {});
 
 	// convert the object to an array
 	const groupedSeriesArray = Object.keys(groupedSeries).map((key) => ({

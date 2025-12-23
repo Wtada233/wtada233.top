@@ -26,20 +26,7 @@ interface Props {
 	order: number;
 	loading?: "eager" | "lazy";
 }
-const {
-	entry,
-	title,
-	url,
-	published,
-	updated,
-	tags,
-	category,
-	image,
-	description,
-	style,
-	order,
-	loading = "lazy",
-} = Astro.props;
+const { entry, title, url, published, updated, tags, category, image, description, style, order, loading = "lazy" } = Astro.props;
 const className = Astro.props.class;
 
 const hasCover = image !== undefined && image !== null && image !== "";
@@ -47,9 +34,7 @@ const hasCover = image !== undefined && image !== null && image !== "";
 const coverWidth = "28%";
 
 const { remarkPluginFrontmatter } = await entry.render();
-const scrollAnimationEnabled =
-	(entry.data.effects ?? effectsConfig.scrollAnimation.enable) &&
-	effectsConfig.enable;
+const scrollAnimationEnabled = (entry.data.effects ?? effectsConfig.scrollAnimation.enable) && effectsConfig.enable;
 
 const displayDescription = description || remarkPluginFrontmatter.excerpt;
 ---

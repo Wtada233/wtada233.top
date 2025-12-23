@@ -19,9 +19,7 @@ export function initPagefind(): void {
 			window.pagefind = pagefind;
 
 			document.dispatchEvent(new CustomEvent("pagefindready"));
-			console.log(
-				"Pagefind loaded and initialized successfully, event dispatched.",
-			);
+			console.log("Pagefind loaded and initialized successfully, event dispatched.");
 		} catch (error) {
 			console.error("Failed to load Pagefind:", error);
 			window.pagefind = {

@@ -10,13 +10,7 @@ export function initScrollAnimations(): void {
 		pageAllowsEffects = window.postEffects;
 	}
 
-	if (
-		typeof window === "undefined" ||
-		!effectsConfig.enable ||
-		!effectsConfig.scrollAnimation.enable ||
-		!pageAllowsEffects
-	)
-		return;
+	if (typeof window === "undefined" || !effectsConfig.enable || !effectsConfig.scrollAnimation.enable || !pageAllowsEffects) return;
 
 	// Disconnect existing observer if any
 	if (_scrollAnimationObserver) {
@@ -69,10 +63,7 @@ export function initScrollAnimations(): void {
 			elementsToAnimate.push(aiSummary);
 		}
 		const licenseContainer = postContainer.querySelector(".license-container");
-		if (
-			licenseContainer &&
-			!licenseContainer.classList.contains("onload-animation")
-		) {
+		if (licenseContainer && !licenseContainer.classList.contains("onload-animation")) {
 			elementsToAnimate.push(licenseContainer);
 		}
 		const shareButtons = postContainer.querySelector(".share-buttons");
@@ -85,9 +76,7 @@ export function initScrollAnimations(): void {
 		}
 
 		// Previous/Next post navigation (if they exist)
-		const prevNextNav = postContainer.querySelector(
-			".flex.flex-col.md\\:flex-row.justify-between.mb-4.gap-4.overflow-hidden.w-full",
-		);
+		const prevNextNav = postContainer.querySelector(".flex.flex-col.md\\:flex-row.justify-between.mb-4.gap-4.overflow-hidden.w-full");
 		if (prevNextNav && !prevNextNav.classList.contains("onload-animation")) {
 			elementsToAnimate.push(prevNextNav);
 		}
@@ -103,10 +92,7 @@ export function initScrollAnimations(): void {
 
 	elementsToAnimate.forEach((element) => {
 		// Add scroll-animate class if it's not already there and not part of onload-animation
-		if (
-			!element.classList.contains("scroll-animate") &&
-			!element.classList.contains("onload-animation")
-		) {
+		if (!element.classList.contains("scroll-animate") && !element.classList.contains("onload-animation")) {
 			element.classList.add("scroll-animate");
 		}
 		observer.observe(element);

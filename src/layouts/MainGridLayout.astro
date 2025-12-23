@@ -8,11 +8,7 @@ import type { MarkdownHeading } from "astro";
 import { Icon } from "astro-icon/components";
 import ImageWrapper from "../components/misc/ImageWrapper.astro";
 import { siteConfig } from "../config";
-import {
-	BANNER_HEIGHT,
-	BANNER_HEIGHT_EXTEND,
-	MAIN_PANEL_OVERLAPS_BANNER_HEIGHT,
-} from "../constants/constants";
+import { BANNER_HEIGHT, BANNER_HEIGHT_EXTEND, MAIN_PANEL_OVERLAPS_BANNER_HEIGHT } from "../constants/constants";
 import { isHomePage, url } from "../utils/url-utils";
 import Layout from "./Layout.astro";
 
@@ -27,23 +23,11 @@ interface Props {
 	ogImage?: string;
 }
 
-let {
-	title,
-	description,
-	keywords,
-	lang,
-	setOGTypeArticle,
-	series,
-	headings,
-	ogImage,
-} = Astro.props;
-const hasBannerCredit =
-	siteConfig.banner.enable && siteConfig.banner.credit.enable;
+let { title, description, keywords, lang, setOGTypeArticle, series, headings, ogImage } = Astro.props;
+const hasBannerCredit = siteConfig.banner.enable && siteConfig.banner.credit.enable;
 const hasBannerLink = !!siteConfig.banner.credit.url;
 
-const mainPanelTop = siteConfig.banner.enable
-	? `calc(${BANNER_HEIGHT}vh - ${MAIN_PANEL_OVERLAPS_BANNER_HEIGHT}rem)`
-	: "5.5rem";
+const mainPanelTop = siteConfig.banner.enable ? `calc(${BANNER_HEIGHT}vh - ${MAIN_PANEL_OVERLAPS_BANNER_HEIGHT}rem)` : "5.5rem";
 
 const isPostsRoute = Astro.url.pathname.startsWith(url("/posts/"));
 const isHomePageCheck = isHomePage(Astro.url.pathname);

@@ -39,9 +39,7 @@ export type BlogInfoConfig = z.infer<typeof BlogInfoConfigSchema>;
 export type EffectsConfig = z.infer<typeof EffectsConfigSchema>;
 export type FontConfig = z.infer<typeof FontConfigSchema>;
 export type FriendsConfig = z.infer<typeof FriendsConfigSchema>;
-export type OutdatedReminderConfig = z.infer<
-	typeof OutdatedReminderConfigSchema
->;
+export type OutdatedReminderConfig = z.infer<typeof OutdatedReminderConfigSchema>;
 export type PinningConfig = z.infer<typeof PinningConfigSchema>;
 export type RelatedPostsConfig = z.infer<typeof RelatedPostsConfigSchema>;
 export type RunningTimeConfig = z.infer<typeof RunningTimeConfigSchema>;
@@ -50,10 +48,7 @@ export type ShareButtonsConfig = z.infer<typeof ShareButtonsConfigSchema>;
 export type TwikooConfig = z.infer<typeof TwikooConfigSchema>;
 export type UmamiConfig = z.infer<typeof UmamiConfigSchema>;
 
-export type LIGHT_DARK_MODE =
-	| typeof LIGHT_MODE
-	| typeof DARK_MODE
-	| typeof AUTO_MODE;
+export type LIGHT_DARK_MODE = typeof LIGHT_MODE | typeof DARK_MODE | typeof AUTO_MODE;
 
 export type BlogPostData = {
 	body: string;

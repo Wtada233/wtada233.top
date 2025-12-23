@@ -17,8 +17,7 @@ export function registerGlobalClickOutsideHandler() {
 
 		for (const panelConfig of panels) {
 			const panelDom = document.getElementById(panelConfig.id);
-			if (!panelDom || panelDom.classList.contains("float-panel-closed"))
-				continue;
+			if (!panelDom || panelDom.classList.contains("float-panel-closed")) continue;
 
 			let shouldIgnore = false;
 			if (target === panelDom || panelDom.contains(target)) {
@@ -26,10 +25,7 @@ export function registerGlobalClickOutsideHandler() {
 			} else {
 				for (const switchId of panelConfig.ignoreSwitches) {
 					const switchDom = document.getElementById(switchId);
-					if (
-						switchDom &&
-						(target === switchDom || switchDom.contains(target))
-					) {
+					if (switchDom && (target === switchDom || switchDom.contains(target))) {
 						shouldIgnore = true; // Clicked on the switch button
 						break;
 					}

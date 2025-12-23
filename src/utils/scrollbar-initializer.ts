@@ -22,9 +22,7 @@ export function initCustomScrollbar() {
 		},
 	);
 
-	const katexElements = document.querySelectorAll(
-		".katex-display",
-	) as NodeListOf<HTMLElement>;
+	const katexElements = document.querySelectorAll(".katex-display") as NodeListOf<HTMLElement>;
 
 	const katexObserverOptions = {
 		root: null,

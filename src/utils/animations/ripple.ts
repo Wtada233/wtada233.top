@@ -10,12 +10,7 @@ export function initRippleEffect(): void {
 		pageAllowsEffects = window.postEffects;
 	}
 
-	if (
-		!effectsConfig.enable ||
-		!effectsConfig.ripple.enable ||
-		!pageAllowsEffects
-	)
-		return;
+	if (!effectsConfig.enable || !effectsConfig.ripple.enable || !pageAllowsEffects) return;
 
 	// Remove existing delegate handler if any, to prevent duplicates
 	if (_rippleDelegateHandler) {
@@ -24,9 +19,7 @@ export function initRippleEffect(): void {
 
 	_rippleDelegateHandler = (event: MouseEvent) => {
 		const target = event.target as HTMLElement;
-		const button = target.closest(
-			".btn-regular, .btn-regular-dark, .btn-plain, .btn-card, .link",
-		) as HTMLElement;
+		const button = target.closest(".btn-regular, .btn-regular-dark, .btn-plain, .btn-card, .link") as HTMLElement;
 
 		if (!button || button.hasAttribute("disabled")) return;
 

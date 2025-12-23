@@ -1,9 +1,4 @@
-import {
-	AUTO_MODE,
-	DARK_MODE,
-	DEFAULT_THEME,
-	LIGHT_MODE,
-} from "@constants/constants.ts";
+import { AUTO_MODE, DARK_MODE, DEFAULT_THEME, LIGHT_MODE } from "@constants/constants.ts";
 import { expressiveCodeConfig } from "@/config";
 import type { LIGHT_DARK_MODE } from "@/types/config";
 
@@ -51,10 +46,7 @@ export function applyThemeToDocument(theme: LIGHT_DARK_MODE): void {
 	}
 
 	// Set the theme for Expressive Code
-	document.documentElement.setAttribute(
-		"data-theme",
-		expressiveCodeConfig.theme,
-	);
+	document.documentElement.setAttribute("data-theme", expressiveCodeConfig.theme);
 }
 
 export function setTheme(theme: LIGHT_DARK_MODE): void {

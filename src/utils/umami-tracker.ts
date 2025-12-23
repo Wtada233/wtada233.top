@@ -6,11 +6,7 @@ export function trackUmamiPageview() {
 	const currentUrl = window.location.href;
 	const now = Date.now();
 
-	if (
-		currentUrl === window.lastTrackedUrl &&
-		typeof window.lastTrackTimestamp !== "undefined" &&
-		now - window.lastTrackTimestamp < 1000
-	) {
+	if (currentUrl === window.lastTrackedUrl && typeof window.lastTrackTimestamp !== "undefined" && now - window.lastTrackTimestamp < 1000) {
 		return;
 	}
 

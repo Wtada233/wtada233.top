@@ -69,23 +69,15 @@ $: {
 	let filteredPosts: Post[] = sortedPosts;
 
 	if (tags.length > 0) {
-		filteredPosts = filteredPosts.filter(
-			(post) =>
-				Array.isArray(post.data.tags) &&
-				post.data.tags.some((tag) => tags.includes(tag)),
-		);
+		filteredPosts = filteredPosts.filter((post) => Array.isArray(post.data.tags) && post.data.tags.some((tag) => tags.includes(tag)));
 	}
 
 	if (categories.length > 0) {
-		filteredPosts = filteredPosts.filter(
-			(post) => post.data.category && categories.includes(post.data.category),
-		);
+		filteredPosts = filteredPosts.filter((post) => post.data.category && categories.includes(post.data.category));
 	}
 
 	if (series.length > 0) {
-		filteredPosts = filteredPosts.filter(
-			(post) => post.data.series && series.includes(post.data.series),
-		);
+		filteredPosts = filteredPosts.filter((post) => post.data.series && series.includes(post.data.series));
 	}
 
 	if (uncategorized) {

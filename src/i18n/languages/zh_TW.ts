@@ -71,8 +71,7 @@ export const zh_TW: Translation = {
 
 	[Key.pageNotFoundTitle]: "頁面未找到",
 	[Key.pageNotFoundHeading]: "頁面走丟了",
-	[Key.pageNotFoundDescription]:
-		"抱歉，您訪問的頁面不存在或已被移動。\n請檢查URL是否正確，或者返回首頁繼續瀏覽。",
+	[Key.pageNotFoundDescription]: "抱歉，您訪問的頁面不存在或已被移動。\n請檢查URL是否正確，或者返回首頁繼續瀏覽。",
 	[Key.pageNotFoundHomeButton]: "返回首頁",
 	[Key.pageNotFoundArchiveButton]: "文章歸檔",
 	[Key.pageNotFoundBackButtonHint]: "您也可以使用瀏覽器的後退按鈕返回上一頁",

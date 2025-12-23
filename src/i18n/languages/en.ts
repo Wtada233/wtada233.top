@@ -70,12 +70,10 @@ export const en: Translation = {
 
 	[Key.pageNotFoundTitle]: "Page Not Found",
 	[Key.pageNotFoundHeading]: "Page Lost in Space",
-	[Key.pageNotFoundDescription]:
-		"Sorry, the page you are looking for does not exist or has been moved.\nPlease check the URL or return to the homepage.",
+	[Key.pageNotFoundDescription]: "Sorry, the page you are looking for does not exist or has been moved.\nPlease check the URL or return to the homepage.",
 	[Key.pageNotFoundHomeButton]: "Back to Home",
 	[Key.pageNotFoundArchiveButton]: "Article Archive",
-	[Key.pageNotFoundBackButtonHint]:
-		"You can also use your browser's back button to return to the previous page",
+	[Key.pageNotFoundBackButtonHint]: "You can also use your browser's back button to return to the previous page",
 
 	//最后编辑时间卡片
 	[Key.lastModifiedPrefix]: "Last modified on ",

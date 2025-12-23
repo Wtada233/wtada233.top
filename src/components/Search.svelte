@@ -50,8 +50,7 @@ const fakeResult: SearchResult[] = [
 		meta: {
 			title: "This Is a Fake Search Result",
 		},
-		excerpt:
-			"Because the search cannot work in the <mark>dev</mark> environment.",
+		excerpt: "Because the search cannot work in the <mark>dev</mark> environment.",
 	},
 	{
 		url: url("/"),
@@ -99,9 +98,7 @@ const search = async (keyword: string, isDesktop: boolean): Promise<void> => {
 			const response = await window.pagefind.search(keyword, {
 				filters: activeFilters,
 			});
-			searchResults = await Promise.all(
-				response.results.map((item) => item.data()),
-			);
+			searchResults = await Promise.all(response.results.map((item) => item.data()));
 		} else if (import.meta.env.DEV) {
 			searchResults = fakeResult;
 		} else {
@@ -124,10 +121,7 @@ onMount(() => {
 	const initializeSearch = async () => {
 		if (initialized) return;
 		initialized = true;
-		pagefindLoaded =
-			typeof window !== "undefined" &&
-			!!window.pagefind &&
-			typeof window.pagefind.search === "function";
+		pagefindLoaded = typeof window !== "undefined" && !!window.pagefind && typeof window.pagefind.search === "function";
 
 		if (pagefindLoaded && import.meta.env.PROD) {
 			availableFilters = await window.pagefind.filters();
@@ -148,16 +142,12 @@ onMount(() => {
 	};
 
 	const onPagefindLoadError = () => {
-		console.warn(
-			"Pagefind load error event received. Search functionality will be limited.",
-		);
+		console.warn("Pagefind load error event received. Search functionality will be limited.");
 		initializeSearch(); // Initialize with pagefindLoaded as false
 	};
 
 	if (import.meta.env.DEV) {
-		console.warn(
-			"Pagefind is not available in development mode. Using mock data.",
-		);
+		console.warn("Pagefind is not available in development mode. Using mock data.");
 		initializeSearch();
 	} else {
 		// If pagefind is already loaded and ready when this component mounts

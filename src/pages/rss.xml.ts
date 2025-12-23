@@ -23,8 +23,7 @@ export async function GET(context: APIContext): Promise<Response> {
 
 	const items = await Promise.all(
 		blog.map(async (post) => {
-			const content =
-				typeof post.body === "string" ? post.body : String(post.body || "");
+			const content = typeof post.body === "string" ? post.body : String(post.body || "");
 			const cleanedContent = stripInvalidXmlChars(content);
 			let renderedContent = parser.render(cleanedContent);
 
@@ -41,8 +40,7 @@ export async function GET(context: APIContext): Promise<Response> {
 				try {
 					if (src.startsWith("/")) {
 						// Public folder image
-						absoluteUrl = new URL(src, context.site ?? "https://wtada233.top")
-							.href;
+						absoluteUrl = new URL(src, context.site ?? "https://wtada233.top").href;
 					} else {
 						// Relative image in content collection
 						// Construct the path relative to src/content/posts/
@@ -50,25 +48,16 @@ export async function GET(context: APIContext): Promise<Response> {
 						const resolved = await resolveImage(src, postDir);
 
 						if (resolved?.src) {
-							absoluteUrl = new URL(
-								resolved.src,
-								context.site ?? "https://wtada233.top",
-							).href;
+							absoluteUrl = new URL(resolved.src, context.site ?? "https://wtada233.top").href;
 						} else {
 							// Fallback if resolution fails (e.g. standard markdown link to public?)
 							// Try to resolve as if it was in the post's slug path
 							const postPath = url(`/posts/${post.slug}/`);
-							absoluteUrl = new URL(
-								src,
-								new URL(postPath, context.site ?? "https://wtada233.top"),
-							).href;
+							absoluteUrl = new URL(src, new URL(postPath, context.site ?? "https://wtada233.top")).href;
 						}
 					}
 				} catch (e) {
-					console.error(
-						`Failed to resolve image ${src} in post ${post.slug}`,
-						e,
-					);
+					console.error(`Failed to resolve image ${src} in post ${post.slug}`, e);
 					continue;
 				}
 

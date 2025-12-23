@@ -14,6 +14,5 @@ export const fontConfig = {
 		},
 	],
 	// 全局字体族设置
-	family:
-		"'MiSans-Regular', -apple-system, BlurMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'MicrosoftO Sans', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif",
+	family: "'MiSans-Regular', -apple-system, BlurMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'MicrosoftO Sans', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif",
 };

@@ -104,10 +104,7 @@ export async function getCategoryList(): Promise<Category[]> {
 			return;
 		}
 
-		const categoryName =
-			typeof post.data.category === "string"
-				? post.data.category.trim()
-				: String(post.data.category).trim();
+		const categoryName = typeof post.data.category === "string" ? post.data.category.trim() : String(post.data.category).trim();
 
 		count[categoryName] = count[categoryName] ? count[categoryName] + 1 : 1;
 	});
@@ -127,17 +124,12 @@ export async function getCategoryList(): Promise<Category[]> {
 	return ret;
 }
 
-export async function getPostSeries(
-	seriesName: string,
-): Promise<{ body: string; data: BlogPostData; slug: string }[]> {
+export async function getPostSeries(seriesName: string): Promise<{ body: string; data: BlogPostData; slug: string }[]> {
 	if (!seriesConfig.enabled) {
 		return [];
 	}
 	const posts = (await getCollection("posts", ({ data }) => {
-		return (
-			(import.meta.env.PROD ? data.draft !== true : true) &&
-			data.series === seriesName
-		);
+		return (import.meta.env.PROD ? data.draft !== true : true) && data.series === seriesName;
 	})) as unknown as { body: string; data: BlogPostData; slug: string }[];
 
 	posts.sort((a, b) => {
@@ -149,11 +141,7 @@ export async function getPostSeries(
 	return posts;
 }
 
-export async function getRelatedPosts(
-	currentPost: CollectionEntry<"posts">,
-	allPosts: CollectionEntry<"posts">[],
-	limit: number = relatedPostsConfig.limit,
-): Promise<CollectionEntry<"posts">[]> {
+export async function getRelatedPosts(currentPost: CollectionEntry<"posts">, allPosts: CollectionEntry<"posts">[], limit: number = relatedPostsConfig.limit): Promise<CollectionEntry<"posts">[]> {
 	if (!relatedPostsConfig.enabled) {
 		return [];
 	}
@@ -171,17 +159,11 @@ export async function getRelatedPosts(
 		// Score based on shared tags
 		const currentPostTags = currentPost.data.tags || [];
 		const postTags = post.data.tags || [];
-		const sharedTags = currentPostTags.filter((tag: string) =>
-			postTags.includes(tag),
-		);
+		const sharedTags = currentPostTags.filter((tag: string) => postTags.includes(tag));
 		score += sharedTags.length * 2; // Each shared tag gives 2 points
 
 		// Score based on shared category
-		if (
-			currentPost.data.category &&
-			post.data.category &&
-			currentPost.data.category === post.data.category
-		) {
+		if (currentPost.data.category && post.data.category && currentPost.data.category === post.data.category) {
 			score += 5; // Shared category gives 5 points
 		}
 

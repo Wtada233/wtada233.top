@@ -8,9 +8,7 @@ interface PostCardData {
 	minuteCount: string;
 }
 
-export async function getPostCardData(
-	entry: CollectionEntry<"posts">,
-): Promise<PostCardData> {
+export async function getPostCardData(entry: CollectionEntry<"posts">): Promise<PostCardData> {
 	const { remarkPluginFrontmatter } = await entry.render();
 
 	const excerpt = remarkPluginFrontmatter.excerpt;

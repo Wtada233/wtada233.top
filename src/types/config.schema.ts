@@ -4,18 +4,7 @@ import { LinkPreset } from "./enums";
 export const SiteConfigSchema = z.object({
 	title: z.string(),
 	subtitle: z.string(),
-	lang: z.enum([
-		"en",
-		"zh_CN",
-		"zh_TW",
-		"ja",
-		"ko",
-		"es",
-		"th",
-		"vi",
-		"tr",
-		"id",
-	]),
+	lang: z.enum(["en", "zh_CN", "zh_TW", "ja", "ko", "es", "th", "vi", "tr", "id"]),
 	keywords: z.string(),
 	description: z.string(),
 	themeColor: z.object({

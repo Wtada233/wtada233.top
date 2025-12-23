@@ -3,11 +3,7 @@ import { AUTO_MODE, DARK_MODE, LIGHT_MODE } from "@constants/constants.ts";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import Icon from "@iconify/svelte";
-import {
-	applyThemeToDocument,
-	getStoredTheme,
-	setTheme,
-} from "@utils/setting-utils.ts";
+import { applyThemeToDocument, getStoredTheme, setTheme } from "@utils/setting-utils.ts";
 import { onMount } from "svelte";
 import type { LIGHT_DARK_MODE } from "@/types/config.ts";
 
@@ -17,17 +13,12 @@ let mode: LIGHT_DARK_MODE = $state(AUTO_MODE);
 onMount(() => {
 	mode = getStoredTheme();
 	const darkModePreference = window.matchMedia("(prefers-color-scheme: dark)");
-	const changeThemeWhenSchemeChanged: Parameters<
-		typeof darkModePreference.addEventListener<"change">
-	>[1] = (_e) => {
+	const changeThemeWhenSchemeChanged: Parameters<typeof darkModePreference.addEventListener<"change">>[1] = (_e) => {
 		applyThemeToDocument(mode);
 	};
 	darkModePreference.addEventListener("change", changeThemeWhenSchemeChanged);
 	return () => {
-		darkModePreference.removeEventListener(
-			"change",
-			changeThemeWhenSchemeChanged,
-		);
+		darkModePreference.removeEventListener("change", changeThemeWhenSchemeChanged);
 	};
 });
 
