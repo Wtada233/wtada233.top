@@ -37,23 +37,17 @@ interface Post {
 	};
 }
 
-interface Group {
-	year: number;
+// Unified group structure for rendering
+interface DisplayGroup {
+	key: string | number;
 	posts: Post[];
-}
-
-interface TitledGroup {
-	title: string;
-	posts: Post[];
+	isTimeGroup: boolean;
 }
 
 type ViewMode = "time" | "series" | "category" | "tags";
 let currentView: ViewMode = "time";
 
-let groups: Group[] = [];
-let seriesGroups: TitledGroup[] = [];
-let categoryGroups: TitledGroup[] = [];
-let tagGroups: TitledGroup[] = [];
+let displayGroups: DisplayGroup[] = [];
 
 function formatDate(date: Date) {
 	const month = (date.getMonth() + 1).toString().padStart(2, "0");
@@ -62,6 +56,7 @@ function formatDate(date: Date) {
 }
 
 function formatTag(tagList: string[]) {
+	if (!tagList) return "";
 	return tagList.map((t) => `#${t}`).join(" ");
 }
 
@@ -84,104 +79,71 @@ $: {
 		filteredPosts = filteredPosts.filter((post) => !post.data.category);
 	}
 
-	// Time grouping
-	const groupedByYear = filteredPosts.reduce(
-		(acc, post) => {
-			const year = post.data.published.getFullYear();
-			if (!acc[year]) {
-				acc[year] = [];
-			}
-			acc[year].push(post);
-			return acc;
-		},
-		{} as Record<number, Post[]>,
-	);
-
-	const groupedPostsArray = Object.keys(groupedByYear).map((yearStr) => ({
-		year: Number.parseInt(yearStr, 10),
-		posts: groupedByYear[Number.parseInt(yearStr, 10)],
-	}));
-
-	groupedPostsArray.sort((a, b) => b.year - a.year);
-	groups = groupedPostsArray;
-
-	// Series grouping
-	const groupedBySeries = filteredPosts.reduce(
-		(acc, post) => {
-			const seriesName = post.data.series || i18n(I18nKey.noSeries);
-			if (!acc[seriesName]) {
-				acc[seriesName] = [];
-			}
-			acc[seriesName].push(post);
-			return acc;
-		},
-		{} as Record<string, Post[]>,
-	);
-	seriesGroups = Object.keys(groupedBySeries)
-		.map((seriesName) => ({
-			title: seriesName,
-			posts: groupedBySeries[seriesName],
-		}))
-		.sort((a, b) => {
-			if (a.title === i18n(I18nKey.noSeries)) return 1;
-			if (b.title === i18n(I18nKey.noSeries)) return -1;
-			return a.title.localeCompare(b.title);
-		});
-
-	// Category grouping
-	const groupedByCategory = filteredPosts.reduce(
-		(acc, post) => {
-			const categoryName = post.data.category || i18n(I18nKey.uncategorized);
-			if (!acc[categoryName]) {
-				acc[categoryName] = [];
-			}
-			acc[categoryName].push(post);
-			return acc;
-		},
-		{} as Record<string, Post[]>,
-	);
-	categoryGroups = Object.keys(groupedByCategory)
-		.map((categoryName) => ({
-			title: categoryName,
-			posts: groupedByCategory[categoryName],
-		}))
-		.sort((a, b) => {
-			if (a.title === i18n(I18nKey.uncategorized)) return 1;
-			if (b.title === i18n(I18nKey.uncategorized)) return -1;
-			return a.title.localeCompare(b.title);
-		});
-
-	// Tag grouping
-	const groupedByTag = filteredPosts.reduce(
-		(acc, post) => {
-			if (post.data.tags && post.data.tags.length > 0) {
-				post.data.tags.forEach((tagName) => {
-					if (!acc[tagName]) {
-						acc[tagName] = [];
-					}
-					acc[tagName].push(post);
-				});
-			} else {
-				const noTagsKey = i18n(I18nKey.noTags);
-				if (!acc[noTagsKey]) {
-					acc[noTagsKey] = [];
+	// ----- Data Grouping Logic -----
+	if (currentView === "time") {
+		const groupedByYear = filteredPosts.reduce(
+			(acc, post) => {
+				const year = post.data.published.getFullYear();
+				if (!acc[year]) {
+					acc[year] = [];
 				}
-				acc[noTagsKey].push(post);
-			}
-			return acc;
-		},
-		{} as Record<string, Post[]>,
-	);
-	tagGroups = Object.keys(groupedByTag)
-		.map((tagName) => ({
-			title: tagName,
-			posts: groupedByTag[tagName],
-		}))
-		.sort((a, b) => {
-			if (a.title === i18n(I18nKey.noTags)) return 1;
-			if (b.title === i18n(I18nKey.noTags)) return -1;
-			return a.title.localeCompare(b.title);
-		});
+				acc[year].push(post);
+				return acc;
+			},
+			{} as Record<number, Post[]>,
+		);
+
+		displayGroups = Object.keys(groupedByYear)
+			.map((yearStr) => ({
+				key: Number.parseInt(yearStr, 10),
+				posts: groupedByYear[Number.parseInt(yearStr, 10)],
+				isTimeGroup: true,
+			}))
+			.sort((a, b) => (b.key as number) - (a.key as number));
+	} else {
+		// series, category, or tags
+		let getGroupKey: (post: Post) => string | string[];
+		let noGroupKey: string;
+
+		if (currentView === "series") {
+			getGroupKey = (post) => post.data.series || i18n(I18nKey.noSeries);
+			noGroupKey = i18n(I18nKey.noSeries);
+		} else if (currentView === "category") {
+			getGroupKey = (post) => post.data.category || i18n(I18nKey.uncategorized);
+			noGroupKey = i18n(I18nKey.uncategorized);
+		} else {
+			// tags
+			getGroupKey = (post) => (post.data.tags && post.data.tags.length > 0 ? post.data.tags : i18n(I18nKey.noTags));
+			noGroupKey = i18n(I18nKey.noTags);
+		}
+
+		const grouped = filteredPosts.reduce(
+			(acc, post) => {
+				const keys = getGroupKey(post);
+				const keyArray = Array.isArray(keys) ? keys : [keys];
+				keyArray.forEach((key) => {
+					if (!acc[key]) {
+						acc[key] = [];
+					}
+					acc[key].push(post);
+				});
+				return acc;
+			},
+			{} as Record<string, Post[]>,
+		);
+
+		displayGroups = Object.keys(grouped)
+			.map((groupKey) => ({
+				key: groupKey,
+				posts: grouped[groupKey],
+				isTimeGroup: false,
+			}))
+			.sort((a, b) => {
+				if (a.key === noGroupKey) return 1;
+				if (b.key === noGroupKey) return -1;
+				return (a.key as string).localeCompare(b.key as string);
+			});
+	}
 }
 </script>
 
@@ -209,161 +171,81 @@ $: {
 		>
 	</div>
 
-	{#if currentView === "time"}
-		{#each groups as group}
-			<div>
-				<div class="flex flex-row w-full items-center h-[3.75rem]">
-					<div
-						class="w-[15%] md:w-[10%] transition text-2xl font-bold text-right text-75"
-					>
-						{group.year}
+	{#each displayGroups as group}
+		<div>
+			<!-- Group Header -->
+			<div class="flex flex-row w-full items-center h-[3.75rem]">
+				{#if group.isTimeGroup}
+					<div class="w-[15%] md:w-[10%] transition text-2xl font-bold text-right text-75">
+						{group.key}
 					</div>
 					<div class="w-[15%] md:w-[10%]">
-						<div
-							class="h-3 w-3 bg-none rounded-full outline outline-[var(--primary)] mx-auto
-                  -outline-offset-[2px] z-50 outline-3"
-						></div>
+						<div class="h-3 w-3 bg-none rounded-full outline outline-[var(--primary)] mx-auto -outline-offset-[2px] z-50 outline-3"></div>
 					</div>
 					<div class="w-[70%] md:w-[80%] transition text-left text-50">
 						{group.posts.length}
-						{i18n(
-							group.posts.length === 1
-								? I18nKey.postCount
-								: I18nKey.postsCount,
-						)}
+						{i18n(group.posts.length === 1 ? I18nKey.postCount : I18nKey.postsCount)}
 					</div>
-				</div>
-
-				{#each group.posts as post}
-					<a
-						href={getPostUrlBySlug(post.slug)}
-						aria-label={post.data.title}
-						class="group btn-plain !block h-10 w-full rounded-lg hover:text-[initial]"
-					>
-						<div class="flex flex-row justify-start items-center h-full">
-							<!-- date -->
-							<div
-								class="w-[15%] md:w-[10%] transition text-sm text-right text-50"
-							>
-								{formatDate(post.data.published)}
-							</div>
-
-							<!-- dot and line -->
-							<div
-								class="w-[15%] md:w-[10%] relative dash-line h-full flex items-center"
-							>
-								<div
-									class="transition-all mx-auto w-1 h-1 rounded group-hover:h-5
-                       bg-[oklch(0.5_0.05_var(--hue))] group-hover:bg-[var(--primary)]
-                       outline outline-4 z-50
-                       outline-[var(--card-bg)]
-                       group-hover:outline-[var(--btn-plain-bg-hover)]
-                       group-active:outline-[var(--btn-plain-bg-active)]"
-								></div>
-							</div>
-
-							<!-- post title -->
-							<div
-								class="w-[70%] md:max-w-[65%] md:w-[65%] text-left font-bold
-                     group-hover:translate-x-1 transition-all group-hover:text-[var(--primary)]
-                     text-75 pr-8 whitespace-nowrap overflow-ellipsis overflow-hidden"
-							>
-								{post.data.title}
-							</div>
-
-							<!-- tag list -->
-							<div
-								class="hidden md:block md:w-[15%] text-left text-sm transition
-                     whitespace-nowrap overflow-ellipsis overflow-hidden text-30"
-							>
-								{formatTag(post.data.tags)}
-							</div>
-						</div>
-					</a>
-				{/each}
-			</div>
-		{/each}
-	{:else}
-		{@const groupList =
-			currentView === "series"
-				? seriesGroups
-				: currentView === "category"
-				? categoryGroups
-				: tagGroups}
-		{#each groupList as group}
-			<div>
-				<div class="flex flex-row w-full items-center h-[3.75rem]">
-					<div
-						class="w-auto max-w-[50%] md:max-w-[70%] transition text-2xl font-bold text-left text-75 pr-4 truncate"
-					>
-						{group.title}
+				{:else}
+					<div class="w-auto max-w-[50%] md:max-w-[70%] transition text-2xl font-bold text-left text-75 pr-4 truncate">
+						{group.key}
 					</div>
 					<div class="w-[15%] md:w-[10%] flex-shrink-0">
-						<div
-							class="h-3 w-3 bg-none rounded-full outline outline-[var(--primary)] mx-auto
-              -outline-offset-[2px] z-50 outline-3"
-						></div>
+						<div class="h-3 w-3 bg-none rounded-full outline outline-[var(--primary)] mx-auto -outline-offset-[2px] z-50 outline-3"></div>
 					</div>
 					<div class="w-auto transition text-left text-50 flex-shrink-0">
 						{group.posts.length}
-						{i18n(
-							group.posts.length === 1
-								? I18nKey.postCount
-								: I18nKey.postsCount,
-						)}
+						{i18n(group.posts.length === 1 ? I18nKey.postCount : I18nKey.postsCount)}
 					</div>
-				</div>
-
-				{#each group.posts as post}
-					<a
-						href={getPostUrlBySlug(post.slug)}
-						aria-label={post.data.title}
-						class="group btn-plain !block h-10 w-full rounded-lg hover:text-[initial]"
-					>
-						<div class="flex flex-row justify-start items-center h-full">
-							<!-- date -->
-							<div
-								class="w-[15%] md:w-[10%] transition text-sm text-right text-50"
-							>
-								{formatDate(post.data.published)}
-							</div>
-
-							<!-- dot and line -->
-							<div
-								class="w-[15%] md:w-[10%] relative dash-line h-full flex items-center"
-							>
-								<div
-									class="transition-all mx-auto w-1 h-1 rounded group-hover:h-5
-                       bg-[oklch(0.5_0.05_var(--hue))] group-hover:bg-[var(--primary)]
-                       outline outline-4 z-50
-                       outline-[var(--card-bg)]
-                       group-hover:outline-[var(--btn-plain-bg-hover)]
-                       group-active:outline-[var(--btn-plain-bg-active)]"
-								></div>
-							</div>
-
-							<!-- post title -->
-							<div
-								class="w-[70%] md:max-w-[65%] md:w-[65%] text-left font-bold
-                     group-hover:translate-x-1 transition-all group-hover:text-[var(--primary)]
-                     text-75 pr-8 whitespace-nowrap overflow-ellipsis overflow-hidden"
-							>
-								{post.data.title}
-							</div>
-
-							<!-- tag list -->
-							<div
-								class="hidden md:block md:w-[15%] text-left text-sm transition
-                     whitespace-nowrap overflow-ellipsis overflow-hidden text-30"
-							>
-								{formatTag(post.data.tags)}
-							</div>
-						</div>
-					</a>
-				{/each}
+				{/if}
 			</div>
-		{/each}
-	{/if}
+
+			<!-- Post List -->
+			{#each group.posts as post}
+				<a
+					href={getPostUrlBySlug(post.slug)}
+					aria-label={post.data.title}
+					class="group btn-plain !block h-10 w-full rounded-lg hover:text-[initial]"
+				>
+					<div class="flex flex-row justify-start items-center h-full">
+						<!-- date -->
+						<div class="w-[15%] md:w-[10%] transition text-sm text-right text-50">
+							{formatDate(post.data.published)}
+						</div>
+
+						<!-- dot and line -->
+						<div class="w-[15%] md:w-[10%] relative dash-line h-full flex items-center">
+							<div
+								class="transition-all mx-auto w-1 h-1 rounded group-hover:h-5
+                   bg-[oklch(0.5_0.05_var(--hue))] group-hover:bg-[var(--primary)]
+                   outline outline-4 z-50
+                   outline-[var(--card-bg)]
+                   group-hover:outline-[var(--btn-plain-bg-hover)]
+                   group-active:outline-[var(--btn-plain-bg-active)]"
+							></div>
+						</div>
+
+						<!-- post title -->
+						<div
+							class="w-[70%] md:max-w-[65%] md:w-[65%] text-left font-bold
+                 group-hover:translate-x-1 transition-all group-hover:text-[var(--primary)]
+                 text-75 pr-8 whitespace-nowrap overflow-ellipsis overflow-hidden"
+						>
+							{post.data.title}
+						</div>
+
+						<!-- tag list -->
+						<div
+							class="hidden md:block md:w-[15%] text-left text-sm transition
+                 whitespace-nowrap overflow-ellipsis overflow-hidden text-30"
+						>
+							{formatTag(post.data.tags)}
+						</div>
+					</div>
+				</a>
+			{/each}
+		</div>
+	{/each}
 </div>
 
 <style>
