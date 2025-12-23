@@ -227,19 +227,19 @@ if (ogImage) {
 import 'overlayscrollbars/overlayscrollbars.css';
 import { loadTheme, loadHue } from "../utils/theme-initializer";
 import { initCustomScrollbar } from "../utils/scrollbar-initializer";
-import {pathsEqual, url} from "../utils/url-utils";
 import {
 	BANNER_HEIGHT,
 	BANNER_HEIGHT_HOME,
 	BANNER_HEIGHT_EXTEND,
 	MAIN_PANEL_OVERLAPS_BANNER_HEIGHT
 } from "../constants/constants";
-import { destroyRippleEffect, initRippleEffect } from '../utils/animations/ripple';
-import { destroyScrollAnimations, initScrollAnimations } from '../utils/animations/scroll';
+import { initRippleEffect } from '../utils/animations/ripple';
+import { initScrollAnimations } from '../utils/animations/scroll';
 import { fetchUmamiStats } from '../utils/umami-utils';
-import { trackUmamiPageview } from '../utils/umami-tracker';
 import { registerGlobalClickOutsideHandler, unregisterGlobalClickOutsideHandler } from '../utils/global-click-handler';
 import { showBanner } from '../utils/banner-display-initializer';
+import { setupSwupEvents } from "../utils/swup-initializer";
+import { updateReadingProgressBar } from "../utils/reading-progress";
 
 import '../styles/animations/ripple.css';
 import '../styles/animations/scroll.css';
@@ -278,112 +278,10 @@ function init() {
 /* Load settings when entering the site */
 init();
 
-const setup = () => {
-	// TODO: temp solution to change the height of the banner
-/*
-	window.swup.hooks.on('animation:out:start', () => {
-		const path = window.location.pathname
-		const body = document.querySelector('body')
-		if (path[path.length - 1] === '/' && !body.classList.contains('is-home')) {
-			body.classList.add('is-home')
-		} else if (path[path.length - 1] !== '/' && body.classList.contains('is-home')) {
-			body.classList.remove('is-home')
-		}
-	})
-*/
-	window.swup.hooks.on('link:click', () => {
-		// Remove the delay for the first time page load
-		document.documentElement.style.setProperty('--content-delay', '0ms')
-
-		// prevent elements from overlapping the navbar
-		if (!bannerEnabled) {
-			return
-		}
-		// let threshold = window.innerHeight * (BANNER_HEIGHT / 100) - 72 - 16 // Removed as unused
-		let navbar = document.getElementById('navbar-wrapper')
-		if (!navbar || !document.body.classList.contains('lg:is-home')) {
-			return
-		}
-		// Removed: navbar.classList.add('navbar-hidden')
-	})
-	window.swup.hooks.on('content:replace', () => {
-		// --- Cleanup previous page's effects ---
-		destroyRippleEffect();
-		destroyScrollAnimations();
-		// --- End Cleanup ---
-
-		initCustomScrollbar();
-
-		updateReadingProgressBar(); // New: Update progress bar on content replace
-		initRippleEffect(); // Re-initialize ripple effect after content replacement
-		initScrollAnimations(); // Re-initialize scroll-triggered animations after content replacement
-		trackUmamiPageview();
-        fetchUmamiStats(); // Re-fetch Umami stats on content replace
-        registerGlobalClickOutsideHandler(); // Re-register global click outside handler
-	});
-	window.swup.hooks.on('visit:start', (visit: {to: {url: string}}) => {
-		// change banner height immediately when a link is clicked
-		const bodyElement = document.querySelector('body')
-		const isHomePage = pathsEqual(visit.to.url, url('/'));
-
-		if (isHomePage) {
-			bodyElement!.classList.add('is-home');
-		} else {
-			bodyElement!.classList.remove('is-home');
-		}
-
-		// Control banner text visibility based on page
-		const bannerTextOverlay = document.querySelector('.banner-text-overlay');
-		if (bannerTextOverlay) {
-			if (isHomePage) {
-				bannerTextOverlay.classList.remove('hidden');
-			} else {
-				bannerTextOverlay.classList.add('hidden');
-			}
-		}
-
-		// Control mobile banner visibility based on page
-		const isMobile = window.innerWidth < 1024;
-		const bannerWrapper = document.getElementById('banner-wrapper');
-		if (isMobile && bannerWrapper) {
-			if (isHomePage) {
-				bannerWrapper.classList.remove('mobile-hide-banner');
-			} else {
-				bannerWrapper.classList.add('mobile-hide-banner');
-			}
-		}
-
-		// increase the page height during page transition to prevent the scrolling animation from jumping
-		const heightExtend = document.getElementById('page-height-extend')
-		if (heightExtend) {
-			heightExtend.classList.remove('hidden')
-		}
-
-
-	});
-	window.swup.hooks.on('page:view', () => {
-		// hide the temp high element when the transition is done
-		const heightExtend = document.getElementById('page-height-extend')
-		if (heightExtend) {
-			heightExtend.classList.remove('hidden')
-		}
-		updateReadingProgressBar(); // New: Update progress bar on page view
-        fetchUmamiStats(); // Re-fetch Umami stats on page view
-	});
-	window.swup.hooks.on('visit:end', (_visit: {to: {url: string}}) => {
-		setTimeout(() => {
-			const heightExtend = document.getElementById('page-height-extend')
-			if (heightExtend) {
-				heightExtend.classList.add('hidden')
-			}
-
-        }, 200)
-	});
-}
 if (window?.swup?.hooks) {
-	setup()
+	setupSwupEvents()
 } else {
-	document.addEventListener('swup:enable', setup)
+	document.addEventListener('swup:enable', setupSwupEvents)
 }
 
 function scrollFunction() {
@@ -434,26 +332,6 @@ window.onresize = () => {
 	let offset = Math.floor(window.innerHeight * (BANNER_HEIGHT_EXTEND / 100));
 	offset = offset - offset % 4;
 	document.documentElement.style.setProperty('--banner-height-extend', `${offset}px`);
-}
-
-function updateReadingProgressBar() {
-    const progressBar = document.getElementById('reading-progress-bar');
-    if (!progressBar) return;
-
-    // Check if the current page is a post page (to avoid showing the bar on non-article pages)
-    const isPostPage = window.location.pathname.includes('/posts/');
-
-    if (!isPostPage) {
-        progressBar.style.width = '0%';
-        return;
-    }
-
-    // Use document.documentElement for full page scrolling
-    const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-
-    // Calculate scroll percentage
-    const scrollPercent = (scrollTop / (scrollHeight - clientHeight)) * 100;
-    progressBar.style.width = `${scrollPercent}%`;
 }
 
 // Initial update on DOMContentLoaded

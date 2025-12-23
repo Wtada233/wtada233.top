@@ -2,11 +2,12 @@
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import Icon from "@iconify/svelte";
-import searchIcon from "@iconify-icons/material-symbols/search";
 import chevronRightIcon from "@iconify-icons/fa6-solid/chevron-right";
+import searchIcon from "@iconify-icons/material-symbols/search";
 import { url } from "@utils/url-utils.ts";
 import { onMount } from "svelte";
 import type { SearchResult } from "@/global";
+
 // ... (rest of the script remains same)
 
 let keywordDesktop = "";

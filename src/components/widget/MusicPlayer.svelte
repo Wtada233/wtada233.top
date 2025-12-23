@@ -4,24 +4,24 @@
 // 导入 Icon 组件，用于显示图标
 import Icon from "@iconify/svelte";
 import loadingIcon from "@iconify-icons/eos-icons/loading";
+import closeIcon from "@iconify-icons/material-symbols/close";
+import errorIcon from "@iconify-icons/material-symbols/error";
+import expandLessIcon from "@iconify-icons/material-symbols/expand-less";
+import expandMoreIcon from "@iconify-icons/material-symbols/expand-more";
+import graphicEqIcon from "@iconify-icons/material-symbols/graphic-eq";
 import musicNoteIcon from "@iconify-icons/material-symbols/music-note";
 import pauseIcon from "@iconify-icons/material-symbols/pause";
 import playArrowIcon from "@iconify-icons/material-symbols/play-arrow";
-import visibilityOffIcon from "@iconify-icons/material-symbols/visibility-off";
-import expandLessIcon from "@iconify-icons/material-symbols/expand-less";
 import queueMusicIcon from "@iconify-icons/material-symbols/queue-music";
-import shuffleIcon from "@iconify-icons/material-symbols/shuffle";
-import skipPreviousIcon from "@iconify-icons/material-symbols/skip-previous";
-import skipNextIcon from "@iconify-icons/material-symbols/skip-next";
-import repeatOneIcon from "@iconify-icons/material-symbols/repeat-one";
 import repeatIcon from "@iconify-icons/material-symbols/repeat";
-import volumeOffIcon from "@iconify-icons/material-symbols/volume-off";
+import repeatOneIcon from "@iconify-icons/material-symbols/repeat-one";
+import shuffleIcon from "@iconify-icons/material-symbols/shuffle";
+import skipNextIcon from "@iconify-icons/material-symbols/skip-next";
+import skipPreviousIcon from "@iconify-icons/material-symbols/skip-previous";
+import visibilityOffIcon from "@iconify-icons/material-symbols/visibility-off";
 import volumeDownIcon from "@iconify-icons/material-symbols/volume-down";
+import volumeOffIcon from "@iconify-icons/material-symbols/volume-off";
 import volumeUpIcon from "@iconify-icons/material-symbols/volume-up";
-import expandMoreIcon from "@iconify-icons/material-symbols/expand-more";
-import closeIcon from "@iconify-icons/material-symbols/close";
-import graphicEqIcon from "@iconify-icons/material-symbols/graphic-eq";
-import errorIcon from "@iconify-icons/material-symbols/error";
 import { onDestroy, onMount } from "svelte";
 import { slide } from "svelte/transition";
 // 从配置文件中导入音乐播放器配置
