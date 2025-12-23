@@ -1,5 +1,5 @@
-import { seriesConfig } from "./configs/series";
 import { musicPlayerConfig } from "./configs/music";
+import { seriesConfig } from "./configs/series";
 import type { ExpressiveCodeConfig, LicenseConfig, NavBarConfig, ProfileConfig, SiteConfig } from "./types/config";
 import { LinkPreset } from "./types/config";
 

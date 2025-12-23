@@ -9,6 +9,7 @@ import type {
 	FriendsConfigSchema,
 	GiscusConfigSchema,
 	LicenseConfigSchema,
+	MusicPlayerConfigSchema,
 	NavBarConfigSchema,
 	NavBarLinkSchema,
 	OutdatedReminderConfigSchema,
@@ -20,7 +21,6 @@ import type {
 	ShareButtonsConfigSchema,
 	SiteConfigSchema,
 	TwikooConfigSchema,
-	MusicPlayerConfigSchema,
 	UmamiConfigSchema,
 } from "./config.schema";
 

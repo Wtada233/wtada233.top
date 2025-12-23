@@ -14,9 +14,7 @@ import { i18n } from "../../i18n/translation";
 // 音乐播放器模式，可选 "local" 或 "meting"，从本地配置中获取或使用默认值 "meting"
 let mode = musicPlayerConfig.mode ?? "meting";
 // Meting API 地址，从配置中获取或使用默认地址
-let meting_api =
-	musicPlayerConfig.meting_api ??
-	"https://www.bilibili.uno/api?server=:server&type=:type&id=:id&auth=:auth&r=:r";
+let meting_api = musicPlayerConfig.meting_api ?? "https://www.bilibili.uno/api?server=:server&type=:type&id=:id&auth=:auth&r=:r";
 // Meting API 的 ID，从配置中获取或使用默认值
 let meting_id = musicPlayerConfig.id ?? "14164869977";
 // Meting API 的服务器，从配置中获取或使用默认值
@@ -85,21 +83,51 @@ const localPlaylist = [
 	},
 ];
 
+type MetingSong = {
+	id: number;
+
+	name?: string;
+
+	title?: string;
+
+	artist?: string;
+
+	author?: string;
+
+	pic?: string;
+
+	url?: string;
+
+	duration?: number;
+};
+
 async function fetchMetingPlaylist() {
 	if (!meting_api || !meting_id) return;
+
 	isLoading = true;
+
 	const apiUrl = meting_api
+
 		.replace(":server", meting_server)
+
 		.replace(":type", meting_type)
+
 		.replace(":id", meting_id)
+
 		.replace(":auth", "")
+
 		.replace(":r", Date.now().toString());
+
 	try {
 		const res = await fetch(apiUrl);
+
 		if (!res.ok) throw new Error("meting api error");
+
 		const list = await res.json();
-		playlist = list.map((song: any) => {
+
+		playlist = list.map((song: MetingSong) => {
 			let title = song.name ?? song.title ?? "未知歌曲";
+
 			let artist = song.artist ?? song.author ?? "未知艺术家";
 			let dur = song.duration ?? 0;
 			if (dur > 10000) dur = Math.floor(dur / 1000);
@@ -128,10 +156,10 @@ function togglePlay() {
 	if (isPlaying) {
 		audio.pause();
 	} else {
-		audio.play().catch(error => {
-            console.warn("播放失败，等待用户交互:", error);
-            autoplayFailed = true;
-        });
+		audio.play().catch((error) => {
+			console.warn("播放失败，等待用户交互:", error);
+			autoplayFailed = true;
+		});
 	}
 }
 
@@ -156,17 +184,17 @@ function togglePlaylist() {
 }
 
 function toggleShuffle() {
-    isShuffled = !isShuffled;
-    if (isShuffled) {
-        isRepeating = 0;
-    }
+	isShuffled = !isShuffled;
+	if (isShuffled) {
+		isRepeating = 0;
+	}
 }
 
 function toggleRepeat() {
-    isRepeating = (isRepeating + 1) % 3;
-    if (isRepeating !== 0) {
-        isShuffled = false;
-    }
+	isRepeating = (isRepeating + 1) % 3;
+	if (isRepeating !== 0) {
+		isShuffled = false;
+	}
 }
 
 function previousSong() {
@@ -248,26 +276,28 @@ function handleLoadSuccess() {
 		currentSong.duration = duration;
 	}
 
-    if (isPlaying) {
-        const playPromise = audio.play();
-        if (playPromise !== undefined) {
-            playPromise.catch((error) => {
-                console.warn("自动播放被拦截，等待用户交互:", error);
-                autoplayFailed = true;
-            });
-        }
-    }
+	if (isPlaying) {
+		const playPromise = audio.play();
+		if (playPromise !== undefined) {
+			playPromise.catch((error) => {
+				console.warn("自动播放被拦截，等待用户交互:", error);
+				autoplayFailed = true;
+			});
+		}
+	}
 }
 
 function handleUserInteraction() {
-    if (autoplayFailed && audio && isPlaying) {
-        const playPromise = audio.play();
-        if (playPromise !== undefined) {
-            playPromise.then(() => {
-                autoplayFailed = false;
-            }).catch(() => {});
-        }
-    }
+	if (autoplayFailed && audio && isPlaying) {
+		const playPromise = audio.play();
+		if (playPromise !== undefined) {
+			playPromise
+				.then(() => {
+					autoplayFailed = false;
+				})
+				.catch(() => {});
+		}
+	}
 }
 
 function handleLoadError(_event: Event) {
@@ -292,50 +322,47 @@ let volumeBarRect: DOMRect | null = null;
 let rafId: number | null = null;
 
 function startVolumeDrag(event: MouseEvent) {
-    if (!volumeBar) return;
-    
-    isMouseDown = true; 
+	if (!volumeBar) return;
 
-    volumeBarRect = volumeBar.getBoundingClientRect();
-    
-    updateVolumeLogic(event.clientX);
+	isMouseDown = true;
+
+	volumeBarRect = volumeBar.getBoundingClientRect();
+
+	updateVolumeLogic(event.clientX);
 }
 
 function handleVolumeMove(event: MouseEvent) {
-    if (!isMouseDown) return;
-    isVolumeDragging = true; 
-    if (rafId) return;
+	if (!isMouseDown) return;
+	isVolumeDragging = true;
+	if (rafId) return;
 
-    rafId = requestAnimationFrame(() => {
-        updateVolumeLogic(event.clientX);
-        rafId = null;
-    });
+	rafId = requestAnimationFrame(() => {
+		updateVolumeLogic(event.clientX);
+		rafId = null;
+	});
 }
 
 function stopVolumeDrag() {
-    isMouseDown = false;
-    isVolumeDragging = false;
-    volumeBarRect = null;
-    
-    if (rafId) {
-        cancelAnimationFrame(rafId);
-        rafId = null;
-    }
+	isMouseDown = false;
+	isVolumeDragging = false;
+	volumeBarRect = null;
+
+	if (rafId) {
+		cancelAnimationFrame(rafId);
+		rafId = null;
+	}
 }
 
 function updateVolumeLogic(clientX: number) {
-    if (!audio || !volumeBar) return;
+	if (!audio || !volumeBar) return;
 
-    const rect = volumeBarRect || volumeBar.getBoundingClientRect();
-    
-    const percent = Math.max(
-        0,
-        Math.min(1, (clientX - rect.left) / rect.width),
-    );
+	const rect = volumeBarRect || volumeBar.getBoundingClientRect();
 
-    volume = percent;
-    audio.volume = volume;
-    isMuted = volume === 0;
+	const percent = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+
+	volume = percent;
+	audio.volume = volume;
+	isMuted = volume === 0;
 }
 
 function toggleMute() {
@@ -366,10 +393,7 @@ function handleAudioEvents() {
 		if (isRepeating === 1) {
 			audio.currentTime = 0;
 			audio.play().catch(() => {});
-		} else if (
-			isRepeating === 2 ||
-			isShuffled
-		) {
+		} else if (isRepeating === 2 || isShuffled) {
 			nextSong();
 		} else {
 			isPlaying = false;
@@ -377,16 +401,16 @@ function handleAudioEvents() {
 	});
 }
 
-const interactionEvents = ['click', 'keydown', 'touchstart'];
+const interactionEvents = ["click", "keydown", "touchstart"];
 
 onMount(() => {
 	audio = new Audio();
 	audio.volume = volume;
 	handleAudioEvents();
 
-    interactionEvents.forEach(event => {
-        document.addEventListener(event, handleUserInteraction, { capture: true });
-    });
+	interactionEvents.forEach((event) => {
+		document.addEventListener(event, handleUserInteraction, { capture: true });
+	});
 
 	if (!musicPlayerConfig.enable) {
 		return;
@@ -402,13 +426,13 @@ onMount(() => {
 });
 
 onDestroy(() => {
-    if (typeof document !== 'undefined') {
-        interactionEvents.forEach(event => {
-            document.removeEventListener(event, handleUserInteraction, { capture: true });
-        });
-    }
-    
-    if (audio) {
+	if (typeof document !== "undefined") {
+		interactionEvents.forEach((event) => {
+			document.removeEventListener(event, handleUserInteraction, { capture: true });
+		});
+	}
+
+	if (audio) {
 		audio.pause();
 		audio.src = "";
 	}
