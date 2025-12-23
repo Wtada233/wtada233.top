@@ -62,6 +62,8 @@ enum I18nKey {
 	shareToFacebook = "shareToFacebook",
 	copyLink = "copyLink",
 
+	playlist = "playlist",
+
 	noResults = "noResults",
 
 	toc = "toc",

@@ -1,7 +1,9 @@
 ---
 import ConfigCarrier from "@components/ConfigCarrier.astro";
 import EffectsCanvas from "@components/misc/EffectsCanvas.astro";
+import MusicPlayer from "@components/widget/MusicPlayer.svelte";
 import { fontConfig } from "@configs/font";
+import { musicPlayerConfig } from "@configs/music";
 import { umamiConfig } from "@configs/umami";
 import { profileConfig, siteConfig } from "@/config";
 import { AUTO_MODE, BANNER_HEIGHT, BANNER_HEIGHT_EXTEND, BANNER_HEIGHT_HOME, DARK_MODE, DEFAULT_THEME, LIGHT_MODE, PAGE_WIDTH } from "../constants/constants";
@@ -165,8 +167,9 @@ if (ogImage) {
 		<EffectsCanvas />
 		<div id="reading-progress-bar"></div>
 		<ConfigCarrier></ConfigCarrier>
-				<slot />
-			</body>
+		<slot />
+		{musicPlayerConfig.enable && <MusicPlayer client:idle />}
+	</body>
 		</html>
 		
 		<style is:global define:vars={{

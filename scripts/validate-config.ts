@@ -5,6 +5,7 @@ import {
   profileConfig,
   licenseConfig,
   expressiveCodeConfig,
+  musicPlayerConfig,
 } from "../src/config";
 import { aiSummaryConfig } from "../src/configs/ai-summary";
 import { blogInfoConfig } from "../src/configs/blog-info";
@@ -38,6 +39,7 @@ import {
   SeriesConfigSchema,
   ShareButtonsConfigSchema,
   TwikooConfigSchema,
+  MusicPlayerConfigSchema,
   UmamiConfigSchema,
 } from "../src/types/config.schema";
 
@@ -83,6 +85,11 @@ const validations = [
     data: shareButtonsConfig,
   },
   { name: "twikooConfig", schema: TwikooConfigSchema, data: twikooConfig },
+  {
+    name: "musicPlayerConfig",
+    schema: MusicPlayerConfigSchema,
+    data: musicPlayerConfig,
+  },
   { name: "umamiConfig", schema: UmamiConfigSchema, data: umamiConfig },
 ];
 

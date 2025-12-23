@@ -20,6 +20,7 @@ import type {
 	ShareButtonsConfigSchema,
 	SiteConfigSchema,
 	TwikooConfigSchema,
+	MusicPlayerConfigSchema,
 	UmamiConfigSchema,
 } from "./config.schema";
 
@@ -46,6 +47,7 @@ export type RunningTimeConfig = z.infer<typeof RunningTimeConfigSchema>;
 export type SeriesConfig = z.infer<typeof SeriesConfigSchema>;
 export type ShareButtonsConfig = z.infer<typeof ShareButtonsConfigSchema>;
 export type TwikooConfig = z.infer<typeof TwikooConfigSchema>;
+export type MusicPlayerConfig = z.infer<typeof MusicPlayerConfigSchema>;
 export type UmamiConfig = z.infer<typeof UmamiConfigSchema>;
 
 export type LIGHT_DARK_MODE = typeof LIGHT_MODE | typeof DARK_MODE | typeof AUTO_MODE;

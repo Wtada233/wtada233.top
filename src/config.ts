@@ -1,6 +1,9 @@
 import { seriesConfig } from "./configs/series";
+import { musicPlayerConfig } from "./configs/music";
 import type { ExpressiveCodeConfig, LicenseConfig, NavBarConfig, ProfileConfig, SiteConfig } from "./types/config";
 import { LinkPreset } from "./types/config";
+
+export { musicPlayerConfig };
 
 export const siteConfig: SiteConfig = {
 	title: "Wtada233's Blog",

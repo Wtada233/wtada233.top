@@ -63,6 +63,8 @@ export const zh_CN: Translation = {
 	[Key.shareToFacebook]: "分享到 Facebook",
 	[Key.copyLink]: "复制链接",
 
+	[Key.playlist]: "播放列表",
+
 	[Key.noResults]: "未找到相关内容",
 
 	[Key.toc]: "目录",

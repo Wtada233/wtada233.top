@@ -172,6 +172,15 @@ export const TwikooConfigSchema = z.object({
 	lang: z.string(),
 });
 
+export const MusicPlayerConfigSchema = z.object({
+	enable: z.boolean(),
+	mode: z.enum(["meting", "local"]),
+	meting_api: z.string().optional(),
+	id: z.string().optional(),
+	server: z.string().optional(),
+	type: z.string().optional(),
+});
+
 export const UmamiConfigSchema = z.object({
 	enabled: z.boolean(),
 	scriptUrl: z.string(),
