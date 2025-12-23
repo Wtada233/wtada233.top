@@ -12,6 +12,37 @@ let result: SearchResult[] = [];
 let isSearching = false;
 let pagefindLoaded = false;
 let initialized = false;
+let availableFilters: Record<string, Record<string, number>> = {};
+let activeFilters: Record<string, string> = {};
+
+const toggleFilter = (filterName: string, value: string) => {
+	if (activeFilters[filterName] === value) {
+		const newFilters = { ...activeFilters };
+		delete newFilters[filterName];
+		activeFilters = newFilters;
+	} else {
+		activeFilters = { ...activeFilters, [filterName]: value };
+	}
+
+	if (window.innerWidth >= 1024) {
+		search(keywordDesktop, true);
+	} else {
+		search(keywordMobile, false);
+	}
+};
+
+const getFilterLabel = (filterName: string): string => {
+	switch (filterName.toLowerCase()) {
+		case "category":
+			return i18n(I18nKey.categories);
+		case "tag":
+			return i18n(I18nKey.tags);
+		case "series":
+			return i18n(I18nKey.series);
+		default:
+			return filterName;
+	}
+};
 
 const fakeResult: SearchResult[] = [
 	{
@@ -48,7 +79,8 @@ const setPanelVisibility = (show: boolean, isDesktop: boolean): void => {
 };
 
 const search = async (keyword: string, isDesktop: boolean): Promise<void> => {
-	if (!keyword) {
+	const hasActiveFilters = Object.keys(activeFilters).length > 0;
+	if (!keyword && !hasActiveFilters) {
 		setPanelVisibility(false, isDesktop);
 		result = [];
 		return;
@@ -64,7 +96,9 @@ const search = async (keyword: string, isDesktop: boolean): Promise<void> => {
 		let searchResults: SearchResult[] = [];
 
 		if (import.meta.env.PROD && pagefindLoaded && window.pagefind) {
-			const response = await window.pagefind.search(keyword);
+			const response = await window.pagefind.search(keyword, {
+				filters: activeFilters,
+			});
 			searchResults = await Promise.all(
 				response.results.map((item) => item.data()),
 			);
@@ -76,7 +110,7 @@ const search = async (keyword: string, isDesktop: boolean): Promise<void> => {
 		}
 
 		result = searchResults;
-		setPanelVisibility(result.length > 0, isDesktop);
+		setPanelVisibility(true, isDesktop);
 	} catch (error) {
 		console.error("Search error:", error);
 		result = [];
@@ -87,13 +121,24 @@ const search = async (keyword: string, isDesktop: boolean): Promise<void> => {
 };
 
 onMount(() => {
-	const initializeSearch = () => {
+	const initializeSearch = async () => {
 		if (initialized) return;
 		initialized = true;
 		pagefindLoaded =
 			typeof window !== "undefined" &&
 			!!window.pagefind &&
 			typeof window.pagefind.search === "function";
+
+		if (pagefindLoaded && import.meta.env.PROD) {
+			availableFilters = await window.pagefind.filters();
+		} else if (import.meta.env.DEV) {
+			availableFilters = {
+				category: { Tech: 3, Life: 2 },
+				tag: { Linux: 5, Astro: 3 },
+				series: { "Blog Modding": 2, "Server Setup": 1 },
+			};
+		}
+
 		if (keywordDesktop) search(keywordDesktop, true);
 		if (keywordMobile) search(keywordMobile, false);
 	};
@@ -181,6 +226,38 @@ $: if (initialized && keywordMobile !== undefined) {
 <!-- search panel -->
 <div id="search-panel" class="float-panel float-panel-closed search-panel absolute md:w-[30rem]
 top-20 left-4 md:left-[unset] right-4 shadow-2xl rounded-2xl p-2">
+
+    <!-- filters -->
+    {#if pagefindLoaded && Object.keys(availableFilters).length > 0}
+        <div class="px-2 py-2 mb-2 border-b border-black/5 dark:border-white/5 flex flex-col gap-3">
+            {#each Object.entries(availableFilters) as [filterName, options]}
+                <div class="flex flex-wrap gap-1.5 items-center">
+                    <span class="text-[10px] text-50 font-bold uppercase tracking-wider w-16">{getFilterLabel(filterName)}:</span>
+                    <div class="flex flex-wrap gap-1 flex-1">
+                        {#each Object.entries(options) as [val, count]}
+                            <button 
+                                class="text-[11px] px-2 py-0.5 rounded-md transition-all border border-transparent 
+                                {activeFilters[filterName] === val 
+                                    ? 'bg-[var(--primary)] text-white' 
+                                    : 'bg-black/5 dark:bg-white/5 hover:border-[var(--primary)] text-black/50 dark:text-white/50'}"
+                                on:click={() => toggleFilter(filterName, val)}
+                            >
+                                {val} <span class="opacity-50 ml-0.5">({count})</span>
+                            </button>
+                        {/each}
+                    </div>
+                </div>
+            {/each}
+            {#if Object.keys(activeFilters).length > 0}
+                <button 
+                    class="text-[10px] uppercase font-bold text-[var(--primary)] hover:underline self-end"
+                    on:click={() => { activeFilters = {}; search(window.innerWidth >= 1024 ? keywordDesktop : keywordMobile, window.innerWidth >= 1024); }}
+                >
+                    Clear All
+                </button>
+            {/if}
+        </div>
+    {/if}
 
     <!-- search bar inside panel for phone/tablet -->
     <div id="search-bar-inside" class="flex relative lg:hidden transition-all items-center h-11 rounded-xl
