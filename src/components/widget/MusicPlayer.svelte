@@ -3,6 +3,25 @@
 
 // 导入 Icon 组件，用于显示图标
 import Icon from "@iconify/svelte";
+import loadingIcon from "@iconify-icons/eos-icons/loading";
+import musicNoteIcon from "@iconify-icons/material-symbols/music-note";
+import pauseIcon from "@iconify-icons/material-symbols/pause";
+import playArrowIcon from "@iconify-icons/material-symbols/play-arrow";
+import visibilityOffIcon from "@iconify-icons/material-symbols/visibility-off";
+import expandLessIcon from "@iconify-icons/material-symbols/expand-less";
+import queueMusicIcon from "@iconify-icons/material-symbols/queue-music";
+import shuffleIcon from "@iconify-icons/material-symbols/shuffle";
+import skipPreviousIcon from "@iconify-icons/material-symbols/skip-previous";
+import skipNextIcon from "@iconify-icons/material-symbols/skip-next";
+import repeatOneIcon from "@iconify-icons/material-symbols/repeat-one";
+import repeatIcon from "@iconify-icons/material-symbols/repeat";
+import volumeOffIcon from "@iconify-icons/material-symbols/volume-off";
+import volumeDownIcon from "@iconify-icons/material-symbols/volume-down";
+import volumeUpIcon from "@iconify-icons/material-symbols/volume-up";
+import expandMoreIcon from "@iconify-icons/material-symbols/expand-more";
+import closeIcon from "@iconify-icons/material-symbols/close";
+import graphicEqIcon from "@iconify-icons/material-symbols/graphic-eq";
+import errorIcon from "@iconify-icons/material-symbols/error";
 import { onDestroy, onMount } from "svelte";
 import { slide } from "svelte/transition";
 // 从配置文件中导入音乐播放器配置
@@ -439,10 +458,10 @@ onDestroy(() => {
 {#if showError}
 <div class="fixed bottom-20 right-4 z-[60] max-w-sm">
     <div class="bg-red-500 text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-3 animate-slide-up">
-        <Icon icon="material-symbols:error" class="text-xl flex-shrink-0" />
+        <Icon icon={errorIcon} class="text-xl flex-shrink-0" />
         <span class="text-sm flex-1">{errorMessage}</span>
         <button on:click={() => showError = false} class="text-white/80 hover:text-white transition-colors">
-            <Icon icon="material-symbols:close" class="text-lg" />
+            <Icon icon={closeIcon} class="text-lg" />
         </button>
     </div>
 </div>
@@ -467,7 +486,7 @@ onDestroy(() => {
          tabindex="0"
          aria-label="显示音乐播放器">
         {#if isLoading}
-            <Icon icon="eos-icons:loading" class="text-white text-lg" />
+            <Icon icon={loadingIcon} class="text-white text-lg" />
         {:else if isPlaying}
             <div class="flex space-x-0.5">
                 <div class="w-0.5 h-3 bg-white rounded-full animate-pulse"></div>
@@ -475,7 +494,7 @@ onDestroy(() => {
                 <div class="w-0.5 h-2 bg-white rounded-full animate-pulse" style="animation-delay: 300ms;"></div>
             </div>
         {:else}
-            <Icon icon="material-symbols:music-note" class="text-white text-lg" />
+            <Icon icon={musicNoteIcon} class="text-white text-lg" />
         {/if}
     </div>
     <!-- 收缩状态的迷你播放器 -->
@@ -500,11 +519,11 @@ onDestroy(() => {
                      class:animate-pulse={isLoading} />
                 <div class="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
                     {#if isLoading}
-                        <Icon icon="eos-icons:loading" class="text-white text-xl" />
+                        <Icon icon={loadingIcon} class="text-white text-xl" />
                     {:else if isPlaying}
-                        <Icon icon="material-symbols:pause" class="text-white text-xl" />
+                        <Icon icon={pauseIcon} class="text-white text-xl" />
                     {:else}
-                        <Icon icon="material-symbols:play-arrow" class="text-white text-xl" />
+                        <Icon icon={playArrowIcon} class="text-white text-xl" />
                     {/if}
                 </div>
             </div>
@@ -525,11 +544,11 @@ onDestroy(() => {
                 <button class="btn-plain w-8 h-8 rounded-lg flex items-center justify-center"
                         on:click|stopPropagation={toggleHidden}
                         title="隐藏播放器">
-                    <Icon icon="material-symbols:visibility-off" class="text-lg" />
+                    <Icon icon={visibilityOffIcon} class="text-lg" />
                 </button>
                 <button class="btn-plain w-8 h-8 rounded-lg flex items-center justify-center"
                         on:click|stopPropagation={toggleExpanded}>
-                    <Icon icon="material-symbols:expand-less" class="text-lg" />
+                    <Icon icon={expandLessIcon} class="text-lg" />
                 </button>
             </div>
         </div>
@@ -557,13 +576,13 @@ onDestroy(() => {
                 <button class="btn-plain w-8 h-8 rounded-lg flex items-center justify-center"
                         on:click={toggleHidden}
                         title="隐藏播放器">
-                    <Icon icon="material-symbols:visibility-off" class="text-lg" />
+                    <Icon icon={visibilityOffIcon} class="text-lg" />
                 </button>
                 <button class="btn-plain w-8 h-8 rounded-lg flex items-center justify-center"
                         class:text-[var(--primary)]={showPlaylist}
                         on:click={togglePlaylist}
                         title="播放列表">
-                    <Icon icon="material-symbols:queue-music" class="text-lg" />
+                    <Icon icon={queueMusicIcon} class="text-lg" />
                 </button>
             </div>
         </div>
@@ -589,49 +608,49 @@ onDestroy(() => {
                     class:btn-plain={!isShuffled}
                     on:click={toggleShuffle}
                     disabled={playlist.length <= 1}>
-                <Icon icon="material-symbols:shuffle" class="text-lg" />
+                <Icon icon={shuffleIcon} class="text-lg" />
             </button>
             <button class="btn-plain w-10 h-10 rounded-lg" on:click={previousSong}
                     disabled={playlist.length <= 1}>
-                <Icon icon="material-symbols:skip-previous" class="text-xl" />
+                <Icon icon={skipPreviousIcon} class="text-xl" />
             </button>
             <button class="btn-regular w-12 h-12 rounded-full"
                     class:opacity-50={isLoading}
                     disabled={isLoading}
                     on:click={togglePlay}>
                 {#if isLoading}
-                    <Icon icon="eos-icons:loading" class="text-xl" />
+                    <Icon icon={loadingIcon} class="text-xl" />
                 {:else if isPlaying}
-                    <Icon icon="material-symbols:pause" class="text-xl" />
+                    <Icon icon={pauseIcon} class="text-xl" />
                 {:else}
-                    <Icon icon="material-symbols:play-arrow" class="text-xl" />
+                    <Icon icon={playArrowIcon} class="text-xl" />
                 {/if}
             </button>
             <button class="btn-plain w-10 h-10 rounded-lg" on:click={nextSong}
                     disabled={playlist.length <= 1}>
-                <Icon icon="material-symbols:skip-next" class="text-xl" />
+                <Icon icon={skipNextIcon} class="text-xl" />
             </button>
             <button class="w-10 h-10 rounded-lg"
                     class:btn-regular={isRepeating > 0}
                     class:btn-plain={isRepeating === 0}
                     on:click={toggleRepeat}>
                 {#if isRepeating === 1}
-                    <Icon icon="material-symbols:repeat-one" class="text-lg" />
+                    <Icon icon={repeatOneIcon} class="text-lg" />
                 {:else if isRepeating === 2}
-                    <Icon icon="material-symbols:repeat" class="text-lg" />
+                    <Icon icon={repeatIcon} class="text-lg" />
                 {:else}
-                    <Icon icon="material-symbols:repeat" class="text-lg opacity-50" />
+                    <Icon icon={repeatIcon} class="text-lg opacity-50" />
                 {/if}
             </button>
         </div>
         <div class="bottom-controls flex items-center gap-2">
             <button class="btn-plain w-8 h-8 rounded-lg" on:click={toggleMute}>
                 {#if isMuted || volume === 0}
-                    <Icon icon="material-symbols:volume-off" class="text-lg" />
+                    <Icon icon={volumeOffIcon} class="text-lg" />
                 {:else if volume < 0.5}
-                    <Icon icon="material-symbols:volume-down" class="text-lg" />
+                    <Icon icon={volumeDownIcon} class="text-lg" />
                 {:else}
-                    <Icon icon="material-symbols:volume-up" class="text-lg" />
+                    <Icon icon={volumeUpIcon} class="text-lg" />
                 {/if}
             </button>
             <div class="flex-1 h-2 bg-[var(--btn-regular-bg)] rounded-full cursor-pointer"
@@ -654,7 +673,7 @@ onDestroy(() => {
             <button class="btn-plain w-8 h-8 rounded-lg flex items-center justify-center"
                     on:click={toggleExpanded}
                     title="收起播放器">
-                <Icon icon="material-symbols:expand-more" class="text-lg" />
+                <Icon icon={expandMoreIcon} class="text-lg" />
             </button>
         </div>
     </div>
@@ -664,7 +683,7 @@ onDestroy(() => {
             <div class="playlist-header flex items-center justify-between p-4 border-b border-[var(--line-divider)]">
                 <h3 class="text-lg font-semibold text-90">{i18n(Key.playlist)}</h3>
                 <button class="btn-plain w-8 h-8 rounded-lg" on:click={togglePlaylist}>
-                    <Icon icon="material-symbols:close" class="text-lg" />
+                    <Icon icon={closeIcon} class="text-lg" />
                 </button>
             </div>
             <div class="playlist-content overflow-y-auto max-h-80">
@@ -682,9 +701,9 @@ onDestroy(() => {
                          tabindex="0">
                         <div class="w-6 h-6 flex items-center justify-center">
                             {#if index === currentIndex && isPlaying}
-                                <Icon icon="material-symbols:graphic-eq" class="text-[var(--primary)] animate-pulse" />
+                                <Icon icon={graphicEqIcon} class="text-[var(--primary)] animate-pulse" />
                             {:else if index === currentIndex}
-                                <Icon icon="material-symbols:pause" class="text-[var(--primary)]" />
+                                <Icon icon={pauseIcon} class="text-[var(--primary)]" />
                             {:else}
                                 <span class="text-sm text-50">{index + 1}</span>
                             {/if}
