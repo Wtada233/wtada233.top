@@ -36,6 +36,11 @@ export const SiteConfigSchema = z.object({
 				enable: z.boolean(),
 			})
 			.optional(),
+		waves: z
+			.object({
+				enable: z.boolean(),
+			})
+			.optional(),
 	}),
 	showLastModified: z.boolean().optional(),
 	favicon: z.array(

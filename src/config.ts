@@ -31,6 +31,9 @@ export const siteConfig: SiteConfig = {
 		text: {
 			enable: true, // Enable text banner
 		},
+		waves: {
+			enable: true,
+		},
 	},
 
 	showLastModified: true, // 文章页底部的"上次编辑时间"卡片开关
