@@ -284,6 +284,12 @@ top-20 left-4 md:left-[unset] right-4 shadow-2xl rounded-2xl p-2">
                 {@html item.excerpt}
             </div>
         </a>
+    {:else}
+        {#if !isSearching && (keywordDesktop || keywordMobile || Object.keys(activeFilters).length > 0)}
+            <div class="transition text-50 text-sm px-3 py-4 text-center">
+                {i18n(I18nKey.noResults)}
+            </div>
+        {/if}
     {/each}
 </div>
 

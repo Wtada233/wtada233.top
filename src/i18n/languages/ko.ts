@@ -65,6 +65,8 @@ export const ko: Translation = {
 	[Key.shareToFacebook]: "페이스북에 공유",
 	[Key.copyLink]: "링크 복사",
 
+	[Key.noResults]: "결과를 찾을 수 없습니다",
+
 	[Key.toc]: "목차",
 
 	[Key.pageNotFoundTitle]: "페이지를 찾을 수 없습니다",

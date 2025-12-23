@@ -62,6 +62,8 @@ enum I18nKey {
 	shareToFacebook = "shareToFacebook",
 	copyLink = "copyLink",
 
+	noResults = "noResults",
+
 	toc = "toc",
 
 	pageNotFoundTitle = "pageNotFoundTitle",

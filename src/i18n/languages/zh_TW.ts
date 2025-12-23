@@ -65,6 +65,8 @@ export const zh_TW: Translation = {
 	[Key.shareToFacebook]: "分享到 Facebook",
 	[Key.copyLink]: "複製連結",
 
+	[Key.noResults]: "未找到相關內容",
+
 	[Key.toc]: "目錄",
 
 	[Key.pageNotFoundTitle]: "頁面未找到",
