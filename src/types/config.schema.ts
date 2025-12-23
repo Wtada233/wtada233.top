@@ -179,6 +179,18 @@ export const MusicPlayerConfigSchema = z.object({
 	id: z.string().optional(),
 	server: z.string().optional(),
 	type: z.string().optional(),
+	local_playlist: z
+		.array(
+			z.object({
+				id: z.number(),
+				title: z.string(),
+				artist: z.string(),
+				cover: z.string(),
+				url: z.string(),
+				duration: z.number(),
+			}),
+		)
+		.optional(),
 });
 
 export const UmamiConfigSchema = z.object({

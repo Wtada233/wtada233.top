@@ -72,16 +72,7 @@ let audio: HTMLAudioElement;
 let progressBar: HTMLElement;
 let volumeBar: HTMLElement;
 
-const localPlaylist = [
-	{
-		id: 1,
-		title: "Lemon",
-		artist: "米津玄師",
-		cover: "/music/lemon/cover.jpg",
-		url: "/music/lemon/lemon.mp3",
-		duration: 240,
-	},
-];
+const localPlaylist = musicPlayerConfig.local_playlist ?? [];
 
 type MetingSong = {
 	id: number;
