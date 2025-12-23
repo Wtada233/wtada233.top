@@ -1,26 +1,26 @@
-import { z } from "zod";
 import type { AUTO_MODE, DARK_MODE, LIGHT_MODE } from "@constants/constants";
-import {
-  SiteConfigSchema,
-  NavBarConfigSchema,
-  ProfileConfigSchema,
-  LicenseConfigSchema,
-  ExpressiveCodeConfigSchema,
-  GiscusConfigSchema,
-  NavBarLinkSchema,
-  AiSummaryConfigSchema,
-  BlogInfoConfigSchema,
-  EffectsConfigSchema,
-  FontConfigSchema,
-  FriendsConfigSchema,
-  OutdatedReminderConfigSchema,
-  PinningConfigSchema,
-  RelatedPostsConfigSchema,
-  RunningTimeConfigSchema,
-  SeriesConfigSchema,
-  ShareButtonsConfigSchema,
-  TwikooConfigSchema,
-  UmamiConfigSchema,
+import type { z } from "zod";
+import type {
+	AiSummaryConfigSchema,
+	BlogInfoConfigSchema,
+	EffectsConfigSchema,
+	ExpressiveCodeConfigSchema,
+	FontConfigSchema,
+	FriendsConfigSchema,
+	GiscusConfigSchema,
+	LicenseConfigSchema,
+	NavBarConfigSchema,
+	NavBarLinkSchema,
+	OutdatedReminderConfigSchema,
+	PinningConfigSchema,
+	ProfileConfigSchema,
+	RelatedPostsConfigSchema,
+	RunningTimeConfigSchema,
+	SeriesConfigSchema,
+	ShareButtonsConfigSchema,
+	SiteConfigSchema,
+	TwikooConfigSchema,
+	UmamiConfigSchema,
 } from "./config.schema";
 
 export { LinkPreset } from "./enums";
@@ -39,7 +39,9 @@ export type BlogInfoConfig = z.infer<typeof BlogInfoConfigSchema>;
 export type EffectsConfig = z.infer<typeof EffectsConfigSchema>;
 export type FontConfig = z.infer<typeof FontConfigSchema>;
 export type FriendsConfig = z.infer<typeof FriendsConfigSchema>;
-export type OutdatedReminderConfig = z.infer<typeof OutdatedReminderConfigSchema>;
+export type OutdatedReminderConfig = z.infer<
+	typeof OutdatedReminderConfigSchema
+>;
 export type PinningConfig = z.infer<typeof PinningConfigSchema>;
 export type RelatedPostsConfig = z.infer<typeof RelatedPostsConfigSchema>;
 export type RunningTimeConfig = z.infer<typeof RunningTimeConfigSchema>;
