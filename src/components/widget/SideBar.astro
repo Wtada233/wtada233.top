@@ -1,12 +1,10 @@
 ---
 import { seriesConfig } from "../../configs/series";
-import RunningTime from "../misc/RunningTime.astro";
-import BlogInfo from "./BlogInfo.astro";
 import Categories from "./Categories.astro";
+import CustomSidebarWidgets from "./CustomSidebarWidgets.astro";
 import Profile from "./Profile.astro";
 import Series from "./Series.astro";
 import Tag from "./Tags.astro";
-import UmamiStats from "./UmamiStats.astro";
 
 interface Props {
 	class?: string;
@@ -28,9 +26,7 @@ const series = Astro.props.series;
 	</div>
         <Categories class="onload-animation" style="animation-delay: 150ms"></Categories>
         <Tag class="onload-animation" style="animation-delay: 200ms"></Tag>
-        <UmamiStats class="onload-animation" style="animation-delay: 200ms"></UmamiStats>
-        <BlogInfo class="onload-animation" style="animation-delay: 300ms"></BlogInfo>
-        <RunningTime class="onload-animation" style="animation-delay: 350ms"></RunningTime>
+        <CustomSidebarWidgets></CustomSidebarWidgets>
 
 
     </div>
