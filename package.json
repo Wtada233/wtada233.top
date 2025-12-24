@@ -7,7 +7,7 @@
     "start": "astro dev",
     "check": "astro check",
     "validate-config": "tsx scripts/validate-config.ts",
-    "build": "pnpm run validate-config && astro build && pagefind --site dist && node scripts/compress-font.js",
+    "build": "pnpm run validate-config && astro build && pagefind --site dist && tsx scripts/compress-font.ts",
     "preview": "astro preview",
     "astro": "astro",
     "type-check": "tsc --noEmit --isolatedDeclarations",
