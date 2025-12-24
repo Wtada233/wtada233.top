@@ -42,10 +42,6 @@ export function initScrollAnimations(): void {
 	const postContainer = document.getElementById("post-container");
 	if (postContainer) {
 		// Collect main block-level children of markdown-content, but exclude those with onload-animation
-		// Performance optimization:
-		// Disabling per-element scroll animation for markdown content children.
-		// Animating hundreds/thousands of paragraphs in long articles causes severe performance issues (lag)
-		// on both mobile and desktop. The content will now appear normally without entrance animations.
 		const markdownContent = postContainer.querySelector(".markdown-content");
 		const isMobile = window.matchMedia("(max-width: 768px)").matches;
 		if (markdownContent && !isMobile) {
