@@ -44,10 +44,10 @@ if (ogImage) {
 
 let resolvedAvatarUrl: string | undefined;
 if (profileConfig.avatar) {
-    const avatarImage = await resolveImage(profileConfig.avatar);
-    if (avatarImage?.src) {
-        resolvedAvatarUrl = new URL(avatarImage.src, Astro.site).href;
-    }
+	const avatarImage = await resolveImage(profileConfig.avatar);
+	if (avatarImage?.src) {
+		resolvedAvatarUrl = new URL(avatarImage.src, Astro.site).href;
+	}
 }
 ---
 
