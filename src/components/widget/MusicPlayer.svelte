@@ -67,6 +67,15 @@ let errorMessage = "";
 // 是否显示错误信息，默认为 false
 let showError = false;
 
+function showErrorMessage(message: string) {
+	errorMessage = message;
+	showError = true;
+	setTimeout(() => {
+		showError = false;
+		errorMessage = "";
+	}, 5000); // 5秒后自动隐藏
+}
+
 // 当前歌曲信息
 let currentSong = {
 	title: "Sample Song",
