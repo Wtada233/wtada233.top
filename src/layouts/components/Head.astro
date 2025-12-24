@@ -41,7 +41,19 @@ if (ogImage) {
 	const fallbackImageUrl = new URL(url("/gemini-color.png"), Astro.site).href;
 	finalImageUrl = resolvedBannerImageUrl || fallbackImageUrl;
 }
+
+let resolvedAvatarUrl: string | undefined;
+if (profileConfig.avatar) {
+    const avatarImage = await resolveImage(profileConfig.avatar);
+    if (avatarImage?.src) {
+        resolvedAvatarUrl = new URL(avatarImage.src, Astro.site).href;
+    }
+}
 ---
+
+{siteConfig.seo?.googleSiteVerification && <meta name="google-site-verification" content={siteConfig.seo.googleSiteVerification} />}
+{siteConfig.seo?.bingSiteVerification && <meta name="msvalidate.01" content={siteConfig.seo.bingSiteVerification} />}
+{siteConfig.seo?.baiduSiteVerification && <meta name="baidu-site-verification" content={siteConfig.seo.baiduSiteVerification} />}
 
 <title>{pageTitle}</title>
 
@@ -91,3 +103,19 @@ if (ogImage) {
 {umamiConfig.enabled && (
     <script is:inline defer src={umamiConfig.scriptUrl} data-website-id={umamiConfig.websiteId} data-auto-track="false" data-do-not-track="true"></script>
 )}
+
+<script type="application/ld+json" is:inline set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": siteConfig.title,
+    "url": Astro.site,
+    "description": siteConfig.description,
+    "author": {
+        "@type": "Person",
+        "name": profileConfig.name,
+        "url": Astro.site,
+        "sameAs": profileConfig.links.map(link => link.url),
+        "image": resolvedAvatarUrl,
+        "description": profileConfig.bio
+    }
+})}></script>

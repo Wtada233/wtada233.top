@@ -1,6 +1,13 @@
 import { z } from "zod";
 import { LinkPreset } from "./enums";
 
+export const SeoConfigSchema = z.object({
+	twitterId: z.string().optional(),
+	googleSiteVerification: z.string().optional(),
+	bingSiteVerification: z.string().optional(),
+	baiduSiteVerification: z.string().optional(),
+});
+
 export const SiteConfigSchema = z.object({
 	title: z.string(),
 	subtitle: z.string(),
@@ -39,6 +46,7 @@ export const SiteConfigSchema = z.object({
 			sizes: z.string().optional(),
 		}),
 	),
+	seo: SeoConfigSchema.optional(),
 });
 
 export const NavBarLinkSchema = z.object({

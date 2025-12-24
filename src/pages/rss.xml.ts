@@ -28,12 +28,12 @@ export async function GET(context: APIContext): Promise<Response> {
 			let renderedContent = parser.render(cleanedContent);
 
 			// Process images to ensure they have absolute URLs and use the correct build path
-			const imgRegex = /src=["']([^"']+)["']/g;
+			const imgRegex = /src\s*=\s*(["'])(.*?)\1/g;
 			const matches = [...renderedContent.matchAll(imgRegex)];
 			const replacements = new Map<string, string>();
 
 			for (const match of matches) {
-				const src = match[1];
+				const src = match[2];
 				if (src.startsWith("http") || src.startsWith("data:")) continue;
 
 				let absoluteUrl = "";

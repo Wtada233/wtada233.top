@@ -1,23 +1,21 @@
 import { z } from "zod";
-import {
-  siteConfig,
-  navBarConfig,
-  profileConfig,
-  licenseConfig,
-  expressiveCodeConfig,
-  musicPlayerConfig,
-} from "../src/config";
+import { musicPlayerConfig } from "../src/configs/music";
 import { aiSummaryConfig } from "../src/configs/ai-summary";
 import { blogInfoConfig } from "../src/configs/blog-info";
 import { effectsConfig } from "../src/configs/effects";
+import { expressiveCodeConfig } from "../src/configs/expressive-code";
 import { fontConfig } from "../src/configs/font";
 import { Friends } from "../src/configs/friends";
+import { licenseConfig } from "../src/configs/license";
+import { navBarConfig } from "../src/configs/navbar";
 import { outdatedReminderConfig } from "../src/configs/outdated-reminder";
 import { pinningConfig } from "../src/configs/pinning";
+import { profileConfig } from "../src/configs/profile";
 import { relatedPostsConfig } from "../src/configs/related-posts";
 import { runningTimeConfig } from "../src/configs/running-time";
 import { seriesConfig } from "../src/configs/series";
 import { shareButtonsConfig } from "../src/configs/share-buttons";
+import { siteConfig } from "../src/configs/site";
 import { twikooConfig } from "../src/configs/twikoo";
 import { umamiConfig } from "../src/configs/umami";
 
