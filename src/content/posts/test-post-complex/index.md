@@ -4,7 +4,7 @@ published: 2025-12-24
 description: "这是一篇用于测试博客各项功能的示例文章，涵盖了 KaTeX 数学公式、灯箱图片、Admonition 提示框以及 GitHub 卡片等组件。"
 image: "https://picsum.photos/1200/600"
 tags: ["测试", "LaTeX", "Astro", "灯箱"]
-category: "Tech"
+category: "Demo"
 draft: false
 series: "功能测试"
 ai: "本文是一篇综合性的测试文章，展示了博客对复杂数学公式（KaTeX）的支持，包括麦克斯韦方程组和矩阵运算。同时，文中演示了灯箱图片效果、GitHub 仓库卡片引用、以及多种样式的警告提示框。通过这篇测试文章，可以全面验证博客在处理技术文档时的排版表现与交互体验。"
