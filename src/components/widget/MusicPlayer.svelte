@@ -340,23 +340,26 @@ let isMouseDown = false;
 let volumeBarRect: DOMRect | null = null;
 let rafId: number | null = null;
 
-function startVolumeDrag(event: MouseEvent) {
+function startVolumeDrag(event: MouseEvent | TouchEvent) {
 	if (!volumeBar) return;
 
 	isMouseDown = true;
 
 	volumeBarRect = volumeBar.getBoundingClientRect();
 
-	updateVolumeLogic(event.clientX);
+	const clientX = "touches" in event ? event.touches[0].clientX : event.clientX;
+	updateVolumeLogic(clientX);
 }
 
-function handleVolumeMove(event: MouseEvent) {
+function handleVolumeMove(event: MouseEvent | TouchEvent) {
 	if (!isMouseDown) return;
 	isVolumeDragging = true;
 	if (rafId) return;
 
+	const clientX = "touches" in event ? event.touches[0].clientX : event.clientX;
+
 	rafId = requestAnimationFrame(() => {
-		updateVolumeLogic(event.clientX);
+		updateVolumeLogic(clientX);
 		rafId = null;
 	});
 }
@@ -460,7 +463,9 @@ onDestroy(() => {
 
 <svelte:window 
     on:mousemove={handleVolumeMove} 
-    on:mouseup={stopVolumeDrag} 
+    on:mouseup={stopVolumeDrag}
+    on:touchmove={handleVolumeMove}
+    on:touchend={stopVolumeDrag}
 />
 
 {#if musicPlayerConfig.enable}
@@ -665,6 +670,7 @@ onDestroy(() => {
             <div class="flex-1 h-2 bg-[var(--btn-regular-bg)] rounded-full cursor-pointer"
                  bind:this={volumeBar}
                  on:mousedown={startVolumeDrag}
+                 on:touchstart={startVolumeDrag}
                  on:keydown={(e) => {
                      if (e.key === 'Enter' || e.key === ' ') {
                          e.preventDefault();

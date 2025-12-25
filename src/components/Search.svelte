@@ -181,21 +181,12 @@ onMount(() => {
 	};
 });
 
-let searchTimeout: ReturnType<typeof setTimeout>;
-
-const debounceSearch = (keyword: string, isDesktop: boolean) => {
-	clearTimeout(searchTimeout);
-	searchTimeout = setTimeout(() => {
-		search(keyword, isDesktop);
-	}, 300);
-};
-
 $: if (initialized && keywordDesktop !== undefined) {
-	debounceSearch(keywordDesktop, true);
+	search(keywordDesktop, true);
 }
 
 $: if (initialized && keywordMobile !== undefined) {
-	debounceSearch(keywordMobile, false);
+	search(keywordMobile, false);
 }
 </script>
 <!-- search bar for desktop view -->

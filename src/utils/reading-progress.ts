@@ -13,7 +13,8 @@ export function updateReadingProgressBar() {
 	// Use document.documentElement for full page scrolling
 	const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
 
-	// Calculate scroll percentage
-	const scrollPercent = (scrollTop / (scrollHeight - clientHeight)) * 100;
+	// Calculate scroll percentage, ensuring we don't divide by zero
+	const scrollRange = scrollHeight - clientHeight;
+	const scrollPercent = scrollRange > 0 ? (scrollTop / scrollRange) * 100 : 0;
 	progressBar.style.width = `${scrollPercent}%`;
 }
