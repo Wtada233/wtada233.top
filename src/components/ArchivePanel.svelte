@@ -1,11 +1,12 @@
 <script lang="ts">
 import { onMount } from "svelte";
+import type { PostForList } from "../utils/content-utils";
 
 import I18nKey from "../i18n/i18nKey";
 import { i18n } from "../i18n/translation";
 import { getPostUrlBySlug } from "../utils/url-utils";
 
-export let sortedPosts: Post[] = [];
+export let sortedPosts: PostForList[] = [];
 
 let tags: string[] = [];
 let categories: string[] = [];
@@ -26,21 +27,10 @@ onMount(() => {
 	updateFiltersFromURL();
 });
 
-interface Post {
-	slug: string;
-	data: {
-		title: string;
-		tags: string[];
-		category?: string;
-		series?: string;
-		published: Date;
-	};
-}
-
 // Unified group structure for rendering
 interface DisplayGroup {
 	key: string | number;
-	posts: Post[];
+	posts: PostForList[];
 	isTimeGroup: boolean;
 }
 
@@ -61,7 +51,7 @@ function formatTag(tagList: string[]) {
 }
 
 $: {
-	let filteredPosts: Post[] = sortedPosts;
+	let filteredPosts: PostForList[] = sortedPosts;
 
 	if (tags.length > 0) {
 		filteredPosts = filteredPosts.filter((post) => Array.isArray(post.data.tags) && post.data.tags.some((tag) => tags.includes(tag)));
@@ -90,7 +80,7 @@ $: {
 				acc[year].push(post);
 				return acc;
 			},
-			{} as Record<number, Post[]>,
+			{} as Record<number, PostForList[]>,
 		);
 
 		displayGroups = Object.keys(groupedByYear)
@@ -102,7 +92,7 @@ $: {
 			.sort((a, b) => (b.key as number) - (a.key as number));
 	} else {
 		// series, category, or tags
-		let getGroupKey: (post: Post) => string | string[];
+		let getGroupKey: (post: PostForList) => string | string[];
 		let noGroupKey: string;
 
 		if (currentView === "series") {
@@ -129,7 +119,7 @@ $: {
 				});
 				return acc;
 			},
-			{} as Record<string, Post[]>,
+			{} as Record<string, PostForList[]>,
 		);
 
 		displayGroups = Object.keys(grouped)
