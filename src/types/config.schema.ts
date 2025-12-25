@@ -183,10 +183,10 @@ export const TwikooConfigSchema = z.object({
 export const MusicPlayerConfigSchema = z.object({
 	enable: z.boolean(),
 	mode: z.enum(["meting", "local"]),
-	meting_api: z.string().optional(),
-	id: z.string().optional(),
-	server: z.string().optional(),
-	type: z.string().optional(),
+	meting_api: z.string(),
+	id: z.string(),
+	server: z.string(),
+	type: z.string(),
 	local_playlist: z
 		.array(
 			z.object({

@@ -30,16 +30,16 @@ import { musicPlayerConfig } from "../../config";
 import Key from "../../i18n/i18nKey";
 import { i18n } from "../../i18n/translation";
 
-// 音乐播放器模式，可选 "local" 或 "meting"，从本地配置中获取或使用默认值 "meting"
-let mode = musicPlayerConfig.mode ?? "meting";
-// Meting API 地址，从配置中获取或使用默认地址
-let meting_api = musicPlayerConfig.meting_api ?? "https://www.bilibili.uno/api?server=:server&type=:type&id=:id&auth=:auth&r=:r";
-// Meting API 的 ID，从配置中获取或使用默认值
-let meting_id = musicPlayerConfig.id ?? "14164869977";
-// Meting API 的服务器，从配置中获取或使用默认值
-let meting_server = musicPlayerConfig.server ?? "netease";
-// Meting API 的类型，从配置中获取或使用默认值
-let meting_type = musicPlayerConfig.type ?? "playlist";
+// 音乐播放器模式，可选 "local" 或 "meting"，从本地配置中获取
+let mode = musicPlayerConfig.mode;
+// Meting API 地址，从配置中获取
+let meting_api = musicPlayerConfig.meting_api;
+// Meting API 的 ID，从配置中获取
+let meting_id = musicPlayerConfig.id;
+// Meting API 的服务器，从配置中获取
+let meting_server = musicPlayerConfig.server;
+// Meting API 的类型，从配置中获取
+let meting_type = musicPlayerConfig.type;
 // 播放状态，默认为 false (未播放)
 let isPlaying = false;
 // 播放器是否展开，默认为 false
