@@ -101,6 +101,96 @@ const siteLang = lang.replace("_", "-");
             transform: translate3d(85px, 0, 0);
         }
     }
+
+    /* New: Reading Progress Bar */
+    #reading-progress-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 0%;
+        height: 3px; /* Adjust height as needed */
+        background-color: var(--primary); /* Use primary theme color */
+        z-index: 1000; /* Ensure it's above other elements */
+        transition: width 0.1s ease-out; /* Smooth transition for width change */
+    }
+
+    /* Water waves display optimization */
+    .waves {
+        /* Ensure waves container renders correctly */
+        overflow: visible;
+        z-index: 5;
+        /* Hardware acceleration to ensure synchronization with background rendering */
+        transform: translateZ(0);
+        will-change: transform;
+        /* Ensure it's on the same composite layer as the page background */
+        contain: layout style paint;
+    }
+
+    .waves svg {
+        /* Ensure SVG renders correctly */
+        width: 100%;
+        height: 100%;
+        display: block;
+        /* SVG hardware acceleration */
+        transform: translateZ(0);
+        backface-visibility: hidden;
+    }
+
+    /* Wave fill color theme switching optimization */
+    .waves use {
+        /* Ensure fill color updates synchronously with page background */
+        will-change: fill;
+    }
+
+    /* Wave and background synchronization optimization - fix flicker at junction */
+    #header-waves {
+        /* Ensure waves container is on the same composite layer as the page background */
+        isolation: isolate;
+        /* Force repaint to ensure synchronization with body background */
+        contain: layout style paint;
+        /* Precise alignment */
+        margin-bottom: -1px;
+    }
+
+    /* Additional protection during theme switching */
+    .theme-changing #header-waves,
+    .theme-changing #header-waves svg,
+    .theme-changing #header-waves use {
+        /* Disable all possible rendering delays during theme switching */
+        will-change: auto;
+        transform: translateZ(0);
+        backface-visibility: hidden;
+    }
+
+    /* Mobile wave optimization */
+    @media (max-width: 1279px) {
+        #header-waves {
+            /* Ensure waves container is not clipped */
+            overflow: visible;
+            z-index: 5;
+            /* Fast wave disappearance animation */
+            transition: transform 0.3s ease-in, opacity 0.2s ease-in;
+        }
+
+        /* When banner is hidden, waves disappear quickly */
+        .mobile-hide-banner #header-waves {
+            transform: translateY(-100%);
+            opacity: 0;
+            /* Waves disappear faster than banner */
+            transition: transform 0.25s ease-in, opacity 0.15s ease-in;
+        }
+
+        .waves svg {
+            /* Mobile SVG optimization */
+            min-height: 60px;
+        }
+
+        /* Ensure waves are positioned correctly at the bottom of the banner */
+        .waves {
+            bottom: -1px !important;
+            position: absolute !important;
+        }
+    }
 }
 </style>
 
