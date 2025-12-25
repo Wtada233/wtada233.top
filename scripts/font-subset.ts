@@ -1,0 +1,113 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import subsetFont from 'subset-font';
+import he from 'he';
+import { fontConfig } from '../src/configs/font';
+
+const DIST_DIR = 'dist';
+
+/**
+ * 递归获取目录下所有 HTML 文件
+ */
+function getHtmlFiles(dir: string): string[] {
+    let results: string[] = [];
+    if (!fs.existsSync(dir)) return [];
+    const list = fs.readdirSync(dir);
+    for (const file of list) {
+        const fullPath = path.join(dir, file);
+        const stat = fs.statSync(fullPath);
+        if (stat && stat.isDirectory()) {
+            results = results.concat(getHtmlFiles(fullPath));
+        } else if (file.endsWith('.html')) {
+            results.push(fullPath);
+        }
+    }
+    return results;
+}
+
+/**
+ * 从 HTML 中提取所有可见文本，并解码 HTML 实体
+ */
+function extractTextFromHtml(html: string): string {
+    // 1. 移除脚本标签内容
+    let content = html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+    // 2. 移除样式标签内容
+    content = content.replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '');
+    // 3. 移除所有 HTML 标签
+    content = content.replace(/<[^>]+>/g, ' ');
+    // 4. 解码 HTML 实体 (如 &nbsp; -> 空格)
+    content = he.decode(content);
+    return content;
+}
+
+async function main() {
+    console.log('\x1b[36m%s\x1b[0m', '>> Starting modern font subsetting (replacement for font-spider)...');
+
+    if (!fontConfig.enable || fontConfig.fonts.length === 0) {
+        console.log('Font subsetting disabled or no fonts configured in src/configs/font.ts.');
+        return;
+    }
+
+    // 1. 收集所有 HTML 中的文字
+    const htmlFiles = getHtmlFiles(DIST_DIR);
+    if (htmlFiles.length === 0) {
+        console.warn(`Dist directory '${DIST_DIR}' not found or contains no HTML files. Did you run build?`);
+        return;
+    }
+
+    const charSet = new Set<string>();
+    // 添加一些基础字符保证渲染（标点、数字等基本需求）
+    "0123456789.+-:()[]{} ".split('').forEach(c => charSet.add(c));
+
+    for (const file of htmlFiles) {
+        const html = fs.readFileSync(file, 'utf-8');
+        const text = extractTextFromHtml(html);
+        for (const char of text) {
+            // 过滤掉不可见字符和空白，保留有意义的字符
+            if (char.trim() || char === ' ') charSet.add(char);
+        }
+    }
+
+    const allChars = Array.from(charSet).join('');
+    console.log(`Extracted ${charSet.size} unique characters from ${htmlFiles.length} files.`);
+
+    // 2. 遍历配置进行子集化
+    for (const font of fontConfig.fonts) {
+        const relativePath = font.src.startsWith('/') ? font.src.slice(1) : font.src;
+        const fontPath = path.join(DIST_DIR, relativePath);
+
+        if (!fs.existsSync(fontPath)) {
+            console.error(`Font file not found in dist: ${fontPath}`);
+            continue;
+        }
+
+        console.log(`Processing font: ${font.name} (${fontPath})`);
+        
+        try {
+            const originalBuffer = fs.readFileSync(fontPath);
+            
+            // 执行子集化
+            // subset-font 默认会根据输入 buffer 自动识别格式 (TTF/OTF/WOFF)
+            // targetFormat 设为 'truetype' 对应 .ttf 格式
+            const subsetBuffer = await subsetFont(originalBuffer, allChars, {
+                targetFormat: 'truetype' 
+            });
+
+            // 检查压缩效果
+            const oldSize = (originalBuffer.length / 1024).toFixed(2);
+            const newSize = (subsetBuffer.length / 1024).toFixed(2);
+            
+            fs.writeFileSync(fontPath, subsetBuffer);
+            console.log(`\x1b[32m  ✔ ${font.name}: ${oldSize}KB -> ${newSize}KB (Reduced by ${((1 - subsetBuffer.length / originalBuffer.length) * 100).toFixed(1)}%)\x1b[0m`);
+        } catch (err) {
+            console.error(`  ✘ Failed to subset ${font.name}:`, err);
+        }
+    }
+
+    console.log('\x1b[32m%s\x1b[0m', '>> Font subsetting completed successfully.');
+}
+
+main().catch(err => {
+    console.error('Fatal error during font subsetting:', err);
+    process.exit(1);
+});
