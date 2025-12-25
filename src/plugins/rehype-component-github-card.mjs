@@ -31,29 +31,6 @@ export function GithubCardComponent(properties, children) {
 	const nForks = h(`div#${cardUuid}-forks`, { class: "gc-forks" }, "0K");
 	const nLicense = h(`div#${cardUuid}-license`, { class: "gc-license" }, "0K");
 
-	const nScript = h(
-		`script#${cardUuid}-script`,
-		{ type: "text/javascript", defer: true },
-		`
-      fetch('https://api.github.com/repos/${repo}', { referrerPolicy: "no-referrer" }).then(response => response.json()).then(data => {
-        const descEl = document.getElementById('${cardUuid}-description');
-        const langEl = document.getElementById('${cardUuid}-language');
-        const forksEl = document.getElementById('${cardUuid}-forks');
-        const starsEl = document.getElementById('${cardUuid}-stars');
-        const avatarEl = document.getElementById('${cardUuid}-avatar');
-
-        if (descEl) descEl.innerText = data.description?.replace(/:[a-zA-Z0-9_]+:/g, '') || "Description not set";
-        if (langEl) langEl.innerText = data.language || "";
-        if (forksEl) forksEl.innerText = Intl.NumberFormat('en-us', { notation: "compact", maximumFractionDigits: 1 }).format(data.forks).replaceAll("\u202f", '');
-        if (starsEl) starsEl.innerText = Intl.NumberFormat('en-us', { notation: "compact", maximumFractionDigits: 1 }).format(data.stargazers_count).replaceAll("\u202f", '');
-        if (avatarEl && data.owner?.avatar_url) {
-          avatarEl.style.backgroundImage = 'url(' + data.owner.avatar_url + ')';
-          avatarEl.style.backgroundColor = 'transparent';
-        }
-      }).catch(err => console.error('Failed to fetch GitHub repo info:', err));
-    `,
-	);
-
 	return h(
 		`a#${cardUuid}-card`,
 		{
@@ -62,6 +39,6 @@ export function GithubCardComponent(properties, children) {
 			target: "_blank",
 			repo,
 		},
-		[nTitle, nDescription, h("div", { class: "gc-infobar" }, [nStars, nForks, nLicense, nLanguage]), nScript],
+		[nTitle, nDescription, h("div", { class: "gc-infobar" }, [nStars, nForks, nLicense, nLanguage])],
 	);
 }

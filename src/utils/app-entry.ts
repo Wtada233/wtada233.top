@@ -3,6 +3,7 @@ import { BANNER_HEIGHT, BANNER_HEIGHT_EXTEND, BANNER_HEIGHT_HOME, MAIN_PANEL_OVE
 import { initRippleEffect } from "./animations/ripple";
 import { initScrollAnimations } from "./animations/scroll";
 import { showBanner } from "./banner-display-initializer";
+import { initGithubCards } from "./github-card";
 import { registerGlobalClickOutsideHandler, unregisterGlobalClickOutsideHandler } from "./global-click-handler";
 import { initPhotoSwipe } from "./photoswipe-setup";
 import { updateReadingProgressBar } from "./reading-progress";
@@ -29,6 +30,7 @@ export function initApp(): void {
 	initScrollAnimations(); // Initialize scroll-triggered animations
 	fetchUmamiStats(); // Fetch Umami stats on initial load
 	registerGlobalClickOutsideHandler(); // Register global click outside handler
+	initGithubCards(); // Initialize GitHub cards
 }
 
 function scrollFunction() {

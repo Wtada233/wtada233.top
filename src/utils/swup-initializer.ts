@@ -1,5 +1,6 @@
 import { destroyRippleEffect, initRippleEffect } from "./animations/ripple";
 import { destroyScrollAnimations, initScrollAnimations } from "./animations/scroll";
+import { initGithubCards } from "./github-card";
 import { registerGlobalClickOutsideHandler } from "./global-click-handler";
 import { updateReadingProgressBar } from "./reading-progress";
 import { initCustomScrollbar } from "./scrollbar-initializer";
@@ -40,6 +41,7 @@ export function setupSwupEvents(): void {
 		trackUmamiPageview();
 		fetchUmamiStats();
 		registerGlobalClickOutsideHandler();
+		initGithubCards();
 	});
 
 	window.swup.hooks.on("visit:start", (visit: { to: { url: string } }) => {
