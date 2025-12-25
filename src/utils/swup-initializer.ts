@@ -7,7 +7,7 @@ import { trackUmamiPageview } from "./umami-tracker";
 import { fetchUmamiStats } from "./umami-utils";
 import { pathsEqual, url } from "./url-utils";
 
-export function setupSwupEvents() {
+export function setupSwupEvents(): void {
 	if (!window.swup) return;
 
 	window.swup.hooks.on("link:click", () => {

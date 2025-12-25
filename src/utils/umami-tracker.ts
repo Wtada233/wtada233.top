@@ -1,6 +1,6 @@
 import { umamiConfig } from "../configs/umami";
 
-export function trackUmamiPageview() {
+export function trackUmamiPageview(): void {
 	if (!umamiConfig.enabled || typeof window.umami === "undefined") return;
 
 	const currentUrl = window.location.href;

@@ -37,7 +37,7 @@ function createPhotoSwipe() {
 	lightbox.init();
 }
 
-export const setupPhotoSwipe = () => {
+export const setupPhotoSwipe = (): void => {
 	if (!lightbox) {
 		createPhotoSwipe();
 	}
@@ -57,7 +57,7 @@ export const setupPhotoSwipe = () => {
 	}
 };
 
-export function initPhotoSwipe() {
+export function initPhotoSwipe(): void {
 	if (window.swup) {
 		setupPhotoSwipe();
 	} else {

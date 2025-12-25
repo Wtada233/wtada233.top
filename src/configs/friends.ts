@@ -1,4 +1,6 @@
-export const Friends = [
+import type { FriendsConfig } from "../types/config";
+
+export const Friends: FriendsConfig = [
 	{
 		title: "白子的资源站",
 		imgurl: "/assets/friends/icons/nekowithu.ico",

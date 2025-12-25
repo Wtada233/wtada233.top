@@ -1,6 +1,6 @@
 let globalClickOutsideHandler: ((event: MouseEvent) => void) | undefined;
 
-export function registerGlobalClickOutsideHandler() {
+export function registerGlobalClickOutsideHandler(): void {
 	if (globalClickOutsideHandler) {
 		document.removeEventListener("click", globalClickOutsideHandler);
 	}
@@ -40,7 +40,7 @@ export function registerGlobalClickOutsideHandler() {
 	document.addEventListener("click", globalClickOutsideHandler);
 }
 
-export function unregisterGlobalClickOutsideHandler() {
+export function unregisterGlobalClickOutsideHandler(): void {
 	if (globalClickOutsideHandler) {
 		document.removeEventListener("click", globalClickOutsideHandler);
 		globalClickOutsideHandler = undefined;

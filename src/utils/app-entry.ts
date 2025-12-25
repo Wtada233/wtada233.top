@@ -19,7 +19,7 @@ const bannerEnabled = !!document.getElementById("banner-wrapper");
 let backToTopBtn = document.getElementById("back-to-top-btn");
 let navbar = document.getElementById("navbar-wrapper");
 
-export function initApp() {
+export function initApp(): void {
 	loadTheme();
 	loadHue();
 	initCustomScrollbar();
@@ -66,7 +66,7 @@ function refreshElements() {
 	navbar = document.getElementById("navbar-wrapper");
 }
 
-export function setupEventListeners() {
+export function setupEventListeners(): void {
 	/* Load settings when entering the site */
 	initApp();
 	initPhotoSwipe();

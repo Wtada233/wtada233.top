@@ -1,14 +1,56 @@
 import { z } from "zod";
 import { LinkPreset } from "./enums";
 
-export const SeoConfigSchema = z.object({
+export type SeoConfig = {
+	twitterId?: string;
+	googleSiteVerification?: string;
+	bingSiteVerification?: string;
+	baiduSiteVerification?: string;
+};
+
+export const SeoConfigSchema: z.ZodType<SeoConfig> = z.object({
 	twitterId: z.string().optional(),
 	googleSiteVerification: z.string().optional(),
 	bingSiteVerification: z.string().optional(),
 	baiduSiteVerification: z.string().optional(),
 });
 
-export const SiteConfigSchema = z.object({
+export type SiteConfig = {
+	title: string;
+	subtitle: string;
+	lang: "en" | "zh_CN" | "zh_TW" | "ja" | "ko" | "es" | "th" | "vi" | "tr" | "id";
+	keywords: string;
+	description: string;
+	themeColor: {
+		hue: number;
+		fixed: boolean;
+	};
+	banner: {
+		enable: boolean;
+		src: string;
+		position?: "top" | "center" | "bottom";
+		credit: {
+			enable: boolean;
+			text: string;
+			url?: string;
+		};
+		text?: {
+			enable: boolean;
+		};
+		waves?: {
+			enable: boolean;
+		};
+	};
+	showLastModified?: boolean;
+	favicon: {
+		src: string;
+		theme?: "light" | "dark";
+		sizes?: string;
+	}[];
+	seo?: SeoConfig;
+};
+
+export const SiteConfigSchema: z.ZodType<SiteConfig> = z.object({
 	title: z.string(),
 	subtitle: z.string(),
 	lang: z.enum(["en", "zh_CN", "zh_TW", "ja", "ko", "es", "th", "vi", "tr", "id"]),
@@ -49,17 +91,38 @@ export const SiteConfigSchema = z.object({
 	seo: SeoConfigSchema.optional(),
 });
 
-export const NavBarLinkSchema = z.object({
+export type NavBarLink = {
+	name: string;
+	url: string;
+	external?: boolean;
+};
+
+export const NavBarLinkSchema: z.ZodType<NavBarLink> = z.object({
 	name: z.string(),
 	url: z.string(),
 	external: z.boolean().optional(),
 });
 
-export const NavBarConfigSchema = z.object({
+export type NavBarConfig = {
+	links: (NavBarLink | LinkPreset)[];
+};
+
+export const NavBarConfigSchema: z.ZodType<NavBarConfig> = z.object({
 	links: z.array(z.union([NavBarLinkSchema, z.nativeEnum(LinkPreset)])),
 });
 
-export const ProfileConfigSchema = z.object({
+export type ProfileConfig = {
+	avatar?: string;
+	name: string;
+	bio?: string;
+	links: {
+		name: string;
+		url: string;
+		icon: string;
+	}[];
+};
+
+export const ProfileConfigSchema: z.ZodType<ProfileConfig> = z.object({
 	avatar: z.string().optional(),
 	name: z.string(),
 	bio: z.string().optional(),
@@ -72,21 +135,44 @@ export const ProfileConfigSchema = z.object({
 	),
 });
 
-export const LicenseConfigSchema = z.object({
+export type LicenseConfig = {
+	enable: boolean;
+	name: string;
+	url: string;
+};
+
+export const LicenseConfigSchema: z.ZodType<LicenseConfig> = z.object({
 	enable: z.boolean(),
 	name: z.string(),
 	url: z.string(),
 });
 
-export const ExpressiveCodeConfigSchema = z.object({
+export type ExpressiveCodeConfig = {
+	theme: string;
+};
+
+export const ExpressiveCodeConfigSchema: z.ZodType<ExpressiveCodeConfig> = z.object({
 	theme: z.string(),
 });
 
-export const AiSummaryConfigSchema = z.object({
+export type AiSummaryConfig = {
+	enabled: boolean;
+};
+
+export const AiSummaryConfigSchema: z.ZodType<AiSummaryConfig> = z.object({
 	enabled: z.boolean(),
 });
 
-export const BlogInfoConfigSchema = z.object({
+export type BlogInfoConfig = {
+	enabled: boolean;
+	showTotalArticles: boolean;
+	showTotalSeries: boolean;
+	showTotalTags: boolean;
+	showTotalCategories: boolean;
+	showTotalWords: boolean;
+};
+
+export const BlogInfoConfigSchema: z.ZodType<BlogInfoConfig> = z.object({
 	enabled: z.boolean(),
 	showTotalArticles: z.boolean(),
 	showTotalSeries: z.boolean(),
@@ -95,7 +181,34 @@ export const BlogInfoConfigSchema = z.object({
 	showTotalWords: z.boolean(),
 });
 
-export const EffectsConfigSchema = z.object({
+export type EffectsConfig = {
+	enable: boolean;
+	ripple: {
+		enable: boolean;
+	};
+	scrollAnimation: {
+		enable: boolean;
+	};
+	click: {
+		sizeRange: {
+			min: number;
+			max: number;
+		};
+		distanceRange: {
+			min: number;
+			max: number;
+		};
+		animationDuration: number;
+		particleCount: number;
+	};
+	trail: {
+		size: number;
+		animationDuration: number;
+	};
+	throttleLimit: number;
+};
+
+export const EffectsConfigSchema: z.ZodType<EffectsConfig> = z.object({
 	enable: z.boolean(),
 	ripple: z.object({
 		enable: z.boolean(),
@@ -122,7 +235,20 @@ export const EffectsConfigSchema = z.object({
 	throttleLimit: z.number(),
 });
 
-export const FontConfigSchema = z.object({
+export type FontConfig = {
+	enable: boolean;
+	fonts: {
+		name: string;
+		src: string;
+		type: string;
+		weight: string;
+		style: string;
+		display: string;
+	}[];
+	family: string;
+};
+
+export const FontConfigSchema: z.ZodType<FontConfig> = z.object({
 	enable: z.boolean(),
 	fonts: z.array(
 		z.object({
@@ -137,7 +263,17 @@ export const FontConfigSchema = z.object({
 	family: z.string(),
 });
 
-export const FriendsConfigSchema = z.array(
+export type Friend = {
+	title: string;
+	imgurl: string;
+	desc: string;
+	siteurl: string;
+	tags?: string[];
+};
+
+export type FriendsConfig = Friend[];
+
+export const FriendsConfigSchema: z.ZodType<FriendsConfig> = z.array(
 	z.object({
 		title: z.string(),
 		imgurl: z.string(),
@@ -147,40 +283,90 @@ export const FriendsConfigSchema = z.array(
 	}),
 );
 
-export const OutdatedReminderConfigSchema = z.object({
+export type OutdatedReminderConfig = {
+	enabled: boolean;
+	outdatedThresholdDays: number;
+};
+
+export const OutdatedReminderConfigSchema: z.ZodType<OutdatedReminderConfig> = z.object({
 	enabled: z.boolean(),
 	outdatedThresholdDays: z.number(),
 });
 
-export const PinningConfigSchema = z.object({
+export type PinningConfig = {
+	enabled: boolean;
+};
+
+export const PinningConfigSchema: z.ZodType<PinningConfig> = z.object({
 	enabled: z.boolean(),
 });
 
-export const RelatedPostsConfigSchema = z.object({
+export type RelatedPostsConfig = {
+	enabled: boolean;
+	limit: number;
+};
+
+export const RelatedPostsConfigSchema: z.ZodType<RelatedPostsConfig> = z.object({
 	enabled: z.boolean(),
 	limit: z.number(),
 });
 
-export const RunningTimeConfigSchema = z.object({
+export type RunningTimeConfig = {
+	enableRunningTime: boolean;
+	startDate: string;
+};
+
+export const RunningTimeConfigSchema: z.ZodType<RunningTimeConfig> = z.object({
 	enableRunningTime: z.boolean(),
 	startDate: z.string(),
 });
 
-export const SeriesConfigSchema = z.object({
+export type SeriesConfig = {
+	enabled: boolean;
+};
+
+export const SeriesConfigSchema: z.ZodType<SeriesConfig> = z.object({
 	enabled: z.boolean(),
 });
 
-export const ShareButtonsConfigSchema = z.object({
+export type ShareButtonsConfig = {
+	enabled: boolean;
+};
+
+export const ShareButtonsConfigSchema: z.ZodType<ShareButtonsConfig> = z.object({
 	enabled: z.boolean(),
 });
 
-export const TwikooConfigSchema = z.object({
+export type TwikooConfig = {
+	enabled: boolean;
+	envId: string;
+	lang: string;
+};
+
+export const TwikooConfigSchema: z.ZodType<TwikooConfig> = z.object({
 	enabled: z.boolean(),
 	envId: z.string(),
 	lang: z.string(),
 });
 
-export const MusicPlayerConfigSchema = z.object({
+export type MusicPlayerConfig = {
+	enable: boolean;
+	mode: "meting" | "local";
+	meting_api: string;
+	id: string;
+	server: string;
+	type: string;
+	local_playlist?: {
+		id: number;
+		title: string;
+		artist: string;
+		cover: string;
+		url: string;
+		duration: number;
+	}[];
+};
+
+export const MusicPlayerConfigSchema: z.ZodType<MusicPlayerConfig> = z.object({
 	enable: z.boolean(),
 	mode: z.enum(["meting", "local"]),
 	meting_api: z.string(),
@@ -201,7 +387,16 @@ export const MusicPlayerConfigSchema = z.object({
 		.optional(),
 });
 
-export const UmamiConfigSchema = z.object({
+export type UmamiConfig = {
+	enabled: boolean;
+	scriptUrl: string;
+	websiteId: string;
+	widgetEnabled: boolean;
+	apiUrl: string;
+	shareToken: string;
+};
+
+export const UmamiConfigSchema: z.ZodType<UmamiConfig> = z.object({
 	enabled: z.boolean(),
 	scriptUrl: z.string(),
 	websiteId: z.string(),
@@ -210,7 +405,20 @@ export const UmamiConfigSchema = z.object({
 	shareToken: z.string(),
 });
 
-export const GiscusConfigSchema = z.object({
+export type GiscusConfig = {
+	enabled: boolean;
+	repo: string;
+	repoId: string;
+	category: string;
+	categoryId: string;
+	mapping?: string;
+	reactionsEnabled?: boolean;
+	emitMetadata?: boolean;
+	inputPosition?: "top" | "bottom";
+	lang?: string;
+};
+
+export const GiscusConfigSchema: z.ZodType<GiscusConfig> = z.object({
 	enabled: z.boolean(),
 	repo: z.string(),
 	repoId: z.string(),

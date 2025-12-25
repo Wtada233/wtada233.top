@@ -1,4 +1,4 @@
-export function updateReadingProgressBar() {
+export function updateReadingProgressBar(): void {
 	const progressBar = document.getElementById("reading-progress-bar");
 	if (!progressBar) return;
 

@@ -1,6 +1,6 @@
 import { OverlayScrollbars } from "overlayscrollbars";
 
-export function initCustomScrollbar() {
+export function initCustomScrollbar(): void {
 	const bodyElement = document.querySelector("body");
 	if (!bodyElement) return;
 	OverlayScrollbars(

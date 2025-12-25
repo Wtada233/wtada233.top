@@ -1,6 +1,6 @@
 import { siteConfig } from "../config";
 
-export function showBanner() {
+export function showBanner(): void {
 	if (!siteConfig.banner.enable) return;
 
 	const banner = document.getElementById("banner");
