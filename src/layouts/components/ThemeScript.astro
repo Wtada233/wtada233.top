@@ -50,7 +50,3 @@ const bannerPosition = siteConfig.banner.position || "center";
     const bannerOffset = bannerOffsetByPosition[bannerPosition];
     document.documentElement.style.setProperty('--bannerOffset', bannerOffset);
 </script>
-<style is:global define:vars={{
-    configHue,
-    'page-width': `${PAGE_WIDTH}rem`,
-}}></style>  <!-- defines global css variables. This will be applied to <html> <body> and some other elements idk why -->
