@@ -68,8 +68,9 @@ async function main() {
         }
     }
 
-    const allChars = Array.from(charSet).join('');
-    console.log(`Extracted ${charSet.size} unique characters from ${htmlFiles.length} files.`);
+    const allChars = Array.from(charSet).sort().join('');
+    console.log(`Extracted ${charSet.size} unique characters from ${htmlFiles.length} files:`);
+    console.log(`\x1b[90m${allChars}\x1b[0m`); // 使用灰色输出详细字符集内容内容
 
     // 2. 遍历配置进行子集化
     for (const font of fontConfig.fonts) {
