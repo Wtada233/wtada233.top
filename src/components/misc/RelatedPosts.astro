@@ -1,8 +1,11 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import path from "node:path";
+import { adaptiveThemeConfig } from "@configs/adaptive-theme";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
-import { getPostUrlBySlug } from "@utils/url-utils";
+import { extractHueFromImage } from "@utils/image-utils";
+import { getDir, getPostUrlBySlug } from "@utils/url-utils";
 import { Icon } from "astro-icon/components";
 
 interface Props {
@@ -10,6 +13,16 @@ interface Props {
 }
 
 const { posts } = Astro.props;
+
+const postsWithHue = await Promise.all(
+	posts.map(async (post) => {
+		let hue: number | undefined;
+		if (adaptiveThemeConfig.enable && post.data.image) {
+			hue = await extractHueFromImage(post.data.image, path.join("content/posts/", getDir(post.id)));
+		}
+		return { post, hue };
+	}),
+);
 ---
 
 {posts.length > 0 && (
@@ -22,9 +35,9 @@ const { posts } = Astro.props;
             {i18n(I18nKey.relatedPosts)}
         </h2>
         <ul class="list-none p-0 m-0">
-            {posts.map((post) => (
+            {postsWithHue.map(({ post, hue }) => (
                 <li class="mb-2 last:mb-0">
-                    <a href={getPostUrlBySlug(post.slug)} class="link text-[var(--primary)] transition text-base font-medium">
+                    <a href={getPostUrlBySlug(post.slug)} data-hue={hue} class="link text-[var(--primary)] transition text-base font-medium">
                         {post.data.title}
                     </a>
                 </li>

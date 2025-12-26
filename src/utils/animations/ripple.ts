@@ -49,9 +49,13 @@ export function initRippleEffect(): void {
 		// Check for hue switch trigger first
 		const hueTrigger = target.closest("[data-hue]") as HTMLElement;
 		if (hueTrigger?.dataset.hue) {
-			const hue = hueTrigger.dataset.hue;
-			createFullScreenRipple(event, hue);
-			return;
+			if (hueTrigger.id === "post-container") {
+				// Do nothing
+			} else {
+				const hue = hueTrigger.dataset.hue;
+				createFullScreenRipple(event, hue);
+				return;
+			}
 		}
 
 		const button = target.closest(".btn-regular, .btn-regular-dark, .btn-plain, .btn-card, .link") as HTMLElement;
