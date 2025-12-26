@@ -2,10 +2,12 @@
 import type { CollectionEntry } from "astro:content";
 import path from "node:path";
 import { Icon } from "astro-icon/components";
+import { adaptiveThemeConfig } from "../config";
 import { effectsConfig } from "../configs/effects";
 import { pinningConfig } from "../configs/pinning";
 import I18nKey from "../i18n/i18nKey";
 import { i18n } from "../i18n/translation";
+import { extractHueFromImage } from "../utils/image-utils";
 import { getDir } from "../utils/url-utils";
 import ImageWrapper from "./misc/ImageWrapper.astro";
 import PostMetadata from "./PostMeta.astro";
@@ -37,10 +39,15 @@ const { remarkPluginFrontmatter } = await entry.render();
 const scrollAnimationEnabled = (entry.data.effects ?? effectsConfig.scrollAnimation.enable) && effectsConfig.enable;
 
 const displayDescription = description || remarkPluginFrontmatter.excerpt;
+
+let hue: number | undefined;
+if (adaptiveThemeConfig.enable && image) {
+	hue = await extractHueFromImage(image, path.join("content/posts/", getDir(entry.id)));
+}
 ---
 <div class:list={["card-base flex flex-col-reverse md:flex-col w-full rounded-[var(--radius-large)] overflow-hidden relative", scrollAnimationEnabled && "scroll-animate", className]} style={style}>
     <div class:list={["pl-6 md:pl-9 pr-6 md:pr-2 pt-6 md:pt-7 pb-6 relative", {"w-full md:w-[calc(100%_-_52px_-_12px)]": !hasCover, "w-full md:w-[calc(100%_-_var(--coverWidth)_-_12px)]": hasCover}]}>
-        <a href={url}
+        <a href={url} data-hue={hue}
            class="transition group w-full block font-bold mb-3 text-3xl text-90
         hover:text-[var(--primary)] dark:hover:text-[var(--primary)]
         active:text-[var(--title-active)] dark:active:text-[var(--title-active)]
@@ -82,7 +89,7 @@ const displayDescription = description || remarkPluginFrontmatter.excerpt;
 
     </div>
 
-    {hasCover && <a href={url} aria-label={title}
+    {hasCover && <a href={url} aria-label={title} data-hue={hue}
                     class:list={["group",
                         "max-h-[20vh] md:max-h-none mx-4 mt-4 -mb-2 md:mb-0 md:mx-0 md:mt-0",
                         "md:w-[var(--coverWidth)] relative md:absolute md:top-3 md:bottom-3 md:right-3 rounded-xl overflow-hidden active:scale-95"
@@ -99,7 +106,7 @@ const displayDescription = description || remarkPluginFrontmatter.excerpt;
     </a>}
 
     {!hasCover &&
-        <a href={url} aria-label={title} class="!hidden md:!flex btn-regular w-[3.25rem]
+        <a href={url} aria-label={title} data-hue={hue} class="!hidden md:!flex btn-regular w-[3.25rem]
          absolute right-3 top-3 bottom-3 rounded-xl bg-[var(--enter-btn-bg)]
          hover:bg-[var(--enter-btn-bg-hover)] active:bg-[var(--enter-btn-bg-active)] active:scale-95
         ">

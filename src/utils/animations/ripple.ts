@@ -2,6 +2,32 @@ import { effectsConfig } from "../../configs/effects";
 
 let _rippleDelegateHandler: ((event: MouseEvent) => void) | undefined;
 
+function createFullScreenRipple(event: MouseEvent, hue: string) {
+	const ripple = document.createElement("span");
+	ripple.classList.add("ripple-screen");
+	ripple.style.backgroundColor = `oklch(0.70 0.14 ${hue})`;
+
+	const x = event.clientX;
+	const y = event.clientY;
+	const w = window.innerWidth;
+	const h = window.innerHeight;
+
+	const distX = Math.max(x, w - x);
+	const distY = Math.max(y, h - y);
+	const radius = Math.sqrt(distX * distX + distY * distY);
+	const diameter = radius * 2;
+
+	ripple.style.width = ripple.style.height = `${diameter}px`;
+	ripple.style.left = `${x - radius}px`;
+	ripple.style.top = `${y - radius}px`;
+
+	document.body.appendChild(ripple);
+
+	ripple.addEventListener("animationend", () => {
+		ripple.remove();
+	});
+}
+
 export function initRippleEffect(): void {
 	const isPostPage = window.location.pathname.includes("/posts/");
 	let pageAllowsEffects = true;
@@ -19,6 +45,15 @@ export function initRippleEffect(): void {
 
 	_rippleDelegateHandler = (event: MouseEvent) => {
 		const target = event.target as HTMLElement;
+
+		// Check for hue switch trigger first
+		const hueTrigger = target.closest("[data-hue]") as HTMLElement;
+		if (hueTrigger?.dataset.hue) {
+			const hue = hueTrigger.dataset.hue;
+			createFullScreenRipple(event, hue);
+			return;
+		}
+
 		const button = target.closest(".btn-regular, .btn-regular-dark, .btn-plain, .btn-card, .link") as HTMLElement;
 
 		if (!button || button.hasAttribute("disabled")) return;
