@@ -7,14 +7,26 @@ import { getDefaultHue, getHue, setHue } from "@utils/setting-utils";
 
 let hue = getHue();
 const defaultHue = getDefaultHue();
+let initialized = false;
 
 function resetHue() {
 	hue = getDefaultHue();
 }
 
-$: if (hue || hue === 0) {
-	setHue(hue);
+$: if (initialized) {
+	if (hue || hue === 0) {
+		setHue(hue);
+	}
 }
+
+import { onMount } from "svelte";
+
+onMount(() => {
+	// Avoid immediate setHue call on mount to preserve adaptive theme
+	setTimeout(() => {
+		initialized = true;
+	}, 100);
+});
 </script>
 
 <div id="display-setting" class="float-panel float-panel-closed absolute transition-all w-80 right-4 px-4 py-4">
