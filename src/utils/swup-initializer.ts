@@ -4,6 +4,7 @@ import { initGithubCards } from "./github-card";
 import { registerGlobalClickOutsideHandler } from "./global-click-handler";
 import { updateReadingProgressBar } from "./reading-progress";
 import { initCustomScrollbar } from "./scrollbar-initializer";
+import { loadHue } from "./theme-initializer";
 import { trackUmamiPageview } from "./umami-tracker";
 import { fetchUmamiStats } from "./umami-utils";
 import { pathsEqual, url } from "./url-utils";
@@ -34,6 +35,7 @@ export function setupSwupEvents(): void {
 		// --- End Cleanup ---
 
 		initCustomScrollbar();
+		loadHue();
 
 		updateReadingProgressBar();
 		initRippleEffect();

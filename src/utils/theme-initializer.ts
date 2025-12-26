@@ -1,4 +1,4 @@
-import { getHue, getStoredTheme, setHue, setTheme } from "./setting-utils";
+import { applyHue, getHue, getStoredTheme, setTheme } from "./setting-utils";
 
 export function loadTheme(): void {
 	const theme = getStoredTheme();
@@ -6,5 +6,11 @@ export function loadTheme(): void {
 }
 
 export function loadHue(): void {
-	setHue(getHue());
+	const postContainer = document.getElementById("post-container");
+	const customHue = postContainer?.dataset.hue;
+	if (customHue) {
+		applyHue(Number.parseInt(customHue, 10));
+	} else {
+		applyHue(getHue());
+	}
 }

@@ -1,5 +1,8 @@
+import fs from "node:fs";
 import path from "node:path";
 import type { ImageMetadata } from "astro";
+import sharp from "sharp";
+import { rgbToHue } from "./color-utils";
 
 export async function resolveImage(src: string, basePath = "/"): Promise<ImageMetadata | undefined> {
 	// The glob path here is relative to the project root for consistency.
@@ -23,8 +26,42 @@ export async function resolveImage(src: string, basePath = "/"): Promise<ImageMe
 	}
 
 	if (!file) {
-		console.error(`\n[ERROR] Image file not found by utility: ${fullPath}`);
+		console.error(`[ERROR] Image file not found by utility: ${fullPath}`);
 		return undefined;
 	}
 	return await file();
+}
+
+/**
+ * 提取图片的主色调 Hue 值
+ * @param src 图片路径
+ * @param basePath 基础路径
+ */
+export async function extractHueFromImage(src: string, basePath = "/"): Promise<number | undefined> {
+	try {
+		let absolutePath = "";
+		if (src.startsWith("/")) {
+			// 公共目录
+			absolutePath = path.join(process.cwd(), "public", src);
+		} else {
+			// 内容目录
+			absolutePath = path.join(process.cwd(), "src", basePath, src);
+		}
+
+		if (!fs.existsSync(absolutePath)) {
+			return undefined;
+		}
+
+		// 使用 sharp 缩小图片到 1x1 像素以获取平均值
+		const { data } = await sharp(absolutePath).resize(1, 1).raw().toBuffer({ resolveWithObject: true });
+
+		const r = data[0];
+		const g = data[1];
+		const b = data[2];
+
+		return rgbToHue(r, g, b);
+	} catch (e) {
+		console.error(`[Adaptive Theme] Failed to extract color from ${src}:`, e);
+		return undefined;
+	}
 }

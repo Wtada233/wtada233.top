@@ -19,6 +19,10 @@ export function setHue(hue: number): void {
 	if (typeof localStorage !== "undefined") {
 		localStorage.setItem("hue", String(hue));
 	}
+	applyHue(hue);
+}
+
+export function applyHue(hue: number): void {
 	if (typeof document === "undefined") return;
 	const r = document.querySelector(":root") as HTMLElement;
 	if (!r) {
