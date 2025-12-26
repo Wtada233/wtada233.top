@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import subsetFont from 'subset-font';
 import he from 'he';
+import sanitizeHtml from 'sanitize-html';
 import { fontConfig } from '../src/configs/font';
 
 const DIST_DIR = 'dist';
@@ -29,15 +30,11 @@ function getHtmlFiles(dir: string): string[] {
  * 从 HTML 中提取所有可见文本，并解码 HTML 实体
  */
 function extractTextFromHtml(html: string): string {
-    // 1. 移除脚本标签内容
-    let content = html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
-    // 2. 移除样式标签内容
-    content = content.replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '');
-    // 3. 移除所有 HTML 标签
-    content = content.replace(/<[^>]+>/g, ' ');
-    // 4. 解码 HTML 实体 (如 &nbsp; -> 空格)
-    content = he.decode(content);
-    return content;
+    const text = sanitizeHtml(html, {
+        allowedTags: [],
+        allowedAttributes: {},
+    });
+    return he.decode(text);
 }
 
 async function main() {

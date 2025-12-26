@@ -4,6 +4,7 @@ import { getSortedPosts } from "@utils/content-utils";
 import { resolveImage } from "@utils/image-utils";
 import { getDir, url } from "@utils/url-utils";
 import type { APIContext } from "astro";
+import * as cheerio from "cheerio";
 import MarkdownIt from "markdown-it";
 import sanitizeHtml from "sanitize-html";
 import { siteConfig } from "@/config";
@@ -25,16 +26,15 @@ export async function GET(context: APIContext): Promise<Response> {
 		blog.map(async (post) => {
 			const content = typeof post.body === "string" ? post.body : String(post.body || "");
 			const cleanedContent = stripInvalidXmlChars(content);
-			let renderedContent = parser.render(cleanedContent);
-
-			// Process images to ensure they have absolute URLs and use the correct build path
-			const imgRegex = /src\s*=\s*(["'])(.*?)\1/g;
-			const matches = [...renderedContent.matchAll(imgRegex)];
-			const replacements = new Map<string, string>();
-
-			for (const match of matches) {
-				const src = match[2];
-				if (src.startsWith("http") || src.startsWith("data:")) continue;
+			const renderedContent = parser.render(cleanedContent);
+			
+			const $ = cheerio.load(renderedContent);
+			
+			const imagePromises = $('img').map(async (i, el) => {
+				const src = $(el).attr('src');
+				if (!src || src.startsWith("http") || src.startsWith("data:")) {
+					return;
+				}
 
 				let absoluteUrl = "";
 				try {
@@ -43,40 +43,36 @@ export async function GET(context: APIContext): Promise<Response> {
 						absoluteUrl = new URL(src, context.site ?? "https://wtada233.top").href;
 					} else {
 						// Relative image in content collection
-						// Construct the path relative to src/content/posts/
 						const postDir = path.join("content/posts/", getDir(post.id));
 						const resolved = await resolveImage(src, postDir);
 
 						if (resolved?.src) {
 							absoluteUrl = new URL(resolved.src, context.site ?? "https://wtada233.top").href;
 						} else {
-							// Fallback if resolution fails (e.g. standard markdown link to public?)
-							// Try to resolve as if it was in the post's slug path
+							// Fallback
 							const postPath = url(`/posts/${post.slug}/`);
 							absoluteUrl = new URL(src, new URL(postPath, context.site ?? "https://wtada233.top")).href;
 						}
 					}
+					
+					if (absoluteUrl) {
+						$(el).attr('src', absoluteUrl);
+					}
 				} catch (e) {
 					console.error(`Failed to resolve image ${src} in post ${post.slug}`, e);
-					continue;
 				}
+			}).get();
 
-				if (absoluteUrl) {
-					replacements.set(match[0], `src="${absoluteUrl}"`);
-				}
-			}
+			await Promise.all(imagePromises);
 
-			// Apply replacements
-			for (const [original, replacement] of replacements) {
-				renderedContent = renderedContent.replaceAll(original, replacement);
-			}
+			const finalHtml = $.html();
 
 			return {
 				title: post.data.title,
 				pubDate: post.data.published,
 				description: post.data.description || "",
 				link: url(`/posts/${post.slug}/`),
-				content: sanitizeHtml(renderedContent, {
+				content: sanitizeHtml(finalHtml, {
 					allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img"]),
 				}),
 			};
