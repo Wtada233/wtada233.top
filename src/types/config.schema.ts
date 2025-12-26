@@ -430,3 +430,11 @@ export const GiscusConfigSchema: z.ZodType<GiscusConfig> = z.object({
 	inputPosition: z.enum(["top", "bottom"]).optional(),
 	lang: z.string().optional(),
 });
+
+export type AdaptiveThemeConfig = {
+	enable: boolean;
+};
+
+export const AdaptiveThemeConfigSchema: z.ZodType<AdaptiveThemeConfig> = z.object({
+	enable: z.boolean(),
+});

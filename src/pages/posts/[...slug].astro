@@ -17,7 +17,7 @@ import utc from "dayjs/plugin/utc";
 import { licenseConfig } from "src/config";
 import ImageWrapper from "../../components/misc/ImageWrapper.astro";
 import PostMetadata from "../../components/PostMeta.astro";
-import { profileConfig, siteConfig } from "../../config";
+import { adaptiveThemeConfig, profileConfig, siteConfig } from "../../config";
 import { aiSummaryConfig } from "../../configs/ai-summary";
 import { outdatedReminderConfig } from "../../configs/outdated-reminder";
 import { pinningConfig } from "../../configs/pinning";
@@ -52,7 +52,9 @@ if (entry.data.image) {
 	if (coverImage?.src) {
 		ogImage = new URL(coverImage.src, Astro.site).href;
 	}
-	entryHue = await extractHueFromImage(entry.data.image, postDir);
+	if (adaptiveThemeConfig.enable) {
+		entryHue = await extractHueFromImage(entry.data.image, postDir);
+	}
 }
 
 const jsonLd = {

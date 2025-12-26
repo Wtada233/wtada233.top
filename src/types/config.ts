@@ -1,6 +1,7 @@
 import type { AUTO_MODE, DARK_MODE, LIGHT_MODE } from "@constants/constants";
 import type { z } from "zod";
 import type {
+	AdaptiveThemeConfigSchema,
 	AiSummaryConfigSchema,
 	BlogInfoConfigSchema,
 	EffectsConfigSchema,
@@ -27,6 +28,7 @@ import type {
 export { LinkPreset } from "./enums";
 
 export type SiteConfig = z.infer<typeof SiteConfigSchema>;
+export type AdaptiveThemeConfig = z.infer<typeof AdaptiveThemeConfigSchema>;
 export type Favicon = SiteConfig["favicon"][number];
 export type NavBarLink = z.infer<typeof NavBarLinkSchema>;
 export type NavBarConfig = z.infer<typeof NavBarConfigSchema>;

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { adaptiveThemeConfig } from "../src/configs/adaptive-theme";
 import { musicPlayerConfig } from "../src/configs/music";
 import { aiSummaryConfig } from "../src/configs/ai-summary";
 import { blogInfoConfig } from "../src/configs/blog-info";
@@ -20,6 +21,7 @@ import { twikooConfig } from "../src/configs/twikoo";
 import { umamiConfig } from "../src/configs/umami";
 
 import {
+  AdaptiveThemeConfigSchema,
   SiteConfigSchema,
   NavBarConfigSchema,
   ProfileConfigSchema,
@@ -42,6 +44,7 @@ import {
 } from "../src/types/config.schema";
 
 const validations = [
+  { name: "adaptiveThemeConfig", schema: AdaptiveThemeConfigSchema, data: adaptiveThemeConfig },
   { name: "siteConfig", schema: SiteConfigSchema, data: siteConfig },
   { name: "navBarConfig", schema: NavBarConfigSchema, data: navBarConfig },
   { name: "profileConfig", schema: ProfileConfigSchema, data: profileConfig },
