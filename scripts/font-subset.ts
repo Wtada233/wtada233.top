@@ -1,8 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import subsetFont from 'subset-font';
-import he from 'he';
-import sanitizeHtml from 'sanitize-html';
+import * as cheerio from 'cheerio';
 import { fontConfig } from '../src/configs/font';
 
 const DIST_DIR = 'dist';
@@ -27,14 +26,12 @@ function getHtmlFiles(dir: string): string[] {
 }
 
 /**
- * 从 HTML 中提取所有可见文本，并解码 HTML 实体
+ * 从 HTML 中提取所有可见文本，自动移除脚本、样式并解码实体
  */
 function extractTextFromHtml(html: string): string {
-    const text = sanitizeHtml(html, {
-        allowedTags: [],
-        allowedAttributes: {},
-    });
-    return he.decode(text);
+    const $ = cheerio.load(html);
+    $('script, style').remove();
+    return $('body').text();
 }
 
 async function main() {
