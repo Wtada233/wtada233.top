@@ -27,41 +27,43 @@ export async function GET(context: APIContext): Promise<Response> {
 			const content = typeof post.body === "string" ? post.body : String(post.body || "");
 			const cleanedContent = stripInvalidXmlChars(content);
 			const renderedContent = parser.render(cleanedContent);
-			
+
 			const $ = cheerio.load(renderedContent);
-			
-			const imagePromises = $('img').map(async (i, el) => {
-				const src = $(el).attr('src');
-				if (!src || src.startsWith("http") || src.startsWith("data:")) {
-					return;
-				}
 
-				let absoluteUrl = "";
-				try {
-					if (src.startsWith("/")) {
-						// Public folder image
-						absoluteUrl = new URL(src, context.site ?? "https://wtada233.top").href;
-					} else {
-						// Relative image in content collection
-						const postDir = path.join("content/posts/", getDir(post.id));
-						const resolved = await resolveImage(src, postDir);
+			const imagePromises = $("img")
+				.get()
+				.map(async (el) => {
+					const src = $(el).attr("src");
+					if (!src || src.startsWith("http") || src.startsWith("data:")) {
+						return;
+					}
 
-						if (resolved?.src) {
-							absoluteUrl = new URL(resolved.src, context.site ?? "https://wtada233.top").href;
+					let absoluteUrl = "";
+					try {
+						if (src.startsWith("/")) {
+							// Public folder image
+							absoluteUrl = new URL(src, context.site ?? "https://wtada233.top").href;
 						} else {
-							// Fallback
-							const postPath = url(`/posts/${post.slug}/`);
-							absoluteUrl = new URL(src, new URL(postPath, context.site ?? "https://wtada233.top")).href;
+							// Relative image in content collection
+							const postDir = path.join("content/posts/", getDir(post.id));
+							const resolved = await resolveImage(src, postDir);
+
+							if (resolved?.src) {
+								absoluteUrl = new URL(resolved.src, context.site ?? "https://wtada233.top").href;
+							} else {
+								// Fallback
+								const postPath = url(`/posts/${post.slug}/`);
+								absoluteUrl = new URL(src, new URL(postPath, context.site ?? "https://wtada233.top")).href;
+							}
 						}
+
+						if (absoluteUrl) {
+							$(el).attr("src", absoluteUrl);
+						}
+					} catch (e) {
+						console.error(`Failed to resolve image ${src} in post ${post.slug}`, e);
 					}
-					
-					if (absoluteUrl) {
-						$(el).attr('src', absoluteUrl);
-					}
-				} catch (e) {
-					console.error(`Failed to resolve image ${src} in post ${post.slug}`, e);
-				}
-			}).get();
+				});
 
 			await Promise.all(imagePromises);
 

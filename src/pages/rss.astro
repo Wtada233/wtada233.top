@@ -116,7 +116,7 @@ const recentPosts = posts.slice(0, 6);
             copyBtn.parentNode?.replaceChild(newBtn, copyBtn);
             
             // 绑定新的事件监听器
-            newBtn.addEventListener('click', async function() {
+            newBtn.addEventListener('click', async function(this: HTMLElement) {
                 const url = this.getAttribute('data-url');
                 if (!url) return;
                 try {

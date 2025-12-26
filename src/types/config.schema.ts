@@ -438,5 +438,5 @@ export type AdaptiveThemeConfig = {
 
 export const AdaptiveThemeConfigSchema: z.ZodType<AdaptiveThemeConfig> = z.object({
 	enable: z.boolean(),
-	animation: z.boolean().default(true),
+	animation: z.boolean(),
 });
