@@ -433,8 +433,10 @@ export const GiscusConfigSchema: z.ZodType<GiscusConfig> = z.object({
 
 export type AdaptiveThemeConfig = {
 	enable: boolean;
+	animation: boolean;
 };
 
 export const AdaptiveThemeConfigSchema: z.ZodType<AdaptiveThemeConfig> = z.object({
 	enable: z.boolean(),
+	animation: z.boolean().default(true),
 });

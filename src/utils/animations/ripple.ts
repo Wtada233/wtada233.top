@@ -1,3 +1,4 @@
+import { adaptiveThemeConfig } from "../../configs/adaptive-theme";
 import { effectsConfig } from "../../configs/effects";
 
 let _rippleDelegateHandler: ((event: MouseEvent) => void) | undefined;
@@ -51,7 +52,7 @@ export function initRippleEffect(): void {
 		if (hueTrigger?.dataset.hue) {
 			if (hueTrigger.id === "post-container") {
 				// Do nothing
-			} else {
+			} else if (adaptiveThemeConfig.animation) {
 				const hue = hueTrigger.dataset.hue;
 				createFullScreenRipple(event, hue);
 				return;
