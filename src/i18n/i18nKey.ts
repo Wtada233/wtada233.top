@@ -75,6 +75,24 @@ enum I18nKey {
 	pageNotFoundArchiveButton = "pageNotFoundArchiveButton",
 	pageNotFoundBackButtonHint = "pageNotFoundBackButtonHint",
 
+	// RSS页面
+	rss = "rss",
+	rssDescription = "rssDescription",
+	rssSubtitle = "rssSubtitle",
+	rssLink = "rssLink",
+	rssCopyToReader = "rssCopyToReader",
+	rssCopyLink = "rssCopyLink",
+	rssLatestPosts = "rssLatestPosts",
+	rssWhatIsRSS = "rssWhatIsRSS",
+	rssWhatIsRSSDescription = "rssWhatIsRSSDescription",
+	rssBenefit1 = "rssBenefit1",
+	rssBenefit2 = "rssBenefit2",
+	rssBenefit3 = "rssBenefit3",
+	rssBenefit4 = "rssBenefit4",
+	rssHowToUse = "rssHowToUse",
+	rssCopied = "rssCopied",
+	rssCopyFailed = "rssCopyFailed",
+
 	//最后编辑时间卡片
 	lastModifiedPrefix = "lastModifiedPrefix",
 	lastModifiedOutdated = "lastModifiedOutdated",
