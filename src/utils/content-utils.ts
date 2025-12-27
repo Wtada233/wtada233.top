@@ -20,12 +20,17 @@ export async function getLocalizedEntry<C extends "spec" | "posts">(collection: 
 
 	// 优先级排序
 	// 1. 匹配 ID + 目标语言后缀 (例如 about.zh_TW.md)
-	// 2. 匹配 ID + 语言前缀后缀 (例如 about.en.md)
-	// 3. 匹配 基础 ID (例如 about.md)
+	let selected = entries.find((e) => e.id.startsWith(`${id}.${targetLang}.`) || e.id.startsWith(`${id}.${targetLang}/`));
 
-	let selected = entries.find((e) => e.id.startsWith(`${id}.${targetLang}`));
-	if (!selected) selected = entries.find((e) => e.id.startsWith(`${id}.${langPart}`));
-	if (!selected) selected = entries.find((e) => e.id === id || e.id === `${id}.md` || e.id === `${id}/index.md` || e.id.startsWith(id));
+	// 2. 匹配 ID + 语言前缀后缀 (例如 about.en.md)
+	if (!selected) {
+		selected = entries.find((e) => e.id.startsWith(`${id}.${langPart}.`) || e.id.startsWith(`${id}.${langPart}/`));
+	}
+
+	// 3. 匹配 基础 ID (例如 about.md)
+	if (!selected) {
+		selected = entries.find((e) => e.id === id || e.id === `${id}.md` || e.id === `${id}/index.md`);
+	}
 
 	return selected as CollectionEntry<C>;
 }
