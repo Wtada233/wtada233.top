@@ -1,5 +1,6 @@
-@import './variables.styl';
+@import './variables.css';
 @import './markdown.css';
+@import './markdown-extend.css';
 
 @tailwind components;
 
