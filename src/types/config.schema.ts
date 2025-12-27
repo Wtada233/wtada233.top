@@ -18,7 +18,7 @@ export const SeoConfigSchema: z.ZodType<SeoConfig> = z.object({
 export type SiteConfig = {
 	title: string;
 	subtitle: string;
-	lang: "en" | "zh_CN" | "zh_TW" | "ja" | "ko" | "es" | "th" | "vi" | "tr" | "id";
+	lang: "en" | "zh_CN" | "zh_TW" | "ja" | "ko";
 	keywords: string;
 	description: string;
 	themeColor: {

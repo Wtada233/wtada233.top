@@ -65,7 +65,14 @@ function refreshElements() {
 	navbar = document.getElementById("navbar-wrapper");
 }
 
+let scrollHandler: (() => void) | undefined;
+let resizeHandler: (() => void) | undefined;
+let initialized = false;
+
 export function setupEventListeners(): void {
+	if (initialized) return;
+	initialized = true;
+
 	/* Load settings when entering the site */
 	initApp();
 	initPhotoSwipe();
@@ -82,29 +89,27 @@ export function setupEventListeners(): void {
 	}
 
 	let isTicking = false;
-	window.addEventListener(
-		"scroll",
-		() => {
-			if (!isTicking) {
-				window.requestAnimationFrame(() => {
-					const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-					scrollFunction(scrollTop);
-					updateReadingProgressBar(); // This also reads but we've optimized internally
-					isTicking = false;
-				});
-				isTicking = true;
-			}
-		},
-		{ passive: true },
-	);
+	scrollHandler = () => {
+		if (!isTicking) {
+			window.requestAnimationFrame(() => {
+				const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+				scrollFunction(scrollTop);
+				updateReadingProgressBar(); // This also reads but we've optimized internally
+				isTicking = false;
+			});
+			isTicking = true;
+		}
+	};
+	window.addEventListener("scroll", scrollHandler, { passive: true });
 
-	window.addEventListener("resize", () => {
+	resizeHandler = () => {
 		// calculate the --banner-height-extend, which needs to be a multiple of 4 to avoid blurry text
 		let offset = Math.floor(window.innerHeight * (BANNER_HEIGHT_EXTEND / 100));
 		offset = offset - (offset % 4);
 		document.documentElement.style.setProperty("--banner-height-extend", `${offset}px`);
 		refreshReadingProgressCache();
-	});
+	};
+	window.addEventListener("resize", resizeHandler);
 
 	// Initial update on DOMContentLoaded
 	document.addEventListener("DOMContentLoaded", updateReadingProgressBar);

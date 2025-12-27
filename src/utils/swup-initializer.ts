@@ -9,8 +9,11 @@ import { trackUmamiPageview } from "./umami-tracker";
 import { fetchUmamiStats } from "./umami-utils";
 import { pathsEqual, url } from "./url-utils";
 
+let swupEventsInitialized = false;
+
 export function setupSwupEvents(): void {
-	if (!window.swup) return;
+	if (!window.swup || swupEventsInitialized) return;
+	swupEventsInitialized = true;
 
 	window.swup.hooks.on("link:click", () => {
 		// Remove the delay for the first time page load
