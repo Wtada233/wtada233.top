@@ -68,6 +68,17 @@ enum I18nKey {
 
 	toc = "toc",
 
+	// 统计相关
+	statistics = "statistics",
+	totalPageviews = "totalPageviews",
+	totalVisits = "totalVisits",
+	totalVisitors = "totalVisitors",
+	runningTimeStatus = "runningTimeStatus",
+
+	// AI 摘要
+	aiSummary = "aiSummary",
+	aiModel = "aiModel",
+
 	pageNotFoundTitle = "pageNotFoundTitle",
 	pageNotFoundHeading = "pageNotFoundHeading",
 	pageNotFoundDescription = "pageNotFoundDescription",

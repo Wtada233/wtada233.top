@@ -16,7 +16,7 @@ const { class: className, style } = Astro.props;
         <div class="transition text-50 text-sm text-center my-4">
             <p id="runningtime"></p>
         </div>
-        <script is:inline type="text/javascript" define:vars={{startDate: runningTimeConfig.startDate}}>
+        <script is:inline type="text/javascript" define:vars={{startDate: runningTimeConfig.startDate, statusTemplate: i18n(I18nKey.runningTimeStatus)}}>
             let runningTimeInterval;
             function runtime(){
                 const t=new Date(startDate);
@@ -29,7 +29,11 @@ const { class: className, style } = Astro.props;
                 const r=e%60;
                 const runningTimeElement = document.getElementById("runningtime");
                 if (runningTimeElement) {
-                    runningTimeElement.innerHTML=`⭐本站已运行: ${o}天${i}小时${a}分${r}秒 ☁️`;
+                    runningTimeElement.innerHTML = statusTemplate
+                        .replace('{d}', o)
+                        .replace('{h}', i)
+                        .replace('{m}', a)
+                        .replace('{s}', r);
                 }
             }
             

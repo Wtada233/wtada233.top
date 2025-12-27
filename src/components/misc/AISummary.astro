@@ -1,4 +1,7 @@
 --- 
+import I18nKey from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
+
 export interface Props {
 	content: string;
 }
@@ -16,9 +19,9 @@ if (!content || content.trim() === "") {
     <div class="ai-title">
       <div class="ai-title-left">
         <img width="25" height="25" src="/gemini-color.png" alt="gemini-ai">
-        <span class="ai-title-text">AI 摘要</span>
+        <span class="ai-title-text">{i18n(I18nKey.aiSummary)}</span>
       </div>
-      <div class="ai-tag">Gemini 2.5 Pro</div>
+      <div class="ai-tag">{i18n(I18nKey.aiModel)}</div>
     </div>
     <div class="ai-explanation"></div>
   </div>

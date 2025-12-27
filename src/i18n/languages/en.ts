@@ -70,6 +70,15 @@ export const en: Translation = {
 
 	[Key.toc]: "Table of Contents",
 
+	[Key.statistics]: "Statistics",
+	[Key.totalPageviews]: "Total Views",
+	[Key.totalVisits]: "Visits",
+	[Key.totalVisitors]: "Visitors",
+	[Key.runningTimeStatus]: "⭐ Site active for: {d}d {h}h {m}m {s}s ☁️",
+
+	[Key.aiSummary]: "AI Summary",
+	[Key.aiModel]: "Gemini 2.5 Pro",
+
 	[Key.pageNotFoundTitle]: "Page Not Found",
 	[Key.pageNotFoundHeading]: "Page Lost in Space",
 	[Key.pageNotFoundDescription]: "Sorry, the page you are looking for does not exist or has been moved.\nPlease check the URL or return to the homepage.",

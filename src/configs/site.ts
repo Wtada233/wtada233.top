@@ -3,7 +3,7 @@ import type { SiteConfig } from "@/types/config";
 export const siteConfig: SiteConfig = {
 	title: "Wtada233's Blog",
 	subtitle: "_LFW_",
-	lang: "zh_CN", // Language code, e.g. 'en', 'zh_CN', 'ja', etc.
+	lang: "en", // Language code, e.g. 'en', 'zh_CN', 'ja', etc.
 	keywords: "Wtada233, 折腾Linux, 技术分享, 博客搭建",
 	description: "Wtada233的个人博客，内容很杂。主要是折腾Linux相关。本站使用Fuwari搭建，欢迎在Github提交PR！| 在线状态：uptime.wtada233.top",
 	themeColor: {

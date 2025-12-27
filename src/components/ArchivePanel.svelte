@@ -177,26 +177,26 @@ $: {
 	{#each visibleGroups as group}
 		<div>
 			<!-- Group Header -->
-			<div class="flex flex-row w-full items-center h-[3.75rem]">
+			<div class="flex flex-row items-center h-[3.75rem] px-2 md:px-4 gap-3 md:gap-4">
 				{#if group.isTimeGroup}
-					<div class="w-[20%] md:w-[20%] transition text-2xl font-bold text-right text-75">
+					<div class="w-14 md:w-16 transition text-2xl font-bold text-right text-75 flex-shrink-0">
 						{group.key}
 					</div>
-					<div class="w-[15%] md:w-[10%]">
-						<div class="h-3 w-3 bg-none rounded-full outline outline-[var(--primary)] mx-auto -outline-offset-[2px] z-50 outline-3"></div>
+					<div class="w-4 flex-shrink-0 flex justify-center">
+						<div class="h-3 w-3 bg-none rounded-full outline outline-[var(--primary)] -outline-offset-[2px] z-50 outline-3"></div>
 					</div>
-					<div class="w-[65%] md:w-[70%] transition text-left text-50">
+					<div class="flex-1 transition text-left text-50 truncate">
 						{group.posts.length}
 						{i18n(group.posts.length === 1 ? I18nKey.postCount : I18nKey.postsCount)}
 					</div>
 				{:else}
-					<div class="w-[20%] md:w-[20%] transition text-2xl font-bold text-right text-75 pr-4 truncate" title={String(group.key)}>
+					<div class="w-14 md:w-16 transition text-2xl font-bold text-right text-75 flex-shrink-0 truncate" title={String(group.key)}>
 						{group.key}
 					</div>
-					<div class="w-[15%] md:w-[10%] flex-shrink-0">
-						<div class="h-3 w-3 bg-none rounded-full outline outline-[var(--primary)] mx-auto -outline-offset-[2px] z-50 outline-3"></div>
+					<div class="w-4 flex-shrink-0 flex justify-center">
+						<div class="h-3 w-3 bg-none rounded-full outline outline-[var(--primary)] -outline-offset-[2px] z-50 outline-3"></div>
 					</div>
-					<div class="w-[65%] md:w-[70%] transition text-left text-50 flex-shrink-0">
+					<div class="flex-1 transition text-left text-50 flex-shrink-0 truncate">
 						{group.posts.length}
 						{i18n(group.posts.length === 1 ? I18nKey.postCount : I18nKey.postsCount)}
 					</div>
@@ -208,16 +208,16 @@ $: {
 				<a
 					href={getPostUrlBySlug(post.slug)}
 					aria-label={post.data.title}
-					class="group btn-plain !block h-10 w-full rounded-lg hover:text-[initial]"
+					class="group btn-plain !block h-10 w-full rounded-lg hover:text-[initial] overflow-hidden"
 				>
-					<div class="flex flex-row justify-start items-center h-full">
+					<div class="flex flex-row justify-start items-center h-full px-2 md:px-4 gap-3 md:gap-4 max-w-full">
 						<!-- date -->
-						<div class="w-[20%] md:w-[20%] transition text-sm text-right text-50">
+						<div class="w-14 md:w-16 transition text-sm text-right text-50 flex-shrink-0">
 							{formatDate(post.data.published)}
 						</div>
 
 						<!-- dot and line -->
-						<div class="w-[15%] md:w-[10%] relative dash-line h-full flex items-center">
+						<div class="w-4 relative dash-line h-full flex items-center flex-shrink-0">
 							<div
 								class="transition-all mx-auto w-1 h-1 rounded group-hover:h-5
                    bg-[oklch(0.5_0.05_var(--hue))] group-hover:bg-[var(--primary)]
@@ -230,17 +230,16 @@ $: {
 
 						<!-- post title -->
 						<div
-							class="w-[65%] md:max-w-[55%] md:w-[55%] text-left font-bold
-                 group-hover:translate-x-1 transition-all group-hover:text-[var(--primary)]
-                 text-75 pr-8 whitespace-nowrap overflow-ellipsis overflow-hidden"
+							class="flex-1 font-bold text-75 truncate transition-all group-hover:translate-x-1 group-hover:text-[var(--primary)]"
+							title={post.data.title}
 						>
 							{post.data.title}
 						</div>
 
 						<!-- tag list -->
 						<div
-							class="hidden md:block md:w-[15%] text-left text-sm transition
-                 whitespace-nowrap overflow-ellipsis overflow-hidden text-30"
+							class="hidden md:block w-[15%] max-w-[8rem] text-left text-sm transition
+                 truncate text-30 flex-shrink-0"
 						>
 							{formatTag(post.data.tags)}
 						</div>

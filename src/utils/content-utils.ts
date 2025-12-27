@@ -2,39 +2,89 @@ import { type CollectionEntry, getCollection } from "astro:content";
 import { pinningConfig } from "@configs/pinning";
 import { relatedPostsConfig } from "@configs/related-posts";
 import { seriesConfig } from "@configs/series";
+import { siteConfig } from "@configs/site";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import { getCategoryUrl } from "@utils/url-utils.ts";
 import getReadingTime from "reading-time";
 import type { BlogPostData } from "@/types/config";
 
-// // Retrieve posts and sort them by publication date
-async function getRawSortedPosts(): Promise<CollectionEntry<"posts">[]> {
-	const allBlogPosts = await getCollection("posts", ({ data }) => {
-		return import.meta.env.PROD ? data.draft !== true : true;
-	});
+/**
+ * 获取特定集合的本地化条目
+ */
+export async function getLocalizedEntry<C extends "spec" | "posts">(collection: C, id: string): Promise<CollectionEntry<C> | undefined> {
+	const targetLang = siteConfig.lang;
+	const langPart = targetLang.split("_")[0];
 
-	// 自定义排序逻辑
-	const sorted = allBlogPosts.sort((a, b) => {
-		// 第一优先级：按 order 字段排序（1 > 0 > -1)
-		if (pinningConfig.enabled) {
-			if (a.data.order !== b.data.order) {
-				return b.data.order - a.data.order; // 降序：置顶(1)在前，置底(-1)在后
-			}
-		}
+	const entries = await getCollection(collection);
 
-		// 第二优先级：order 相同时，按发布日期倒序（新文章在前）
-		const dateA = new Date(a.data.published);
-		const dateB = new Date(b.data.published);
-		return dateA > dateB ? -1 : 1;
-	});
+	// 优先级排序
+	// 1. 匹配 ID + 目标语言后缀 (例如 about.zh_TW.md)
+	// 2. 匹配 ID + 语言前缀后缀 (例如 about.en.md)
+	// 3. 匹配 基础 ID (例如 about.md)
 
-	return sorted;
+	let selected = entries.find((e) => e.id.startsWith(`${id}.${targetLang}`));
+	if (!selected) selected = entries.find((e) => e.id.startsWith(`${id}.${langPart}`));
+	if (!selected) selected = entries.find((e) => e.id === id || e.id === `${id}.md` || e.id === `${id}/index.md` || e.id.startsWith(id));
+
+	return selected as CollectionEntry<C>;
 }
 
+/**
+ * 核心过滤逻辑：根据当前语言选择最合适的文章版本
+ */
+async function getRawSortedPosts(): Promise<CollectionEntry<"posts">[]> {
+	const targetLang = siteConfig.lang;
+	const langPart = targetLang.split("_")[0];
+
+	const allPosts = await getCollection("posts");
+	const groups = new Map<string, CollectionEntry<"posts">[]>();
+
+	for (const post of allPosts) {
+		// 提取基础 ID。去掉语言后缀和扩展名，同时处理 /index
+		const baseId = post.id
+			.replace(/\.(en|ja|ko|zh_TW|zh_CN)\.md$/, "")
+			.replace(/\.md$/, "")
+			.replace(/\/index$/, "");
+
+		if (!groups.has(baseId)) groups.set(baseId, []);
+		groups.get(baseId)?.push(post);
+	}
+
+	const filteredPosts: CollectionEntry<"posts">[] = [];
+
+	for (const [baseId, entries] of groups) {
+		// 精确后缀匹配，避免模糊包含导致的错误
+		let selected = entries.find((e) => e.id.endsWith(`.${targetLang}.md`));
+		if (!selected) selected = entries.find((e) => e.id.endsWith(`.${langPart}.md`));
+		if (!selected) selected = entries.find((e) => e.data.lang === targetLang);
+		if (!selected) {
+			// 找默认文件：不包含任何已知语言后缀的 .md 文件
+			selected = entries.find((e) => !e.id.match(/\.(en|ja|ko|zh_TW|zh_CN)\.md$/));
+		}
+		if (!selected) selected = entries[0];
+
+		if (selected) {
+			const entry = { ...selected, slug: baseId };
+			if (import.meta.env.PROD ? entry.data.draft !== true : true) {
+				filteredPosts.push(entry);
+			}
+		}
+	}
+
+	return filteredPosts.sort((a, b) => {
+		if (pinningConfig.enabled && a.data.order !== b.data.order) {
+			return b.data.order - a.data.order;
+		}
+		return new Date(b.data.published).getTime() - new Date(a.data.published).getTime();
+	});
+}
+
+/**
+ * 获取排序后的文章列表（带上下篇信息）
+ */
 export async function getSortedPosts(): Promise<CollectionEntry<"posts">[]> {
 	const sorted = await getRawSortedPosts();
-
 	for (let i = 1; i < sorted.length; i++) {
 		sorted[i].data.nextSlug = sorted[i - 1].slug;
 		sorted[i].data.nextTitle = sorted[i - 1].data.title;
@@ -43,48 +93,38 @@ export async function getSortedPosts(): Promise<CollectionEntry<"posts">[]> {
 		sorted[i].data.prevSlug = sorted[i + 1].slug;
 		sorted[i].data.prevTitle = sorted[i + 1].data.title;
 	}
-
 	return sorted;
 }
+
 export type PostForList = {
 	slug: string;
 	data: CollectionEntry<"posts">["data"];
 };
+
 export async function getSortedPostsList(): Promise<PostForList[]> {
 	const sortedFullPosts = await getRawSortedPosts();
-
-	// delete post.body
-	const sortedPostsList = sortedFullPosts.map((post) => ({
+	return sortedFullPosts.map((post) => ({
 		slug: post.slug,
 		data: post.data,
 	}));
-
-	return sortedPostsList;
 }
+
 export type Tag = {
 	name: string;
 	count: number;
 };
 
 export async function getTagList(): Promise<Tag[]> {
-	const allBlogPosts = await getCollection<"posts">("posts", ({ data }) => {
-		return import.meta.env.PROD ? data.draft !== true : true;
-	});
-
+	const allBlogPosts = await getRawSortedPosts();
 	const countMap: { [key: string]: number } = {};
-	allBlogPosts.forEach((post: CollectionEntry<"posts">) => {
+	allBlogPosts.forEach((post) => {
 		post.data.tags.forEach((tag: string) => {
-			if (!countMap[tag]) countMap[tag] = 0;
-			countMap[tag]++;
+			countMap[tag] = (countMap[tag] || 0) + 1;
 		});
 	});
-
-	// sort tags
-	const keys: string[] = Object.keys(countMap).sort((a, b) => {
-		return a.toLowerCase().localeCompare(b.toLowerCase());
-	});
-
-	return keys.map((key) => ({ name: key, count: countMap[key] }));
+	return Object.keys(countMap)
+		.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
+		.map((key) => ({ name: key, count: countMap[key] }));
 }
 
 export type Category = {
@@ -94,194 +134,89 @@ export type Category = {
 };
 
 export async function getCategoryList(): Promise<Category[]> {
-	const allBlogPosts = await getCollection<"posts">("posts", ({ data }) => {
-		return import.meta.env.PROD ? data.draft !== true : true;
-	});
+	const allBlogPosts = await getRawSortedPosts();
 	const count: { [key: string]: number } = {};
-	allBlogPosts.forEach((post: CollectionEntry<"posts">) => {
-		if (!post.data.category) {
-			const ucKey = i18n(I18nKey.uncategorized);
-			count[ucKey] = count[ucKey] ? count[ucKey] + 1 : 1;
-			return;
-		}
-
-		const categoryName = typeof post.data.category === "string" ? post.data.category.trim() : String(post.data.category).trim();
-
-		count[categoryName] = count[categoryName] ? count[categoryName] + 1 : 1;
+	allBlogPosts.forEach((post) => {
+		const categoryName = post.data.category ? post.data.category.trim() : i18n(I18nKey.uncategorized);
+		count[categoryName] = (count[categoryName] || 0) + 1;
 	});
-
-	const lst = Object.keys(count).sort((a, b) => {
-		return a.toLowerCase().localeCompare(b.toLowerCase());
-	});
-
-	const ret: Category[] = [];
-	for (const c of lst) {
-		ret.push({
+	return Object.keys(count)
+		.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
+		.map((c) => ({
 			name: c,
 			count: count[c],
 			url: getCategoryUrl(c),
-		});
-	}
-	return ret;
+		}));
 }
 
 export async function getPostSeries(seriesName: string): Promise<{ body: string; data: BlogPostData; slug: string }[]> {
-	if (!seriesConfig.enabled) {
-		return [];
-	}
-	const posts = (await getCollection("posts", ({ data }) => {
-		return (import.meta.env.PROD ? data.draft !== true : true) && data.series === seriesName;
-	})) as unknown as { body: string; data: BlogPostData; slug: string }[];
-
-	posts.sort((a, b) => {
-		const dateA = new Date(a.data.published);
-		const dateB = new Date(b.data.published);
-		return dateA > dateB ? 1 : -1;
-	});
-
-	return posts;
+	if (!seriesConfig.enabled) return [];
+	const posts = (await getRawSortedPosts()).filter((p) => p.data.series === seriesName) as unknown as { body: string; data: BlogPostData; slug: string }[];
+	return posts.sort((a, b) => new Date(a.data.published).getTime() - new Date(b.data.published).getTime());
 }
 
 export async function getRelatedPosts(currentPost: CollectionEntry<"posts">, allPosts: CollectionEntry<"posts">[], limit: number = relatedPostsConfig.limit): Promise<CollectionEntry<"posts">[]> {
-	if (!relatedPostsConfig.enabled) {
-		return [];
-	}
-
-	const relatedPosts: { post: CollectionEntry<"posts">; score: number }[] = [];
-
-	for (const post of allPosts) {
-		// Exclude the current post
-		if (post.slug === currentPost.slug) {
-			continue;
-		}
-
-		let score = 0;
-
-		// Score based on shared tags
-		const currentPostTags = currentPost.data.tags || [];
-		const postTags = post.data.tags || [];
-		const sharedTags = currentPostTags.filter((tag: string) => postTags.includes(tag));
-		score += sharedTags.length * 2; // Each shared tag gives 2 points
-
-		// Score based on shared category
-		if (currentPost.data.category && post.data.category && currentPost.data.category === post.data.category) {
-			score += 5; // Shared category gives 5 points
-		}
-
-		if (score > 0) {
-			relatedPosts.push({ post, score });
-		}
-	}
-
-	// Sort by score in descending order, then by published date (newest first)
-	relatedPosts.sort((a, b) => {
-		if (b.score !== a.score) {
-			return b.score - a.score;
-		}
-		return b.post.data.published.getTime() - a.post.data.published.getTime();
-	});
-
-	return relatedPosts.slice(0, limit).map((item) => item.post);
+	if (!relatedPostsConfig.enabled) return [];
+	const related = allPosts
+		.filter((p) => p.slug !== currentPost.slug)
+		.map((post) => {
+			let score = 0;
+			const sharedTags = (currentPost.data.tags || []).filter((t: string) => (post.data.tags || []).includes(t));
+			score += sharedTags.length * 2;
+			if (currentPost.data.category && post.data.category && currentPost.data.category === post.data.category) score += 5;
+			return { post, score };
+		})
+		.filter((item) => item.score > 0)
+		.sort((a, b) => b.score - a.score || b.post.data.published.getTime() - a.post.data.published.getTime());
+	return related.slice(0, limit).map((i) => i.post);
 }
 
-let statsCache: {
+interface BlogStats {
 	totalArticles: number;
 	totalWords: number;
 	totalSeries: number;
 	totalTags: number;
 	totalCategories: number;
-} | null = null;
+}
 
-let statsPromise: Promise<{
-	totalArticles: number;
-	totalWords: number;
-	totalSeries: number;
-	totalTags: number;
-	totalCategories: number;
-}> | null = null;
+let statsCache: BlogStats | null = null;
 
-export async function getBlogStats(): Promise<{
-	totalArticles: number;
-	totalWords: number;
-	totalSeries: number;
-	totalTags: number;
-	totalCategories: number;
-}> {
-	if (statsCache) {
-		return statsCache;
-	}
+export async function getBlogStats(): Promise<BlogStats> {
+	if (statsCache) return statsCache;
+	const allBlogPosts = await getRawSortedPosts();
+	let totalArticles = 0;
+	let totalWords = 0;
+	const uniqueTags = new Set<string>();
+	const uniqueCategories = new Set<string>();
+	const uniqueSeries = new Set<string>();
 
-	if (statsPromise) {
-		return statsPromise;
-	}
-
-	statsPromise = (async () => {
-		const allBlogPosts = await getCollection("posts", ({ data }) => {
-			return import.meta.env.PROD ? data.draft !== true : true;
+	for (const post of allBlogPosts) {
+		totalArticles++;
+		(post.data.tags || []).forEach((t: string) => {
+			uniqueTags.add(t);
 		});
+		if (post.data.category) uniqueCategories.add(post.data.category);
+		if (post.data.series) uniqueSeries.add(post.data.series);
+		totalWords += getReadingTime(post.body || "").words || 0;
+	}
 
-		let totalArticles = 0;
-		let totalWords = 0;
-		const uniqueTags = new Set<string>();
-		const uniqueCategories = new Set<string>();
-		const uniqueSeries = new Set<string>();
-
-		for (const post of allBlogPosts) {
-			totalArticles++;
-			if (post.data.tags) {
-				for (const tag of post.data.tags) {
-					uniqueTags.add(tag);
-				}
-			}
-			if (post.data.category) {
-				uniqueCategories.add(post.data.category);
-			}
-			if (seriesConfig.enabled && post.data.series) {
-				uniqueSeries.add(post.data.series);
-			}
-			// Performance optimization: Avoid expensive post.render()
-			// Directly use reading-time on the markdown body
-			const stats = getReadingTime(post.body || "");
-			totalWords += stats.words || 0;
-		}
-
-		const totalTags = uniqueTags.size;
-		const totalCategories = uniqueCategories.size;
-		const totalSeries = uniqueSeries.size;
-
-		statsCache = {
-			totalArticles,
-			totalWords,
-			totalSeries,
-			totalTags,
-			totalCategories,
-		};
-
-		return statsCache;
-	})();
-
-	return statsPromise;
+	statsCache = {
+		totalArticles,
+		totalWords,
+		totalSeries: uniqueSeries.size,
+		totalTags: uniqueTags.size,
+		totalCategories: uniqueCategories.size,
+	};
+	return statsCache;
 }
 
-interface PostCardData {
-	excerpt: string;
-	wordCount: string;
-	minuteCount: string;
-}
-
-export async function getPostCardData(entry: CollectionEntry<"posts">): Promise<PostCardData> {
+export async function getPostCardData(entry: CollectionEntry<"posts">): Promise<{ excerpt: string; wordCount: string; minuteCount: string }> {
 	const { remarkPluginFrontmatter } = await entry.render();
-
-	const excerpt = remarkPluginFrontmatter.excerpt;
 	const words = remarkPluginFrontmatter.words;
 	const minutes = remarkPluginFrontmatter.minutes;
-
-	const wordCountString = `${words} ${i18n(words === 1 ? I18nKey.wordCount : I18nKey.wordsCount)}`;
-	const minuteCountString = `${minutes} ${i18n(minutes === 1 ? I18nKey.minuteCount : I18nKey.minutesCount)}`;
-
 	return {
-		excerpt,
-		wordCount: wordCountString,
-		minuteCount: minuteCountString,
+		excerpt: remarkPluginFrontmatter.excerpt,
+		wordCount: `${words} ${i18n(words === 1 ? I18nKey.wordCount : I18nKey.wordsCount)}`,
+		minuteCount: `${minutes} ${i18n(minutes === 1 ? I18nKey.minuteCount : I18nKey.minutesCount)}`,
 	};
 }

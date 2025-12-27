@@ -1,6 +1,8 @@
 ---
 import WidgetLayout from "@components/widget/WidgetLayout.astro";
 import { umamiConfig } from "@configs/umami";
+import I18nKey from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
 
 interface Props {
 	class?: string;
@@ -10,19 +12,19 @@ const { class: className, style } = Astro.props;
 ---
 
 {umamiConfig.widgetEnabled && (
-    <WidgetLayout name="统计" id="umami-stats" class:list={[className]} {style}>
+    <WidgetLayout name={i18n(I18nKey.statistics)} id="umami-stats" class:list={[className]} {style}>
         <div class="text-center py-2">
             <div class="text-3xl font-bold text-neutral-900 dark:text-neutral-100" id="total-pageviews">-</div>
-            <div class="text-sm text-neutral-500 dark:text-neutral-400">总浏览量</div>
+            <div class="text-sm text-neutral-500 dark:text-neutral-400">{i18n(I18nKey.totalPageviews)}</div>
         </div>
         <div class="grid grid-cols-2 divide-x divide-neutral-200 dark:divide-neutral-700 text-center pt-2">
             <div class="px-2">
                 <div class="text-xl font-bold text-neutral-900 dark:text-neutral-100" id="total-visits">-</div>
-                <div class="text-sm text-neutral-500 dark:text-neutral-400">访问数</div>
+                <div class="text-sm text-neutral-500 dark:text-neutral-400">{i18n(I18nKey.totalVisits)}</div>
             </div>
             <div class="px-2">
                 <div class="text-xl font-bold text-neutral-900 dark:text-neutral-100" id="total-visitors">-</div>
-                <div class="text-sm text-neutral-500 dark:text-neutral-400">游客数</div>
+                <div class="text-sm text-neutral-500 dark:text-neutral-400">{i18n(I18nKey.totalVisitors)}</div>
             </div>
         </div>
     </WidgetLayout>

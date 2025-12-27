@@ -71,6 +71,15 @@ export const ja: Translation = {
 
 	[Key.toc]: "目次",
 
+	[Key.statistics]: "統計",
+	[Key.totalPageviews]: "総閲覧数",
+	[Key.totalVisits]: "訪問数",
+	[Key.totalVisitors]: "訪問者数",
+	[Key.runningTimeStatus]: "⭐ 稼働時間: {d}日 {h}時間 {m}分 {s}秒 ☁️",
+
+	[Key.aiSummary]: "AI 要約",
+	[Key.aiModel]: "Gemini 2.5 Pro",
+
 	[Key.pageNotFoundTitle]: "ページが見つかりません",
 	[Key.pageNotFoundHeading]: "ページが見つかりません",
 	[Key.pageNotFoundDescription]: "申し訳ありませんが、お探しのページは見つかりませんでした、または移動されました。\nURLを確認するか、ホームページに戻ってください。",

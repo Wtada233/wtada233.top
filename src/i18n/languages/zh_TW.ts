@@ -71,6 +71,15 @@ export const zh_TW: Translation = {
 
 	[Key.toc]: "目錄",
 
+	[Key.statistics]: "統計",
+	[Key.totalPageviews]: "總瀏覽量",
+	[Key.totalVisits]: "訪問數",
+	[Key.totalVisitors]: "訪客數",
+	[Key.runningTimeStatus]: "⭐本站已運行: {d}天{h}小時{m}分{s}秒 ☁️",
+
+	[Key.aiSummary]: "AI 摘要",
+	[Key.aiModel]: "Gemini 2.5 Pro",
+
 	[Key.pageNotFoundTitle]: "頁面未找到",
 	[Key.pageNotFoundHeading]: "頁面走丟了",
 	[Key.pageNotFoundDescription]: "抱歉，您訪問的頁面不存在或已被移動。\n請檢查URL是否正確，或者返回首頁繼續瀏覽。",
