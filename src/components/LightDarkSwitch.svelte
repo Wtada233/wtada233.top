@@ -48,6 +48,7 @@ function switchScheme(newMode: LIGHT_DARK_MODE) {
 
 	// @ts-expect-error
 	const transition = document.startViewTransition(async () => {
+		document.documentElement.classList.add("view-transitioning");
 		mode = newMode;
 		setTheme(newMode);
 		window.dispatchEvent(new CustomEvent("themechange"));
@@ -63,8 +64,13 @@ function switchScheme(newMode: LIGHT_DARK_MODE) {
 				duration: 400,
 				easing: "ease-in",
 				pseudoElement: mode === LIGHT_MODE ? "::view-transition-old(root)" : "::view-transition-new(root)",
+				fill: "both",
 			},
 		);
+	});
+
+	transition.finished.then(() => {
+		document.documentElement.classList.remove("view-transitioning");
 	});
 }
 

@@ -91,6 +91,15 @@
     ::view-transition-new(root) {
         animation: none;
         mix-blend-mode: normal;
+        display: block;
+        opacity: 1 !important;
+        object-fit: cover;
+    }
+
+    /* Disable all transitions during view transition to capture the final state immediately */
+    .view-transitioning,
+    .view-transitioning * {
+        transition: none !important;
     }
 
     ::view-transition-old(root) {
