@@ -58,12 +58,12 @@ function switchScheme(newMode: LIGHT_DARK_MODE) {
 		const clipPath = [`circle(0px at ${x}px ${y}px)`, `circle(${endRadius}px at ${x}px ${y}px)`];
 		document.documentElement.animate(
 			{
-				clipPath: mode === LIGHT_MODE ? [...clipPath].reverse() : clipPath,
+				clipPath: clipPath,
 			},
 			{
 				duration: 400,
 				easing: "ease-in",
-				pseudoElement: mode === LIGHT_MODE ? "::view-transition-old(root)" : "::view-transition-new(root)",
+				pseudoElement: "::view-transition-new(root)",
 				fill: "both",
 			},
 		);
