@@ -98,12 +98,12 @@ export function setupEventListeners(): void {
 		{ passive: true },
 	);
 
-	window.onresize = () => {
+	window.addEventListener("resize", () => {
 		// calculate the --banner-height-extend, which needs to be a multiple of 4 to avoid blurry text
 		let offset = Math.floor(window.innerHeight * (BANNER_HEIGHT_EXTEND / 100));
 		offset = offset - (offset % 4);
 		document.documentElement.style.setProperty("--banner-height-extend", `${offset}px`);
-	};
+	});
 
 	// Initial update on DOMContentLoaded
 	document.addEventListener("DOMContentLoaded", updateReadingProgressBar);

@@ -31,7 +31,17 @@ function getHtmlFiles(dir: string): string[] {
 function extractTextFromHtml(html: string): string {
 	const $ = cheerio.load(html);
 	$("script, style").remove();
-	return $("body").text();
+
+	let text = $("body").text();
+
+	// Also extract text from common attributes
+	$("[alt], [placeholder], [title]").each((_, el) => {
+		text += $(el).attr("alt") || "";
+		text += $(el).attr("placeholder") || "";
+		text += $(el).attr("title") || "";
+	});
+
+	return text;
 }
 
 async function main() {

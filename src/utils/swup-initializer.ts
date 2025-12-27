@@ -23,7 +23,7 @@ export function setupSwupEvents(): void {
 		}
 
 		const navbar = document.getElementById("navbar-wrapper");
-		if (!navbar || !document.body.classList.contains("lg:is-home")) {
+		if (!navbar || !document.body.classList.contains("is-home")) {
 			return;
 		}
 	});
