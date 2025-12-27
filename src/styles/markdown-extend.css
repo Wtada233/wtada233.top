@@ -206,13 +206,10 @@ a.card-github {
     width: fit-content;
   }
 
-  .gc-language {
-    display: none;
-  }
-
   .gc-stars,
   .gc-forks,
   .gc-license,
+  .gc-language,
   .github-logo {
     font-weight: 500;
     font-size: 0.875rem;
@@ -235,6 +232,10 @@ a.card-github {
       transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
       transition-duration: 0.15s;
     }
+  }
+
+  .gc-language:before {
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' width='16' height='16'%3E%3Ccircle cx='8' cy='8' r='4' fill='black'/%3E%3C/svg%3E");
   }
 
   .gc-stars {
