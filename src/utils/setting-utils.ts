@@ -10,16 +10,7 @@ export function getDefaultHue(): number {
 }
 
 export function getHue(): number {
-	if (typeof localStorage === "undefined") return getDefaultHue();
-	const stored = localStorage.getItem("hue");
-	return stored ? Number.parseInt(stored, 10) : getDefaultHue();
-}
-
-export function setHue(hue: number): void {
-	if (typeof localStorage !== "undefined") {
-		localStorage.setItem("hue", String(hue));
-	}
-	applyHue(hue);
+	return getDefaultHue();
 }
 
 export function applyHue(hue: number): void {

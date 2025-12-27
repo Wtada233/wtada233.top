@@ -184,6 +184,8 @@ function initTOC() {
 
     // 目录高亮逻辑
     const links = tocWidget.querySelectorAll('a.toc-link');
+    let activeLink: Element | null = null;
+
     const sections = Array.from(links).map(link => {
         const slug = link.getAttribute('data-slug');
         return document.getElementById(slug || '');
@@ -195,14 +197,16 @@ function initTOC() {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 const id = entry.target.id;
-                const link = tocWidget.querySelector(`a[data-slug="${id}"]`);
-                if (link) {
-                    tocWidget.querySelectorAll('.toc-link').forEach(l => {
-                        l.classList.remove('text-[var(--primary)]', 'font-bold', 'border-[var(--primary)]');
-                        l.classList.add('border-transparent');
-                    });
-                    link.classList.add('text-[var(--primary)]', 'font-bold', 'border-[var(--primary)]');
-                    link.classList.remove('border-transparent');
+                const newActiveLink = tocWidget.querySelector(`a[data-slug="${id}"]`);
+                
+                if (newActiveLink && newActiveLink !== activeLink) {
+                    if (activeLink) {
+                        activeLink.classList.remove('text-[var(--primary)]', 'font-bold', 'border-[var(--primary)]');
+                        activeLink.classList.add('border-transparent');
+                    }
+                    newActiveLink.classList.add('text-[var(--primary)]', 'font-bold', 'border-[var(--primary)]');
+                    newActiveLink.classList.remove('border-transparent');
+                    activeLink = newActiveLink;
                 }
             }
         });

@@ -17,6 +17,12 @@
         @apply bg-[oklch(0.75_0.14_var(--hue))] dark:bg-[oklch(0.75_0.14_var(--hue))]
     }
     .custom-md {
+        /* Optimize long page rendering */
+        & > * {
+            content-visibility: auto;
+            contain-intrinsic-size: 1px 100px;
+        }
+
         h1 {
             @apply text-3xl;
         }

@@ -7,7 +7,6 @@ export function registerGlobalClickOutsideHandler(): void {
 	globalClickOutsideHandler = (event: MouseEvent) => {
 		const target = event.target as Node;
 		const panels = [
-			{ id: "display-setting", ignoreSwitches: ["display-settings-switch"] },
 			{ id: "nav-menu-panel", ignoreSwitches: ["nav-menu-switch"] },
 			{
 				id: "search-panel",

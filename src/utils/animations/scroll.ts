@@ -41,13 +41,13 @@ export function initScrollAnimations(): void {
 	// Target elements within post content
 	const postContainer = document.getElementById("post-container");
 	if (postContainer) {
-		// Collect main block-level children of markdown-content, but exclude those with onload-animation
 		const markdownContent = postContainer.querySelector(".markdown-content");
 		const isMobile = window.matchMedia("(max-width: 768px)").matches;
 		if (markdownContent && !isMobile) {
-			Array.from(markdownContent.children).forEach((child) => {
+			// Only animate major blocks to save performance on long articles
+			const selector = "h1, h2, h3, h4, h5, h6, img, .expressive-code, table, blockquote, .admonition";
+			Array.from(markdownContent.querySelectorAll(selector)).forEach((child) => {
 				if (!child.classList.contains("onload-animation")) {
-					// Exclude if already animated on load
 					elementsToAnimate.push(child);
 				}
 			});

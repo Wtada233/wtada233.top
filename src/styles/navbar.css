@@ -132,13 +132,6 @@
         box-shadow: var(--shadow-navbar) !important;
     }
     
-    .glass-mode #display-setting {
-        backdrop-filter: blur(var(--blur-2xl)) !important;
-        background: rgba(255, 255, 255, var(--opacity-90)) !important;
-        border: 1px solid rgba(255, 255, 255, var(--opacity-90)) !important;
-        box-shadow: var(--shadow-navbar) !important;
-    }
-    
     .glass-mode #wallpaper-mode-panel .float-panel {
         backdrop-filter: blur(var(--blur-2xl)) !important;
         background: rgba(255, 255, 255, var(--opacity-90)) !important;
@@ -170,14 +163,6 @@
 
 @media (max-width: 1023px) {
     .glass-mode #navbar .dropdown-content {
-        backdrop-filter: blur(var(--blur-2xl)) !important;
-        background: rgba(255, 255, 255, var(--opacity-90)) !important;
-        border: 1px solid rgba(255, 255, 255, var(--opacity-90)) !important;
-        box-shadow: var(--shadow-navbar) !important;
-    }
-    
-    .glass-mode #navbar ~ * #display-setting,
-    .glass-mode #navbar #display-setting {
         backdrop-filter: blur(var(--blur-2xl)) !important;
         background: rgba(255, 255, 255, var(--opacity-90)) !important;
         border: 1px solid rgba(255, 255, 255, var(--opacity-90)) !important;
@@ -220,12 +205,6 @@
         box-shadow: var(--shadow-navbar-dark) !important;
     }
     
-    :root.dark.glass-mode #display-setting {
-        background: rgba(0, 0, 0, var(--opacity-90)) !important;
-        border: 1px solid rgba(0, 0, 0, var(--opacity-90)) !important;
-        box-shadow: var(--shadow-navbar-dark) !important;
-    }
-    
     :root.dark.glass-mode #wallpaper-mode-panel .float-panel {
         background: rgba(0, 0, 0, var(--opacity-90)) !important;
         border: 1px solid rgba(0, 0, 0, var(--opacity-90)) !important;
@@ -253,13 +232,6 @@
 
 @media (max-width: 1023px) {
     :root.dark.glass-mode #navbar .dropdown-content {
-        background: rgba(0, 0, 0, var(--opacity-90)) !important;
-        border: 1px solid rgba(0, 0, 0, var(--opacity-90)) !important;
-        box-shadow: var(--shadow-navbar-dark) !important;
-    }
-    
-    :root.dark.glass-mode #navbar ~ * #display-setting,
-    :root.dark.glass-mode #navbar #display-setting {
         background: rgba(0, 0, 0, var(--opacity-90)) !important;
         border: 1px solid rgba(0, 0, 0, var(--opacity-90)) !important;
         box-shadow: var(--shadow-navbar-dark) !important;

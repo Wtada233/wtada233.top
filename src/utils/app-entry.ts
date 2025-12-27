@@ -22,7 +22,6 @@ let navbar = document.getElementById("navbar-wrapper");
 
 export function initApp(): void {
 	loadTheme();
-	loadHue();
 	initCustomScrollbar();
 	showBanner();
 
@@ -33,11 +32,13 @@ export function initApp(): void {
 	initGithubCards(); // Initialize GitHub cards
 }
 
-function scrollFunction() {
-	const bannerHeight = window.innerHeight * (BANNER_HEIGHT / 100);
+function scrollFunction(currentScrollTop?: number) {
+	const bannerHeightPercent = document.body.classList.contains("is-home") ? BANNER_HEIGHT_HOME : BANNER_HEIGHT;
+	const bannerHeightPx = window.innerHeight * (bannerHeightPercent / 100);
+	const scrollTop = currentScrollTop !== undefined ? currentScrollTop : document.documentElement.scrollTop || document.body.scrollTop;
 
 	if (backToTopBtn) {
-		if (document.body.scrollTop > bannerHeight || document.documentElement.scrollTop > bannerHeight) {
+		if (scrollTop > bannerHeightPx) {
 			backToTopBtn.classList.remove("hide");
 		} else {
 			backToTopBtn.classList.add("hide");
@@ -47,14 +48,10 @@ function scrollFunction() {
 	if (!bannerEnabled) return;
 	if (navbar) {
 		const NAVBAR_HEIGHT = 72;
-		const MAIN_PANEL_EXCESS_HEIGHT = MAIN_PANEL_OVERLAPS_BANNER_HEIGHT * 16; // The height the main panel overlaps the banner
+		const MAIN_PANEL_EXCESS_HEIGHT = MAIN_PANEL_OVERLAPS_BANNER_HEIGHT * 16;
 
-		let bannerHeight = BANNER_HEIGHT;
-		if (document.body.classList.contains("is-home")) {
-			bannerHeight = BANNER_HEIGHT_HOME;
-		}
-		const threshold = window.innerHeight * (bannerHeight / 100) - NAVBAR_HEIGHT - MAIN_PANEL_EXCESS_HEIGHT - 16;
-		if (document.body.scrollTop >= threshold || document.documentElement.scrollTop >= threshold) {
+		const threshold = bannerHeightPx - NAVBAR_HEIGHT - MAIN_PANEL_EXCESS_HEIGHT - 16;
+		if (scrollTop >= threshold) {
 			navbar.classList.add("navbar-hidden");
 		} else {
 			navbar.classList.remove("navbar-hidden");
@@ -85,16 +82,21 @@ export function setupEventListeners(): void {
 	}
 
 	let isTicking = false;
-	window.addEventListener("scroll", () => {
-		if (!isTicking) {
-			window.requestAnimationFrame(() => {
-				scrollFunction();
-				updateReadingProgressBar();
-				isTicking = false;
-			});
-			isTicking = true;
-		}
-	});
+	window.addEventListener(
+		"scroll",
+		() => {
+			if (!isTicking) {
+				window.requestAnimationFrame(() => {
+					const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+					scrollFunction(scrollTop);
+					updateReadingProgressBar(); // This also reads but we've optimized internally
+					isTicking = false;
+				});
+				isTicking = true;
+			}
+		},
+		{ passive: true },
+	);
 
 	window.onresize = () => {
 		// calculate the --banner-height-extend, which needs to be a multiple of 4 to avoid blurry text

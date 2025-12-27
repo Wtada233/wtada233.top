@@ -58,7 +58,6 @@ export const SiteConfigSchema: z.ZodType<SiteConfig> = z.object({
 	description: z.string(),
 	themeColor: z.object({
 		hue: z.number().min(0).max(360),
-		fixed: z.boolean(),
 	}),
 	banner: z.object({
 		enable: z.boolean(),
