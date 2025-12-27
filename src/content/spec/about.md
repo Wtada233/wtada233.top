@@ -14,7 +14,7 @@
 
 # 关于博客
 
-这是使用 [Fuwari](https://github.com/saicaca/fuwari). 制作的博客网站，部署在腾讯云服务器。
+这是使用 [Fuwari](https://github.com/Wtada233/wtada233.top). 制作的博客网站，部署在腾讯云服务器。
 ::github{repo="saicaca/fuwari"}
 
 

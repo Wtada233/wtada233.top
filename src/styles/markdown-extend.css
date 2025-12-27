@@ -200,8 +200,8 @@ a.card-github {
 
   .gc-infobar {
     display: flex;
-    flex-flow: row nowrap;
-    gap: 1.5rem;
+    flex-flow: row wrap;
+    gap: 1rem 1.5rem;
     color: var(--tw-prose-body);
     width: fit-content;
   }

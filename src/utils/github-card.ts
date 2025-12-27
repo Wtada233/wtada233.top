@@ -11,12 +11,14 @@ export function initGithubCards(): void {
 				const langEl = card.querySelector(".gc-language");
 				const forksEl = card.querySelector(".gc-forks");
 				const starsEl = card.querySelector(".gc-stars");
+				const licenseEl = card.querySelector(".gc-license");
 				const avatarEl = card.querySelector(".gc-avatar") as HTMLElement;
 
 				if (descEl) descEl.textContent = data.description?.replace(/:[a-zA-Z0-9_]+:/g, "") || "Description not set";
 				if (langEl) langEl.textContent = data.language || "";
 				if (forksEl) forksEl.textContent = Intl.NumberFormat("en-us", { notation: "compact", maximumFractionDigits: 1 }).format(data.forks).replaceAll("\u202f", "");
 				if (starsEl) starsEl.textContent = Intl.NumberFormat("en-us", { notation: "compact", maximumFractionDigits: 1 }).format(data.stargazers_count).replaceAll("\u202f", "");
+				if (licenseEl) licenseEl.textContent = data.license?.spdx_id || data.license?.name || "None";
 				if (avatarEl && data.owner?.avatar_url) {
 					avatarEl.style.backgroundImage = `url(${data.owner.avatar_url})`;
 					avatarEl.style.backgroundColor = "transparent";
