@@ -44,7 +44,7 @@
         }
         &.scale-animation {
             @apply expand-animation;
-            &.current-theme-btn {
+            &.current-theme-btn, &.active {
                 @apply before:scale-100 before:opacity-100 before:bg-[var(--btn-plain-bg-hover)] text-[var(--primary)]
             }
         }

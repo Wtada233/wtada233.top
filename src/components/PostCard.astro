@@ -35,10 +35,11 @@ const coverWidth = "28%";
 
 const { remarkPluginFrontmatter } = await entry.render();
 const scrollAnimationEnabled = (entry.data.effects ?? effectsConfig.scrollAnimation.enable) && effectsConfig.enable;
+const tiltEnabled = effectsConfig.enable && effectsConfig.tilt.enable;
 
 const displayDescription = description || remarkPluginFrontmatter.excerpt;
 ---
-<div class:list={["card-base flex flex-col-reverse md:flex-col w-full rounded-[var(--radius-large)] overflow-hidden relative", scrollAnimationEnabled && "scroll-animate", className]} style={style}>
+<div class:list={["card-base flex flex-col-reverse md:flex-col w-full rounded-[var(--radius-large)] overflow-hidden relative", scrollAnimationEnabled && "scroll-animate", tiltEnabled && "tilt-card", className]} style={style}>
     <div class:list={["pl-6 md:pl-9 pr-6 md:pr-2 pt-6 md:pt-7 pb-6 relative", {"w-full md:w-[calc(100%_-_52px_-_12px)]": !hasCover, "w-full md:w-[calc(100%_-_var(--coverWidth)_-_12px)]": hasCover}]}>
         <a href={url}
            class="transition group w-full block font-bold mb-3 text-3xl text-90
@@ -110,5 +111,42 @@ const displayDescription = description || remarkPluginFrontmatter.excerpt;
     }
 </div>
 
+<script is:inline define:vars={{ tiltEnabled }}>
+    function initTilt() {
+        if (!tiltEnabled) return;
+        const isMobile = window.matchMedia("(max-width: 768px)").matches;
+        if (isMobile) return;
+
+        const cards = document.querySelectorAll('.tilt-card');
+        cards.forEach(card => {
+            const htmlCard = card;
+            htmlCard.addEventListener('mousemove', (e) => {
+                const rect = htmlCard.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = (centerY - y) / 20; 
+                const rotateY = (x - centerX) / 20;
+                
+                htmlCard.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.01, 1.01, 1.01)`;
+                htmlCard.style.transition = 'transform 0.1s ease-out';
+            });
+
+            htmlCard.addEventListener('mouseleave', () => {
+                htmlCard.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+                htmlCard.style.transition = 'transform 0.5s ease-out';
+            });
+        });
+    }
+
+    initTilt();
+    document.addEventListener('astro:page-load', initTilt);
+</script>
+
 <style define:vars={{coverWidth}}>
+    .tilt-card {
+        transform-style: preserve-3d;
+        will-change: transform;
+    }
 </style>

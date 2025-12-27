@@ -230,6 +230,9 @@ export const EffectsConfigSchema: z.ZodType<EffectsConfig> = z.object({
 		size: z.number(),
 		animationDuration: z.number(),
 	}),
+	tilt: z.object({
+		enable: z.boolean(),
+	}),
 	throttleLimit: z.number(),
 });
 
