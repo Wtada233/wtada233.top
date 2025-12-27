@@ -1,14 +1,25 @@
 ---
+import path from "node:path";
+import { adaptiveThemeConfig } from "@configs/adaptive-theme";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
 import { getSortedPosts } from "@utils/content-utils";
 import { formatDateToYYYYMMDD } from "@utils/date-utils";
-import { getPostUrlBySlug } from "@utils/url-utils";
+import { extractHueFromImage } from "@utils/image-utils";
+import { getDir, getPostUrlBySlug } from "@utils/url-utils";
 import { Icon } from "astro-icon/components";
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
 
 const posts = await getSortedPosts();
-const recentPosts = posts.slice(0, 6);
+const recentPosts = await Promise.all(
+	posts.slice(0, 6).map(async (post) => {
+		let hue: number | undefined;
+		if (adaptiveThemeConfig.enable && post.data.image) {
+			hue = await extractHueFromImage(post.data.image, path.join("content/posts/", getDir(post.id)));
+		}
+		return { ...post, hue };
+	}),
+);
 ---
 
 <MainGridLayout title={i18n(I18nKey.rss)} description={i18n(I18nKey.rssDescription)}>
@@ -65,7 +76,7 @@ const recentPosts = posts.slice(0, 6);
                 {recentPosts.map((post) => (
                     <article class="bg-[var(--card-bg)] rounded-xl p-4 border border-[var(--line-divider)] hover:border-[var(--primary)] transition-all duration-300">
                         <h3 class="text-lg font-semibold text-90 mb-2 hover:text-[var(--primary)] transition-colors">
-                            <a href={getPostUrlBySlug(post.slug)} class="hover:underline">
+                            <a href={getPostUrlBySlug(post.slug)} data-hue={post.hue} class="hover:underline">
                                 {post.data.title}
                             </a>
                         </h3>

@@ -1,10 +1,13 @@
 import { type CollectionEntry, getCollection } from "astro:content";
+import path from "node:path";
+import { adaptiveThemeConfig } from "@configs/adaptive-theme";
 import { pinningConfig } from "@configs/pinning";
 import { relatedPostsConfig } from "@configs/related-posts";
 import { seriesConfig } from "@configs/series";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
-import { getCategoryUrl } from "@utils/url-utils.ts";
+import { extractHueFromImage } from "@utils/image-utils";
+import { getCategoryUrl, getDir } from "@utils/url-utils.ts";
 import type { BlogPostData } from "@/types/config";
 
 // // Retrieve posts and sort them by publication date
@@ -48,15 +51,24 @@ export async function getSortedPosts(): Promise<CollectionEntry<"posts">[]> {
 export type PostForList = {
 	slug: string;
 	data: CollectionEntry<"posts">["data"];
+	hue: number | undefined;
 };
 export async function getSortedPostsList(): Promise<PostForList[]> {
 	const sortedFullPosts = await getRawSortedPosts();
 
-	// delete post.body
-	const sortedPostsList = sortedFullPosts.map((post) => ({
-		slug: post.slug,
-		data: post.data,
-	}));
+	const sortedPostsList = await Promise.all(
+		sortedFullPosts.map(async (post) => {
+			let hue: number | undefined;
+			if (adaptiveThemeConfig.enable && post.data.image) {
+				hue = await extractHueFromImage(post.data.image, path.join("content/posts/", getDir(post.id)));
+			}
+			return {
+				slug: post.slug,
+				data: post.data,
+				hue,
+			};
+		}),
+	);
 
 	return sortedPostsList;
 }
