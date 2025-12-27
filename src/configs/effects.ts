@@ -24,7 +24,7 @@ export const effectsConfig = {
 	},
 	tilt: {
 		enable: true,
-		intensity: 50,
+		intensity: 75,
 	},
 	throttleLimit: 50,
 };

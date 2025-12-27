@@ -6,6 +6,7 @@ import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import { getCategoryUrl } from "@utils/url-utils.ts";
 import type { BlogPostData } from "@/types/config";
+import getReadingTime from "reading-time";
 
 // // Retrieve posts and sort them by publication date
 async function getRawSortedPosts(): Promise<CollectionEntry<"posts">[]> {
@@ -191,6 +192,14 @@ let statsCache: {
 	totalCategories: number;
 } | null = null;
 
+let statsPromise: Promise<{
+	totalArticles: number;
+	totalWords: number;
+	totalSeries: number;
+	totalTags: number;
+	totalCategories: number;
+}> | null = null;
+
 export async function getBlogStats(): Promise<{
 	totalArticles: number;
 	totalWords: number;
@@ -202,48 +211,56 @@ export async function getBlogStats(): Promise<{
 		return statsCache;
 	}
 
-	const allBlogPosts = await getCollection("posts", ({ data }) => {
-		return import.meta.env.PROD ? data.draft !== true : true;
-	});
-
-	let totalArticles = 0;
-	let totalWords = 0;
-	const uniqueTags = new Set<string>();
-	const uniqueCategories = new Set<string>();
-	const uniqueSeries = new Set<string>();
-
-	for (const post of allBlogPosts) {
-		totalArticles++;
-		if (post.data.tags) {
-			for (const tag of post.data.tags) {
-				uniqueTags.add(tag);
-			}
-		}
-		if (post.data.category) {
-			uniqueCategories.add(post.data.category);
-		}
-		if (seriesConfig.enabled && post.data.series) {
-			uniqueSeries.add(post.data.series);
-		}
-		// Performance optimization: only render if we really need word count and it's not provided in data
-		// In Fuwari, word count is injected into remarkPluginFrontmatter during render
-		const { remarkPluginFrontmatter } = await post.render();
-		totalWords += remarkPluginFrontmatter?.words || 0;
+	if (statsPromise) {
+		return statsPromise;
 	}
 
-	const totalTags = uniqueTags.size;
-	const totalCategories = uniqueCategories.size;
-	const totalSeries = uniqueSeries.size;
+	statsPromise = (async () => {
+		const allBlogPosts = await getCollection("posts", ({ data }) => {
+			return import.meta.env.PROD ? data.draft !== true : true;
+		});
 
-	statsCache = {
-		totalArticles,
-		totalWords,
-		totalSeries,
-		totalTags,
-		totalCategories,
-	};
+		let totalArticles = 0;
+		let totalWords = 0;
+		const uniqueTags = new Set<string>();
+		const uniqueCategories = new Set<string>();
+		const uniqueSeries = new Set<string>();
 
-	return statsCache;
+		for (const post of allBlogPosts) {
+			totalArticles++;
+			if (post.data.tags) {
+				for (const tag of post.data.tags) {
+					uniqueTags.add(tag);
+				}
+			}
+			if (post.data.category) {
+				uniqueCategories.add(post.data.category);
+			}
+			if (seriesConfig.enabled && post.data.series) {
+				uniqueSeries.add(post.data.series);
+			}
+			// Performance optimization: Avoid expensive post.render()
+			// Directly use reading-time on the markdown body
+			const stats = getReadingTime(post.body || "");
+			totalWords += stats.words || 0;
+		}
+
+		const totalTags = uniqueTags.size;
+		const totalCategories = uniqueCategories.size;
+		const totalSeries = uniqueSeries.size;
+
+		statsCache = {
+			totalArticles,
+			totalWords,
+			totalSeries,
+			totalTags,
+			totalCategories,
+		};
+
+		return statsCache;
+	})();
+
+	return statsPromise;
 }
 
 interface PostCardData {

@@ -32,12 +32,19 @@ export async function resolveImage(src: string, basePath = "/"): Promise<ImageMe
 	return await file();
 }
 
+const hueCache = new Map<string, number | undefined>();
+
 /**
  * 提取图片的主色调 Hue 值
  * @param src 图片路径
  * @param basePath 基础路径
  */
 export async function extractHueFromImage(src: string, basePath = "/"): Promise<number | undefined> {
+	const cacheKey = `${basePath}:${src}`;
+	if (hueCache.has(cacheKey)) {
+		return hueCache.get(cacheKey);
+	}
+
 	try {
 		let absolutePath = "";
 		if (src.startsWith("/")) {
@@ -49,6 +56,7 @@ export async function extractHueFromImage(src: string, basePath = "/"): Promise<
 		}
 
 		if (!fs.existsSync(absolutePath)) {
+			hueCache.set(cacheKey, undefined);
 			return undefined;
 		}
 
@@ -59,9 +67,12 @@ export async function extractHueFromImage(src: string, basePath = "/"): Promise<
 		const g = data[1];
 		const b = data[2];
 
-		return rgbToHue(r, g, b);
+		const hue = rgbToHue(r, g, b);
+		hueCache.set(cacheKey, hue);
+		return hue;
 	} catch (e) {
 		console.error(`[Adaptive Theme] Failed to extract color from ${src}:`, e);
+		hueCache.set(cacheKey, undefined);
 		return undefined;
 	}
 }
