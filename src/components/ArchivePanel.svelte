@@ -37,6 +37,14 @@ type ViewMode = "time" | "series" | "category" | "tags";
 let currentView: ViewMode = "time";
 
 let displayGroups: DisplayGroup[] = [];
+let visibleGroupsCount = 10; // Initial number of groups to show
+
+function loadMore() {
+	visibleGroupsCount += 10;
+}
+
+$: visibleGroups = displayGroups.slice(0, visibleGroupsCount);
+$: hasMore = visibleGroupsCount < displayGroups.length;
 
 function formatDate(date: Date) {
 	const month = (date.getMonth() + 1).toString().padStart(2, "0");
@@ -47,6 +55,12 @@ function formatDate(date: Date) {
 function formatTag(tagList: string[]) {
 	if (!tagList) return "";
 	return tagList.map((t) => `#${t}`).join(" ");
+}
+
+$: {
+	// Reset pagination when view or filters change
+	[tags, categories, series, uncategorized, currentView];
+	visibleGroupsCount = 10;
 }
 
 $: {
@@ -160,29 +174,29 @@ $: {
 		>
 	</div>
 
-	{#each displayGroups as group}
+	{#each visibleGroups as group}
 		<div>
 			<!-- Group Header -->
 			<div class="flex flex-row w-full items-center h-[3.75rem]">
 				{#if group.isTimeGroup}
-					<div class="w-[15%] md:w-[10%] transition text-2xl font-bold text-right text-75">
+					<div class="w-[20%] md:w-[20%] transition text-2xl font-bold text-right text-75">
 						{group.key}
 					</div>
 					<div class="w-[15%] md:w-[10%]">
 						<div class="h-3 w-3 bg-none rounded-full outline outline-[var(--primary)] mx-auto -outline-offset-[2px] z-50 outline-3"></div>
 					</div>
-					<div class="w-[70%] md:w-[80%] transition text-left text-50">
+					<div class="w-[65%] md:w-[70%] transition text-left text-50">
 						{group.posts.length}
 						{i18n(group.posts.length === 1 ? I18nKey.postCount : I18nKey.postsCount)}
 					</div>
 				{:else}
-					<div class="w-auto max-w-[50%] md:max-w-[70%] transition text-2xl font-bold text-left text-75 pr-4 truncate">
+					<div class="w-[20%] md:w-[20%] transition text-2xl font-bold text-right text-75 pr-4 truncate" title={String(group.key)}>
 						{group.key}
 					</div>
 					<div class="w-[15%] md:w-[10%] flex-shrink-0">
 						<div class="h-3 w-3 bg-none rounded-full outline outline-[var(--primary)] mx-auto -outline-offset-[2px] z-50 outline-3"></div>
 					</div>
-					<div class="w-auto transition text-left text-50 flex-shrink-0">
+					<div class="w-[65%] md:w-[70%] transition text-left text-50 flex-shrink-0">
 						{group.posts.length}
 						{i18n(group.posts.length === 1 ? I18nKey.postCount : I18nKey.postsCount)}
 					</div>
@@ -198,7 +212,7 @@ $: {
 				>
 					<div class="flex flex-row justify-start items-center h-full">
 						<!-- date -->
-						<div class="w-[15%] md:w-[10%] transition text-sm text-right text-50">
+						<div class="w-[20%] md:w-[20%] transition text-sm text-right text-50">
 							{formatDate(post.data.published)}
 						</div>
 
@@ -216,7 +230,7 @@ $: {
 
 						<!-- post title -->
 						<div
-							class="w-[70%] md:max-w-[65%] md:w-[65%] text-left font-bold
+							class="w-[65%] md:max-w-[55%] md:w-[55%] text-left font-bold
                  group-hover:translate-x-1 transition-all group-hover:text-[var(--primary)]
                  text-75 pr-8 whitespace-nowrap overflow-ellipsis overflow-hidden"
 						>
@@ -235,6 +249,14 @@ $: {
 			{/each}
 		</div>
 	{/each}
+
+	{#if hasMore}
+		<div class="flex justify-center mt-8">
+			<button class="btn-regular h-10 px-6 rounded-lg text-sm font-bold" on:click={loadMore}>
+				{i18n(I18nKey.more)}
+			</button>
+		</div>
+	{/if}
 </div>
 
 <style>

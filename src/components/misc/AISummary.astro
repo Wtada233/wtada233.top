@@ -46,10 +46,10 @@ if (!content || content.trim() === "") {
     const typeSpeed = 30; // ms
     
     let typeWriterTimeout;
+    let isDestroyed = false;
     
     function typeWriter() {
-      // Race condition safety check: If element is no longer in the DOM, stop everything.
-      if (!document.body.contains(textElement)) {
+      if (isDestroyed || !document.body.contains(textElement)) {
         clearTimeout(typeWriterTimeout);
         return;
       }
@@ -67,8 +67,8 @@ if (!content || content.trim() === "") {
     const startTypingTimeout = setTimeout(typeWriter, 800);
 
     // Proper cleanup for Astro's View Transitions.
-    // This listener is added on each page load and automatically removed after the next swap.
     document.addEventListener('astro:before-swap', () => {
+      isDestroyed = true;
       clearTimeout(startTypingTimeout);
       clearTimeout(typeWriterTimeout);
     }, { once: true });

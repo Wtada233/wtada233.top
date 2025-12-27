@@ -1,4 +1,5 @@
 ---
+import { fontConfig } from "@configs/font";
 import { umamiConfig } from "@configs/umami";
 import { profileConfig, siteConfig } from "@/config";
 import { defaultFavicons } from "@/constants/icon";
@@ -82,6 +83,19 @@ if (profileConfig.avatar) {
 <link rel="canonical" href={Astro.url.href} />
 <meta name="viewport" content="width=device-width" />
 <meta name="generator" content={Astro.generator} />
+
+{fontConfig.enable && fontConfig.fonts.map(font => {
+    const mimeType = font.type === 'truetype' ? 'ttf' : font.type;
+    return (
+        <link 
+            rel="preload" 
+            href={font.src.startsWith('/') ? url(font.src) : font.src} 
+            as="font" 
+            type={`font/${mimeType}`} 
+            crossorigin="anonymous" 
+        />
+    )
+})}
 
 {umamiConfig.enabled && (
     <link rel="dns-prefetch" href={new URL(umamiConfig.apiUrl).origin} />
