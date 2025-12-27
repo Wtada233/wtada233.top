@@ -26,9 +26,46 @@ onMount(() => {
 });
 
 function switchScheme(newMode: LIGHT_DARK_MODE) {
-	mode = newMode;
-	setTheme(newMode);
-	window.dispatchEvent(new CustomEvent("themechange"));
+	const isAppearanceTransition =
+		typeof document !== "undefined" &&
+		// @ts-expect-error
+		document.startViewTransition &&
+		!window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+	if (!isAppearanceTransition) {
+		mode = newMode;
+		setTheme(newMode);
+		window.dispatchEvent(new CustomEvent("themechange"));
+		return;
+	}
+
+	const switchBtn = document.querySelector("#scheme-switch");
+	const rect = switchBtn?.getBoundingClientRect();
+	const x = rect ? rect.left + rect.width / 2 : window.innerWidth / 2;
+	const y = rect ? rect.top + rect.height / 2 : window.innerHeight / 2;
+
+	const endRadius = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
+
+	// @ts-expect-error
+	const transition = document.startViewTransition(async () => {
+		mode = newMode;
+		setTheme(newMode);
+		window.dispatchEvent(new CustomEvent("themechange"));
+	});
+
+	transition.ready.then(() => {
+		const clipPath = [`circle(0px at ${x}px ${y}px)`, `circle(${endRadius}px at ${x}px ${y}px)`];
+		document.documentElement.animate(
+			{
+				clipPath: mode === LIGHT_MODE ? [...clipPath].reverse() : clipPath,
+			},
+			{
+				duration: 400,
+				easing: "ease-in",
+				pseudoElement: mode === LIGHT_MODE ? "::view-transition-old(root)" : "::view-transition-new(root)",
+			},
+		);
+	});
 }
 
 function toggleScheme() {

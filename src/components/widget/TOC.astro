@@ -103,8 +103,8 @@ const isPost = Astro.url.pathname.includes("/posts/");
 </style>
 
 <script>
-let tocObserver;
-let tocScrollHandler;
+let tocObserver: IntersectionObserver | undefined;
+let tocScrollHandler: (() => void) | undefined;
 
 function cleanupTOC() {
     if (tocObserver) tocObserver.disconnect();
@@ -149,7 +149,8 @@ function initTOC() {
             tocWidget.removeAttribute('data-mobile-show');
             backdrop?.removeAttribute('data-show');
             document.body.style.overflow = '';
-        } else {
+        }
+        else {
             tocWidget.setAttribute('data-user-hidden', 'true');
             showBtn.setAttribute('data-user-hidden', 'true');
             localStorage.setItem('toc-user-hidden', 'true');
@@ -162,7 +163,8 @@ function initTOC() {
             tocWidget.setAttribute('data-mobile-show', 'true');
             backdrop?.setAttribute('data-show', 'true');
             document.body.style.overflow = 'hidden';
-        } else {
+        }
+        else {
             tocWidget.removeAttribute('data-user-hidden');
             showBtn.removeAttribute('data-user-hidden');
             localStorage.setItem('toc-user-hidden', 'false');
@@ -196,16 +198,16 @@ function initTOC() {
 
     // 目录高亮逻辑
     const links = tocWidget.querySelectorAll('a.toc-link');
-    let activeLink = null;
+    let activeLink: Element | null = null;
 
     const sections = Array.from(links).map(link => {
         const slug = link.getAttribute('data-slug');
         return document.getElementById(slug || '');
-    }).filter((el) => el !== null);
+    }).filter((el): el is HTMLElement => el !== null);
 
     if (sections.length === 0) return;
 
-    const observerCallback = (entries) => {
+    const observerCallback = (entries: IntersectionObserverEntry[]) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 const id = entry.target.id;
