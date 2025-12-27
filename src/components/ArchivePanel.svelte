@@ -248,6 +248,10 @@ $: {
 				</a>
 			{/each}
 		</div>
+	{:else}
+		<div class="transition text-50 text-sm px-3 py-16 text-center">
+			{i18n(I18nKey.noResults)}
+		</div>
 	{/each}
 
 	{#if hasMore}
