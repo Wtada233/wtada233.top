@@ -16,6 +16,7 @@ import { effectsConfig } from "@configs/effects";
         if (!ctx) return;
 
         let particles = [];
+        let running = false;
         
         // A flag to ensure we don't attach listeners multiple times
         if (window.canvasEffectsInitialized) {
@@ -70,9 +71,20 @@ import { effectsConfig } from "@configs/effects";
                     lifeDecay: 1 / durationInFrames,
                 });
             }
+
+            if (!running) {
+                running = true;
+                animate();
+            }
         }
 
         function animate() {
+            if (particles.length === 0) {
+                running = false;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                return;
+            }
+
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim();

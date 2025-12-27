@@ -6,7 +6,7 @@ import { showBanner } from "./banner-display-initializer";
 import { initGithubCards } from "./github-card";
 import { registerGlobalClickOutsideHandler, unregisterGlobalClickOutsideHandler } from "./global-click-handler";
 import { initPhotoSwipe } from "./photoswipe-setup";
-import { updateReadingProgressBar } from "./reading-progress";
+import { refreshReadingProgressCache, updateReadingProgressBar } from "./reading-progress";
 import { initCustomScrollbar } from "./scrollbar-initializer";
 import { setupSwupEvents } from "./swup-initializer";
 import { loadTheme } from "./theme-initializer";
@@ -103,6 +103,7 @@ export function setupEventListeners(): void {
 		let offset = Math.floor(window.innerHeight * (BANNER_HEIGHT_EXTEND / 100));
 		offset = offset - (offset % 4);
 		document.documentElement.style.setProperty("--banner-height-extend", `${offset}px`);
+		refreshReadingProgressCache();
 	});
 
 	// Initial update on DOMContentLoaded

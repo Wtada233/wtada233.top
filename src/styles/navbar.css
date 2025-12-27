@@ -3,6 +3,8 @@
     border: 1px solid transparent;
     border-radius: 0 0 0.75rem 0.75rem;
     transition: all var(--duration-medium) var(--ease-standard);
+    will-change: transform, backdrop-filter;
+    transform: translateZ(0);
 }
 
 @media (min-width: 1024px) {

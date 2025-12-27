@@ -1,3 +1,15 @@
+let cachedScrollRange = 0;
+
+export function refreshReadingProgressCache(): void {
+	const isPostPage = window.location.pathname.includes("/posts/");
+	if (!isPostPage) {
+		cachedScrollRange = 0;
+		return;
+	}
+	const { scrollHeight, clientHeight } = document.documentElement;
+	cachedScrollRange = scrollHeight - clientHeight;
+}
+
 export function updateReadingProgressBar(): void {
 	const progressBar = document.getElementById("reading-progress-bar");
 	if (!progressBar) return;
@@ -10,10 +22,13 @@ export function updateReadingProgressBar(): void {
 		return;
 	}
 
-	const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+	if (cachedScrollRange <= 0) {
+		refreshReadingProgressCache();
+	}
+
+	const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
 
 	// Calculate scroll percentage
-	const scrollRange = scrollHeight - clientHeight;
-	const scrollPercent = scrollRange > 0 ? scrollTop / scrollRange : 0;
+	const scrollPercent = cachedScrollRange > 0 ? scrollTop / cachedScrollRange : 0;
 	progressBar.style.transform = `scaleX(${scrollPercent})`;
 }

@@ -456,7 +456,14 @@ onDestroy(() => {
 
 	if (audio) {
 		audio.pause();
+		audio.removeEventListener("play", () => {});
+		audio.removeEventListener("pause", () => {});
+		audio.removeEventListener("timeupdate", () => {});
+		audio.removeEventListener("ended", () => {});
 		audio.src = "";
+		audio.load();
+		// @ts-expect-error
+		audio = null;
 	}
 });
 </script>
