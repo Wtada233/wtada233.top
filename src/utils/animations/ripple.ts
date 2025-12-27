@@ -1,5 +1,5 @@
-import { adaptiveThemeConfig } from "../../configs/adaptive-theme";
-import { effectsConfig } from "../../configs/effects";
+import { adaptiveThemeConfig } from "@configs/adaptive-theme";
+import { effectsConfig } from "@configs/effects";
 
 let _rippleDelegateHandler: ((event: MouseEvent) => void) | undefined;
 let lastClickX = 0;

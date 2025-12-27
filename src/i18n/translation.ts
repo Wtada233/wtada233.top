@@ -1,10 +1,10 @@
-import { siteConfig } from "../config";
-import type I18nKey from "./i18nKey";
-import { en } from "./languages/en";
-import { ja } from "./languages/ja";
-import { ko } from "./languages/ko";
-import { zh_CN } from "./languages/zh_CN";
-import { zh_TW } from "./languages/zh_TW";
+import { siteConfig } from "@configs/site";
+import type I18nKey from "@i18n/i18nKey";
+import { en } from "@i18n/languages/en";
+import { ja } from "@i18n/languages/ja";
+import { ko } from "@i18n/languages/ko";
+import { zh_CN } from "@i18n/languages/zh_CN";
+import { zh_TW } from "@i18n/languages/zh_TW";
 
 export type Translation = {
 	[K in I18nKey]: string;

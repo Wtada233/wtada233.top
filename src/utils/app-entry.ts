@@ -1,16 +1,16 @@
 import "overlayscrollbars/overlayscrollbars.css";
-import { BANNER_HEIGHT, BANNER_HEIGHT_EXTEND, BANNER_HEIGHT_HOME, MAIN_PANEL_OVERLAPS_BANNER_HEIGHT } from "../constants/constants";
-import { initRippleEffect } from "./animations/ripple";
-import { initScrollAnimations } from "./animations/scroll";
-import { showBanner } from "./banner-display-initializer";
-import { initGithubCards } from "./github-card";
-import { registerGlobalClickOutsideHandler, unregisterGlobalClickOutsideHandler } from "./global-click-handler";
-import { initPhotoSwipe } from "./photoswipe-setup";
-import { refreshReadingProgressCache, updateReadingProgressBar } from "./reading-progress";
-import { initCustomScrollbar } from "./scrollbar-initializer";
-import { setupSwupEvents } from "./swup-initializer";
-import { loadTheme } from "./theme-initializer";
-import { fetchUmamiStats } from "./umami-utils";
+import { BANNER_HEIGHT, BANNER_HEIGHT_EXTEND, BANNER_HEIGHT_HOME, MAIN_PANEL_OVERLAPS_BANNER_HEIGHT } from "@constants/constants";
+import { initRippleEffect } from "@utils/animations/ripple";
+import { initScrollAnimations } from "@utils/animations/scroll";
+import { showBanner } from "@utils/banner-display-initializer";
+import { initGithubCards } from "@utils/github-card";
+import { registerGlobalClickOutsideHandler, unregisterGlobalClickOutsideHandler } from "@utils/global-click-handler";
+import { initPhotoSwipe } from "@utils/photoswipe-setup";
+import { refreshReadingProgressCache, updateReadingProgressBar } from "@utils/reading-progress";
+import { initCustomScrollbar } from "@utils/scrollbar-initializer";
+import { setupSwupEvents } from "@utils/swup-initializer";
+import { loadTheme } from "@utils/theme-initializer";
+import { fetchUmamiStats } from "@utils/umami-utils";
 
 import "../styles/animations/ripple.css";
 import "../styles/animations/scroll.css";

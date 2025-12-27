@@ -1,4 +1,4 @@
-import { effectsConfig } from "../../configs/effects";
+import { effectsConfig } from "@configs/effects";
 
 let _scrollAnimationObserver: IntersectionObserver | undefined;
 

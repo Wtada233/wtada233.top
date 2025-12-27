@@ -1,5 +1,5 @@
-import { adaptiveThemeConfig } from "@/config";
-import { applyHue, getHue, getStoredTheme, setTheme } from "./setting-utils";
+import { adaptiveThemeConfig } from "@configs/adaptive-theme";
+import { applyHue, getHue, getStoredTheme, setTheme } from "@utils/setting-utils";
 
 export function loadTheme(): void {
 	const theme = getStoredTheme();

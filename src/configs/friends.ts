@@ -1,4 +1,4 @@
-import type { FriendsConfig } from "../types/config";
+import type { FriendsConfig } from "@/types/config";
 
 export const Friends: FriendsConfig = [
 	{

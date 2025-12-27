@@ -1,4 +1,4 @@
-import type { LIGHT_DARK_MODE } from "../types/config";
+import type { LIGHT_DARK_MODE } from "@/types/config";
 
 export const PAGE_SIZE = 8;
 

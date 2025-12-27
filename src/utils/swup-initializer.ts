@@ -1,13 +1,13 @@
-import { destroyRippleEffect, initRippleEffect, triggerPostIndexRipple } from "./animations/ripple";
-import { destroyScrollAnimations, initScrollAnimations } from "./animations/scroll";
-import { initGithubCards } from "./github-card";
-import { registerGlobalClickOutsideHandler } from "./global-click-handler";
-import { updateReadingProgressBar } from "./reading-progress";
-import { initCustomScrollbar } from "./scrollbar-initializer";
-import { loadHue } from "./theme-initializer";
-import { trackUmamiPageview } from "./umami-tracker";
-import { fetchUmamiStats } from "./umami-utils";
-import { pathsEqual, url } from "./url-utils";
+import { destroyRippleEffect, initRippleEffect, triggerPostIndexRipple } from "@utils/animations/ripple";
+import { destroyScrollAnimations, initScrollAnimations } from "@utils/animations/scroll";
+import { initGithubCards } from "@utils/github-card";
+import { registerGlobalClickOutsideHandler } from "@utils/global-click-handler";
+import { updateReadingProgressBar } from "@utils/reading-progress";
+import { initCustomScrollbar } from "@utils/scrollbar-initializer";
+import { loadHue } from "@utils/theme-initializer";
+import { trackUmamiPageview } from "@utils/umami-tracker";
+import { fetchUmamiStats } from "@utils/umami-utils";
+import { pathsEqual, url } from "@utils/url-utils";
 
 let swupEventsInitialized = false;
 

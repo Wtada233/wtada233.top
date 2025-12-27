@@ -1,13 +1,14 @@
 ---
+import GlassSwitch from "@components/GlassSwitch.svelte";
+import LightDarkSwitch from "@components/LightDarkSwitch.svelte";
+import Search from "@components/Search.svelte";
+import NavMenuPanel from "@components/widget/NavMenuPanel.astro";
+import { navBarConfig } from "@configs/navbar";
+import { siteConfig } from "@configs/site";
+import { LinkPresets } from "@constants/link-presets";
+import { pathsEqual, url } from "@utils/url-utils";
 import { Icon } from "astro-icon/components";
-import { navBarConfig, siteConfig } from "../config";
-import { LinkPresets } from "../constants/link-presets";
-import { LinkPreset, type NavBarLink } from "../types/config";
-import { pathsEqual, url } from "../utils/url-utils";
-import GlassSwitch from "./GlassSwitch.svelte";
-import LightDarkSwitch from "./LightDarkSwitch.svelte";
-import Search from "./Search.svelte";
-import NavMenuPanel from "./widget/NavMenuPanel.astro";
+import { LinkPreset, type NavBarLink } from "@/types/config";
 
 const className = Astro.props.class;
 

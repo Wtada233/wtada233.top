@@ -1,6 +1,11 @@
 <script lang="ts">
 // 导入 Svelte 的生命周期函数和过渡效果
 
+// 从配置文件中导入音乐播放器配置
+import { musicPlayerConfig } from "@configs/music";
+// 导入国际化相关的 Key 和 i18n 实例
+import Key from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
 // 导入 Icon 组件，用于显示图标
 import Icon from "@iconify/svelte";
 import loadingIcon from "@iconify-icons/eos-icons/loading";
@@ -24,11 +29,6 @@ import volumeOffIcon from "@iconify-icons/material-symbols/volume-off";
 import volumeUpIcon from "@iconify-icons/material-symbols/volume-up";
 import { onDestroy, onMount } from "svelte";
 import { slide } from "svelte/transition";
-// 从配置文件中导入音乐播放器配置
-import { musicPlayerConfig } from "../../config";
-// 导入国际化相关的 Key 和 i18n 实例
-import Key from "../../i18n/i18nKey";
-import { i18n } from "../../i18n/translation";
 
 // 音乐播放器模式，可选 "local" 或 "meting"，从本地配置中获取
 let mode = musicPlayerConfig.mode;

@@ -1,4 +1,4 @@
-import { siteConfig } from "../config";
+import { siteConfig } from "@configs/site";
 
 export function showBanner(): void {
 	if (!siteConfig.banner.enable) return;

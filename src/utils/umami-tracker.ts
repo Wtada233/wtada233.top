@@ -1,4 +1,4 @@
-import { umamiConfig } from "../configs/umami";
+import { umamiConfig } from "@configs/umami";
 
 export function trackUmamiPageview(): void {
 	if (!umamiConfig.enabled || typeof window.umami === "undefined") return;

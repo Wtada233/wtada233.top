@@ -1,5 +1,5 @@
-import { seriesConfig } from "../configs/series";
-import { LinkPreset, type NavBarConfig } from "../types/config";
+import { seriesConfig } from "@configs/series";
+import { LinkPreset, type NavBarConfig } from "@/types/config";
 
 export const navBarConfig: NavBarConfig = {
 	links: [

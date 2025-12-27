@@ -1,5 +1,6 @@
 import path from "node:path";
 import rss from "@astrojs/rss";
+import { siteConfig } from "@configs/site";
 import { getSortedPosts } from "@utils/content-utils";
 import { resolveImage } from "@utils/image-utils";
 import { getDir, url } from "@utils/url-utils";
@@ -7,7 +8,6 @@ import type { APIContext } from "astro";
 import * as cheerio from "cheerio";
 import MarkdownIt from "markdown-it";
 import sanitizeHtml from "sanitize-html";
-import { siteConfig } from "@/config";
 
 const parser = new MarkdownIt();
 

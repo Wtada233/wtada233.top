@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { LinkPreset } from "./enums";
+import { LinkPreset } from "@/types/enums";
 
 export type SeoConfig = {
 	twitterId?: string;
@@ -52,7 +52,7 @@ export type SiteConfig = {
 export const SiteConfigSchema: z.ZodType<SiteConfig> = z.object({
 	title: z.string(),
 	subtitle: z.string(),
-	lang: z.enum(["en", "zh_CN", "zh_TW", "ja", "ko", "es", "th", "vi", "tr", "id"]),
+	lang: z.enum(["en", "zh_CN", "zh_TW", "ja", "ko"]),
 	keywords: z.string(),
 	description: z.string(),
 	themeColor: z.object({

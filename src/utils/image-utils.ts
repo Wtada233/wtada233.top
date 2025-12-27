@@ -1,8 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
+import { rgbToHue } from "@utils/color-utils";
 import type { ImageMetadata } from "astro";
 import sharp from "sharp";
-import { rgbToHue } from "./color-utils";
 
 export async function resolveImage(src: string, basePath = "/"): Promise<ImageMetadata | undefined> {
 	// The glob path here is relative to the project root for consistency.

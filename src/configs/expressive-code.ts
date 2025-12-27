@@ -1,4 +1,4 @@
-import type { ExpressiveCodeConfig } from "../types/config";
+import type { ExpressiveCodeConfig } from "@/types/config";
 
 export const expressiveCodeConfig: ExpressiveCodeConfig = {
 	// Note: Some styles (such as background color) are being overridden, see the astro.config.mjs file.

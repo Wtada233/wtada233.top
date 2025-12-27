@@ -4,10 +4,10 @@ import EffectsCanvas from "@components/misc/EffectsCanvas.astro";
 import MusicPlayer from "@components/widget/MusicPlayer.svelte";
 import { fontConfig } from "@configs/font";
 import { musicPlayerConfig } from "@configs/music";
-import { siteConfig } from "@/config";
-import { pathsEqual, url } from "../utils/url-utils";
-import Head from "./components/Head.astro";
-import ThemeScript from "./components/ThemeScript.astro";
+import { siteConfig } from "@configs/site";
+import Head from "@layouts/components/Head.astro";
+import ThemeScript from "@layouts/components/ThemeScript.astro";
+import { pathsEqual, url } from "@utils/url-utils";
 import "katex/dist/katex.css";
 import "../styles/navbar.css";
 
@@ -213,6 +213,6 @@ ${fontConfig.enable ? fontConfig.fonts.map((font) => `
 `}></style>
 
 <script>
-    import { setupEventListeners } from "../utils/app-entry";
+    import { setupEventListeners } from "@utils/app-entry";
     setupEventListeners();
 </script>
