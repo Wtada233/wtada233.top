@@ -125,22 +125,28 @@ function initTOC() {
     const isMobile = () => window.innerWidth < 1024;
 
     // 状态加载 (仅PC端记忆)
-    const loadUserPreference = () => {
-        if (!isMobile()) {
-            const isUserHidden = localStorage.getItem('toc-user-hidden') === 'true';
-            if (isUserHidden) {
-                tocWidget.setAttribute('data-user-hidden', 'true');
-                showBtn.setAttribute('data-user-hidden', 'true');
-            }
+    const applyUserPreference = () => {
+        const isUserHidden = localStorage.getItem('toc-user-hidden') === 'true';
+        if (isUserHidden && !isMobile()) {
+            tocWidget.setAttribute('data-user-hidden', 'true');
+            showBtn.setAttribute('data-user-hidden', 'true');
+        } else {
+            tocWidget.removeAttribute('data-user-hidden');
+            showBtn.removeAttribute('data-user-hidden');
         }
     };
-    loadUserPreference();
+    applyUserPreference();
 
     const toggleVisibility = () => {
         const threshold = 300;
         const visible = window.scrollY > threshold ? "true" : "false";
         tocWidget.setAttribute('data-visible', visible);
         showBtn.setAttribute('data-visible', visible);
+        
+        // 缩放窗口时重新应用偏好 (如果从移动端切换回PC端)
+        if (!isMobile() && !tocWidget.hasAttribute('data-user-hidden') && localStorage.getItem('toc-user-hidden') === 'true') {
+            applyUserPreference();
+        }
     };
 
     // 手动关闭逻辑

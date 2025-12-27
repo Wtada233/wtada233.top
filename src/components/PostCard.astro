@@ -36,6 +36,7 @@ const coverWidth = "28%";
 const { remarkPluginFrontmatter } = await entry.render();
 const scrollAnimationEnabled = (entry.data.effects ?? effectsConfig.scrollAnimation.enable) && effectsConfig.enable;
 const tiltEnabled = effectsConfig.enable && effectsConfig.tilt.enable;
+const tiltIntensity = effectsConfig.tilt.intensity;
 
 const displayDescription = description || remarkPluginFrontmatter.excerpt;
 ---
@@ -111,23 +112,24 @@ const displayDescription = description || remarkPluginFrontmatter.excerpt;
     }
 </div>
 
-<script is:inline define:vars={{ tiltEnabled }}>
+<script is:inline define:vars={{ tiltEnabled, tiltIntensity }}>
     function initTilt() {
         if (!tiltEnabled) return;
-        const isMobile = window.matchMedia("(max-width: 768px)").matches;
-        if (isMobile) return;
 
         const cards = document.querySelectorAll('.tilt-card');
         cards.forEach(card => {
             const htmlCard = card;
             htmlCard.addEventListener('mousemove', (e) => {
+                const isMobile = window.matchMedia("(max-width: 768px)").matches;
+                if (isMobile) return;
+
                 const rect = htmlCard.getBoundingClientRect();
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;
                 const centerX = rect.width / 2;
                 const centerY = rect.height / 2;
-                const rotateX = (centerY - y) / 20; 
-                const rotateY = (x - centerX) / 20;
+                const rotateX = (centerY - y) / tiltIntensity; 
+                const rotateY = (x - centerX) / tiltIntensity;
                 
                 htmlCard.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.01, 1.01, 1.01)`;
                 htmlCard.style.transition = 'transform 0.1s ease-out';

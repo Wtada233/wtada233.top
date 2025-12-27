@@ -19,11 +19,12 @@ export const effectsConfig = {
 		particleCount: 10,
 	},
 	trail: {
-		size: 1,
+		size: 5,
 		animationDuration: 500,
 	},
 	tilt: {
 		enable: true,
+		intensity: 50,
 	},
 	throttleLimit: 50,
 };
