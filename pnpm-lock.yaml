@@ -159,9 +159,6 @@ importers:
       '@rollup/plugin-yaml':
         specifier: ^4.1.2
         version: 4.1.2(rollup@2.79.2)
-      '@types/cheerio':
-        specifier: ^1.0.0
-        version: 1.0.0
       '@types/hast':
         specifier: ^3.0.4
         version: 3.0.4
@@ -1927,10 +1924,6 @@ packages:
 
   '@types/babel__traverse@7.28.0':
     resolution: {integrity: sha512-8PvcXf70gTDZBgt9ptxJ8elBeBjcLOAcOtoO/mPJjtji1+CdGbHgm77om1GrsPxsiE+uXIpNSK64UYaIwQXd4Q==}
-
-  '@types/cheerio@1.0.0':
-    resolution: {integrity: sha512-zAaImHWoh5RY2CLgU2mvg3bl2k3F65B0N5yphuII3ythFLPmJhL7sj1RDu6gSxcgqHlETbr/lhA2OBY+WF1fXQ==}
-    deprecated: This is a stub types definition. cheerio provides its own type definitions, so you do not need this installed.
 
   '@types/debug@4.1.12':
     resolution: {integrity: sha512-vIChWdVG3LG1SMxEvI/AK+FWJthlrqlTu7fbrlywTkkaONwk/UAGaULXRlf8vkzFBLVm0zkMdCquhL5aOjhXPQ==}
@@ -7129,10 +7122,6 @@ snapshots:
     dependencies:
       '@babel/types': 7.28.5
     optional: true
-
-  '@types/cheerio@1.0.0':
-    dependencies:
-      cheerio: 1.1.2
 
   '@types/debug@4.1.12':
     dependencies:

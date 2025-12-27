@@ -69,7 +69,6 @@
     "@iconify-icons/fa6-solid": "^1.2.13",
     "@iconify-icons/material-symbols": "^1.2.58",
     "@rollup/plugin-yaml": "^4.1.2",
-    "@types/cheerio": "^1.0.0",
     "@types/hast": "^3.0.4",
     "@types/markdown-it": "^14.1.2",
     "@types/mdast": "^4.0.4",
