@@ -64,7 +64,7 @@ $: {
 		filteredPosts = filteredPosts.filter((post) => post.data.series && series.includes(post.data.series));
 	}
 
-	if (uncategorized) {
+	if (uncategorized === "true") {
 		filteredPosts = filteredPosts.filter((post) => !post.data.category);
 	}
 
