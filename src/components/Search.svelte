@@ -165,12 +165,12 @@ onMount(() => {
 	}
 
 	const handleResize = () => {
-		if (window.innerWidth < 1024) {
-			const panel = document.getElementById("search-panel");
+		const isDesktop = window.innerWidth >= 1024;
+		const panel = document.getElementById("search-panel");
+		if (isDesktop && !keywordDesktop && !Object.keys(activeFilters).length) {
 			panel?.classList.add("float-panel-closed");
 		}
 	};
-
 	window.addEventListener("resize", handleResize);
 
 	return () => {
