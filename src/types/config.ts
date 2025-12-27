@@ -36,7 +36,6 @@ export type ProfileConfig = z.infer<typeof ProfileConfigSchema>;
 export type LicenseConfig = z.infer<typeof LicenseConfigSchema>;
 export type ExpressiveCodeConfig = z.infer<typeof ExpressiveCodeConfigSchema>;
 export type GiscusConfig = z.infer<typeof GiscusConfigSchema>;
-
 export type AiSummaryConfig = z.infer<typeof AiSummaryConfigSchema>;
 export type BlogInfoConfig = z.infer<typeof BlogInfoConfigSchema>;
 export type EffectsConfig = z.infer<typeof EffectsConfigSchema>;

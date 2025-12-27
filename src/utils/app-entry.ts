@@ -9,7 +9,7 @@ import { initPhotoSwipe } from "./photoswipe-setup";
 import { updateReadingProgressBar } from "./reading-progress";
 import { initCustomScrollbar } from "./scrollbar-initializer";
 import { setupSwupEvents } from "./swup-initializer";
-import { loadHue, loadTheme } from "./theme-initializer";
+import { loadTheme } from "./theme-initializer";
 import { fetchUmamiStats } from "./umami-utils";
 
 import "../styles/animations/ripple.css";

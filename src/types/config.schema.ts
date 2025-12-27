@@ -23,7 +23,6 @@ export type SiteConfig = {
 	description: string;
 	themeColor: {
 		hue: number;
-		fixed: boolean;
 	};
 	banner: {
 		enable: boolean;
