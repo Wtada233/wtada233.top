@@ -103,7 +103,18 @@ const isPost = Astro.url.pathname.includes("/posts/");
 </style>
 
 <script>
+let tocObserver;
+let tocScrollHandler;
+
+function cleanupTOC() {
+    if (tocObserver) tocObserver.disconnect();
+    if (tocScrollHandler) window.removeEventListener('scroll', tocScrollHandler);
+    document.body.style.overflow = '';
+}
+
 function initTOC() {
+    cleanupTOC();
+
     const tocWidget = document.getElementById('toc-widget');
     const showBtn = document.getElementById('toc-show-btn');
     const closeBtn = document.getElementById('toc-close-btn');
@@ -170,7 +181,7 @@ function initTOC() {
         openTOC();
     };
 
-    backdrop!.onclick = closeTOC;
+    if (backdrop) backdrop.onclick = closeTOC;
 
     // 点击目录项自动关闭 (移动端)
     tocWidget.querySelectorAll('.toc-link').forEach(link => {
@@ -180,20 +191,21 @@ function initTOC() {
     });
 
     window.addEventListener('scroll', toggleVisibility, { passive: true });
+    tocScrollHandler = toggleVisibility;
     toggleVisibility();
 
     // 目录高亮逻辑
     const links = tocWidget.querySelectorAll('a.toc-link');
-    let activeLink: Element | null = null;
+    let activeLink = null;
 
     const sections = Array.from(links).map(link => {
         const slug = link.getAttribute('data-slug');
         return document.getElementById(slug || '');
-    }).filter((el): el is HTMLElement => el !== null);
+    }).filter((el) => el !== null);
 
     if (sections.length === 0) return;
 
-    const observerCallback = (entries: IntersectionObserverEntry[]) => {
+    const observerCallback = (entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 const id = entry.target.id;
@@ -218,16 +230,12 @@ function initTOC() {
     });
 
     sections.forEach(section => observer.observe(section));
-
-    const cleanup = () => {
-        window.removeEventListener('scroll', toggleVisibility);
-        observer.disconnect();
-        document.body.style.overflow = '';
-        document.removeEventListener('swup:content:replace', cleanup);
-    };
-    document.addEventListener('swup:content:replace', cleanup);
+    tocObserver = observer;
 }
 
+// 初始化
 initTOC();
 document.addEventListener('astro:page-load', initTOC);
+// 页面切换前清理
+document.addEventListener('astro:before-swap', cleanupTOC);
 </script>

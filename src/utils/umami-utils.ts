@@ -19,7 +19,7 @@ export async function fetchUmamiStats(): Promise<void> {
 		const endAt = Date.now();
 		const startAt = 0;
 
-		const url = `${umamiConfig.apiUrl}/websites/${umamiConfig.websiteId}/stats?startAt=${startAt}&endAt=${endAt}&unit=hour&timezone=Asia%2FShanghai`;
+		const url = `${umamiConfig.apiUrl}/websites/${umamiConfig.websiteId}/stats?startAt=${startAt}&endAt=${endAt}&timezone=Asia%2FShanghai`;
 
 		const response = await fetch(url, {
 			method: "GET",
