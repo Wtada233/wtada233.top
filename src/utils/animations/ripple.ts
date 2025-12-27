@@ -2,14 +2,26 @@ import { adaptiveThemeConfig } from "../../configs/adaptive-theme";
 import { effectsConfig } from "../../configs/effects";
 
 let _rippleDelegateHandler: ((event: MouseEvent) => void) | undefined;
+let lastClickX = 0;
+let lastClickY = 0;
 
-function createFullScreenRipple(event: MouseEvent, hue: string) {
+// Track last click coordinates globally
+if (typeof window !== "undefined") {
+	document.addEventListener(
+		"mousedown",
+		(e) => {
+			lastClickX = e.clientX;
+			lastClickY = e.clientY;
+		},
+		{ capture: true },
+	);
+}
+
+export function createFullScreenRipple(x: number, y: number, hue: string): void {
 	const ripple = document.createElement("span");
 	ripple.classList.add("ripple-screen");
 	ripple.style.backgroundColor = `oklch(0.70 0.14 ${hue})`;
 
-	const x = event.clientX;
-	const y = event.clientY;
 	const w = window.innerWidth;
 	const h = window.innerHeight;
 
@@ -27,6 +39,19 @@ function createFullScreenRipple(event: MouseEvent, hue: string) {
 	ripple.addEventListener("animationend", () => {
 		ripple.remove();
 	});
+}
+
+export function triggerPostIndexRipple(): void {
+	if (typeof window !== "undefined" && lastClickX !== 0 && lastClickY !== 0) {
+		const postContainer = document.getElementById("post-container");
+		const hue = postContainer?.dataset.hue;
+		if (hue) {
+			createFullScreenRipple(lastClickX, lastClickY, hue);
+			// Reset coordinates to prevent re-triggering on the same spot accidentally
+			lastClickX = 0;
+			lastClickY = 0;
+		}
+	}
 }
 
 export function initRippleEffect(): void {
@@ -54,10 +79,11 @@ export function initRippleEffect(): void {
 				// Do nothing
 			} else if (adaptiveThemeConfig.animation) {
 				const hue = hueTrigger.dataset.hue;
-				createFullScreenRipple(event, hue);
+				createFullScreenRipple(event.clientX, event.clientY, hue);
 				return;
 			}
 		}
+		// ... rest of the function
 
 		const button = target.closest(".btn-regular, .btn-regular-dark, .btn-plain, .btn-card, .link") as HTMLElement;
 

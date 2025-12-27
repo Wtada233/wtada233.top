@@ -194,7 +194,6 @@ $: {
 				<a
 					href={getPostUrlBySlug(post.slug)}
 					aria-label={post.data.title}
-					data-hue={post.hue}
 					class="group btn-plain !block h-10 w-full rounded-lg hover:text-[initial]"
 				>
 					<div class="flex flex-row justify-start items-center h-full">

@@ -22,6 +22,7 @@ declare global {
 		};
 		semifullScrollHandler?: () => void;
 		postEffects?: boolean;
+		customHue?: number;
 		twikoo?: Twikoo;
 		umami?: Umami;
 		lastTrackTimestamp?: number;

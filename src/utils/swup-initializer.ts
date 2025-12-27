@@ -1,4 +1,4 @@
-import { destroyRippleEffect, initRippleEffect } from "./animations/ripple";
+import { destroyRippleEffect, initRippleEffect, triggerPostIndexRipple } from "./animations/ripple";
 import { destroyScrollAnimations, initScrollAnimations } from "./animations/scroll";
 import { initGithubCards } from "./github-card";
 import { registerGlobalClickOutsideHandler } from "./global-click-handler";
@@ -39,6 +39,7 @@ export function setupSwupEvents(): void {
 
 		updateReadingProgressBar();
 		initRippleEffect();
+		triggerPostIndexRipple(); // New: Trigger ripple if custom hue is present
 		initScrollAnimations();
 		trackUmamiPageview();
 		fetchUmamiStats();
@@ -47,6 +48,11 @@ export function setupSwupEvents(): void {
 	});
 
 	window.swup.hooks.on("visit:start", (visit: { to: { url: string } }) => {
+		// Reset customHue state
+		if (typeof window !== "undefined") {
+			window.customHue = undefined;
+		}
+
 		// change banner height immediately when a link is clicked
 		const bodyElement = document.querySelector("body");
 		const isHomePage = pathsEqual(visit.to.url, url("/"));
