@@ -23,6 +23,7 @@ const lang = getLangFromPathname(Astro.url.pathname);
         <div class="hidden running-time-template" data-lang={lang} data-template={i18n(I18nKey.runningTimeStatus, {}, lang)}></div>
         <script>
             import { runningTimeConfig } from "@configs/running-time";
+            import { dateConfig } from "@configs/date";
             import { siteConfig } from "@configs/site";
             import { setupComponent } from "@utils/lifecycle";
 
@@ -35,8 +36,12 @@ const lang = getLangFromPathname(Astro.url.pathname);
                 const templateEl = document.querySelector(`.running-time-template[data-lang="${currentLang}"]`);
                 const statusTemplate = templateEl ? templateEl.getAttribute('data-template') : '{d}d {h}h {m}m {s}s';
 
-                const t = new Date(startDate);
-                const n = new Date();
+                // 获取目标时区的起始时间
+                // 使用 Intl.DateTimeFormat 获取 offset 比较复杂，这里用更直接的方式：
+                // 将 startDate 视为目标时区的时间
+                const t = new Date(new Date(startDate).toLocaleString('en-US', { timeZone: dateConfig.timezone }));
+                const n = new Date(new Date().toLocaleString('en-US', { timeZone: dateConfig.timezone }));
+                
                 const s = n.getTime() - t.getTime();
                 const e = Math.floor(s / 1e3);
                 const o = Math.floor(e / 86400);

@@ -5,6 +5,7 @@ import type {
 	AiSummaryConfigSchema,
 	BannerConfigSchema,
 	BlogInfoConfigSchema,
+	DateConfigSchema,
 	EffectsConfigSchema,
 	ExpressiveCodeConfigSchema,
 	FaviconConfigSchema,
@@ -33,6 +34,7 @@ import type {
 export { LinkPreset } from "@/types/enums";
 
 export type SiteConfig = z.infer<typeof SiteConfigSchema>;
+export type DateConfig = z.infer<typeof DateConfigSchema>;
 export type BannerConfig = z.infer<typeof BannerConfigSchema>;
 export type FaviconConfig = z.infer<typeof FaviconConfigSchema>;
 export type Favicon = FaviconConfig[number];

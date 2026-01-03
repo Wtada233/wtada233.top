@@ -45,6 +45,7 @@ const lang = propLang || getLangFromPathname(Astro.url.pathname);
 </style>
 
 <script>
+import { dateConfig } from "@configs/date";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import { getRuntimeLanguage } from "@utils/i18n-runtime";
@@ -63,11 +64,30 @@ function initArchivePanel() {
     const defaultLang = panel.dataset.defaultLang!;
     let currentView = "time";
     let visibleGroupsCount = 10;
-    let currentLang = getRuntimeLanguage();
+    const currentLang = getRuntimeLanguage();
+
+    const escapeHtml = (unsafe: string) => {
+        return unsafe
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+    };
 
     const getPostTranslation = (p: any) => {
         return p.translations[currentLang] || p.translations[defaultLang] || Object.values(p.translations)[0];
     };
+
+    // Pre-calculate translations to improve render performance
+    const postsWithTrans = sortedPosts.map((p: any) => {
+        const trans = getPostTranslation(p);
+        return {
+            slug: p.slug,
+            data: trans?.data || {},
+            published: p.data.published
+        };
+    });
 
     const getFiltersFromURL = () => {
         const params = new URLSearchParams(window.location.search);
@@ -81,21 +101,20 @@ function initArchivePanel() {
 
     const formatDate = (dateStr: string) => {
         const date = new Date(dateStr);
-        const month = (date.getMonth() + 1).toString().padStart(2, "0");
-        const day = date.getDate().toString().padStart(2, "0");
+        const formatter = new Intl.DateTimeFormat('en-US', {
+            timeZone: dateConfig.timezone,
+            month: '2-digit',
+            day: '2-digit'
+        });
+        const parts = formatter.formatToParts(date);
+        const month = parts.find(p => p.type === 'month')?.value;
+        const day = parts.find(p => p.type === 'day')?.value;
         return `${month}-${day}`;
     };
 
     const render = () => {
         const filters = getFiltersFromURL();
-        let filteredPosts = sortedPosts.map((p: any) => {
-            const trans = getPostTranslation(p);
-            return {
-                slug: p.slug,
-                data: trans.data,
-                published: p.data.published
-            };
-        });
+        let filteredPosts = [...postsWithTrans];
 
         if (filters.tags.length > 0) filteredPosts = filteredPosts.filter((p: any) => p.data.tags?.some((t: string) => filters.tags.includes(t)));
         if (filters.categories.length > 0) filteredPosts = filteredPosts.filter((p: any) => filters.categories.includes(p.data.category));
@@ -104,8 +123,12 @@ function initArchivePanel() {
 
         let groups: any[] = [];
         if (currentView === "time") {
+            const yearFormatter = new Intl.DateTimeFormat('en-US', {
+                timeZone: dateConfig.timezone,
+                year: 'numeric'
+            });
             const grouped = filteredPosts.reduce((acc: any, p: any) => {
-                const year = new Date(p.published).getFullYear();
+                const year = yearFormatter.format(new Date(p.published));
                 if (!acc[year]) acc[year] = [];
                 acc[year].push(p);
                 return acc;
@@ -153,8 +176,8 @@ function initArchivePanel() {
         groupsContainer.innerHTML = visibleGroups.length > 0 ? visibleGroups.map(group => `
             <div>
                 <div class="flex flex-row items-center h-[3.75rem] px-2 md:px-4 gap-3 md:gap-4">
-                    <div class="w-14 md:w-16 transition text-2xl font-bold text-right text-75 flex-shrink-0 truncate" title="${group.key}">
-                        ${group.key}
+                    <div class="w-14 md:w-16 transition text-2xl font-bold text-right text-75 flex-shrink-0 truncate" title="${escapeHtml(group.key)}">
+                        ${escapeHtml(group.key)}
                     </div>
                     <div class="w-4 flex-shrink-0 flex justify-center">
                         <div class="h-3 w-3 bg-none rounded-full outline outline-[var(--primary)] -outline-offset-[2px] z-50 outline-3"></div>
@@ -164,7 +187,7 @@ function initArchivePanel() {
                     </div>
                 </div>
                 ${group.posts.map((post: any) => `
-                    <a href="${getPostUrlBySlug(post.slug, currentLang)}" aria-label="${post.data.title}" class="group btn-plain !block h-10 w-full rounded-lg hover:text-[initial] overflow-hidden">
+                    <a href="${getPostUrlBySlug(post.slug, currentLang)}" aria-label="${escapeHtml(post.data.title)}" class="group btn-plain !block h-10 w-full rounded-lg hover:text-[initial] overflow-hidden">
                         <div class="flex flex-row justify-start items-center h-full px-2 md:px-4 gap-3 md:gap-4 max-w-full">
                             <div class="w-14 md:w-16 transition text-sm text-right text-50 flex-shrink-0">
                                 ${formatDate(post.published)}
@@ -172,11 +195,11 @@ function initArchivePanel() {
                             <div class="w-4 relative dash-line h-full flex items-center flex-shrink-0">
                                 <div class="transition-all mx-auto w-1 h-1 rounded group-hover:h-5 bg-[oklch(0.5_0.05_var(--hue))] group-hover:bg-[var(--primary)] outline outline-4 z-50 outline-[var(--card-bg)] group-hover:outline-[var(--btn-plain-bg-hover)] group-active:outline-[var(--btn-plain-bg-active)]"></div>
                             </div>
-                            <div class="flex-1 font-bold text-75 truncate transition-all group-hover:translate-x-1 group-hover:text-[var(--primary)]" title="${post.data.title}">
-                                ${post.data.title}
+                            <div class="flex-1 font-bold text-75 truncate transition-all group-hover:translate-x-1 group-hover:text-[var(--primary)]" title="${escapeHtml(post.data.title)}">
+                                ${escapeHtml(post.data.title)}
                             </div>
                             <div class="hidden md:block w-[15%] max-w-[8rem] text-left text-sm transition truncate text-30 flex-shrink-0">
-                                ${post.data.tags?.map((t: string) => `#${t}`).join(" ") || ""}
+                                ${post.data.tags?.map((t: string) => `#${escapeHtml(t)}`).join(" ") || ""}
                             </div>
                         </div>
                     </a>
@@ -192,7 +215,8 @@ function initArchivePanel() {
         else loadMoreContainer.classList.add('hidden');
     };
 
-    const handleViewClick = (btn: HTMLElement) => {
+    const handleBtnClick = (e: Event) => {
+        const btn = (e.currentTarget as HTMLElement);
         viewButtons.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         currentView = btn.dataset.view!;
@@ -206,7 +230,7 @@ function initArchivePanel() {
     };
 
     viewButtons.forEach(btn => {
-        btn.addEventListener('click', () => handleViewClick(btn as HTMLElement));
+        btn.addEventListener('click', handleBtnClick);
     });
 
     loadMoreBtn.addEventListener('click', handleLoadMoreClick);
@@ -216,7 +240,7 @@ function initArchivePanel() {
     // Return functions for cleanup
     return () => {
         viewButtons.forEach(btn => {
-            btn.removeEventListener('click', () => handleViewClick(btn as HTMLElement));
+            btn.removeEventListener('click', handleBtnClick);
         });
         loadMoreBtn.removeEventListener('click', handleLoadMoreClick);
     };

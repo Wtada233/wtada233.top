@@ -2,6 +2,7 @@ import { adaptiveThemeConfig } from "@configs/adaptive-theme";
 import { aiSummaryConfig } from "@configs/ai-summary";
 import { bannerConfig } from "@configs/banner";
 import { blogInfoConfig } from "@configs/blog-info";
+import { dateConfig } from "@configs/date";
 import { effectsConfig } from "@configs/effects";
 import { expressiveCodeConfig } from "@configs/expressive-code";
 import { faviconConfig } from "@configs/favicon";
@@ -30,6 +31,7 @@ import {
 	AiSummaryConfigSchema,
 	BannerConfigSchema,
 	BlogInfoConfigSchema,
+	DateConfigSchema,
 	EffectsConfigSchema,
 	ExpressiveCodeConfigSchema,
 	FaviconConfigSchema,
@@ -55,6 +57,7 @@ import {
 } from "@/types/config.schema";
 
 const validations = [
+	{ name: "dateConfig", schema: DateConfigSchema, data: dateConfig },
 	{ name: "adaptiveThemeConfig", schema: AdaptiveThemeConfigSchema, data: adaptiveThemeConfig },
 	{ name: "siteConfig", schema: SiteConfigSchema, data: siteConfig },
 	{ name: "bannerConfig", schema: BannerConfigSchema, data: bannerConfig },

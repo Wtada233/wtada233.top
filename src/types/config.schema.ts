@@ -372,6 +372,14 @@ export const RunningTimeConfigSchema: z.ZodType<RunningTimeConfig> = z.object({
 	startDate: z.string(),
 });
 
+export type DateConfig = {
+	timezone: string;
+};
+
+export const DateConfigSchema: z.ZodType<DateConfig> = z.object({
+	timezone: z.string(),
+});
+
 export type SeriesConfig = {
 	enabled: boolean;
 };
