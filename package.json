@@ -31,6 +31,7 @@
     "@vite-pwa/astro": "^1.2.0",
     "astro": "5.16.6",
     "astro-expressive-code": "^0.41.5",
+    "blueimp-md5": "^2.19.0",
     "flexsearch": "^0.8.212",
     "mdast-util-to-string": "^4.0.0",
     "rehype-autolink-headings": "^7.1.0",

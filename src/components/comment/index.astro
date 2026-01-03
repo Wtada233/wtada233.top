@@ -1,5 +1,5 @@
 ---
-import Twikoo from "@components/comment/Twikoo.astro";
+import TwikooLite from "@components/comment/TwikooLite.astro";
 import { twikooConfig } from "@configs/twikoo";
 
 interface Props {
@@ -8,6 +8,6 @@ interface Props {
 
 const { path } = Astro.props;
 ---
-<div class="card-base p-6 mb-4">
-  {twikooConfig.enabled && <Twikoo path={path} />}
+<div class="p-2 mb-4">
+  {twikooConfig.enabled && <TwikooLite path={path} />}
 </div>

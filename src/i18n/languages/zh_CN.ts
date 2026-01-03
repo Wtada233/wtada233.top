@@ -128,4 +128,30 @@ export const zh_CN: Translation = {
 
 	// Footer Build Date
 	[Key.lastBuildAt]: "最后构建于",
+
+	// Twikoo Lite
+	[Key.reply]: "回复",
+	[Key.replyTo]: "回复 @{nick}:",
+	[Key.noComments]: "暂无评论，来做第一个吧！",
+	[Key.placeholder]: "支持 Markdown 语法...",
+	[Key.nickRequired]: "请输入昵称",
+	[Key.sending]: "发送中...",
+	[Key.submitFailed]: "提交失败",
+	[Key.blogger]: "博主",
+	[Key.refresh]: "刷新评论",
+	[Key.email]: "邮箱",
+	[Key.website]: "网址",
+	[Key.repliesCount]: "个回复",
+	[Key.cancel]: "取消",
+	[Key.like]: "喜欢",
+	[Key.login]: "登录管理",
+	[Key.logout]: "退出管理",
+	[Key.loginSuccess]: "登录成功",
+	[Key.loginFailed]: "登录失败，请检查密码",
+	[Key.delete]: "删除",
+	[Key.deleteConfirm]: "确认删除这条评论吗？",
+	[Key.submit]: "提交评论",
+	[Key.pin]: "置顶",
+	[Key.unpin]: "取消置顶",
+	[Key.pinnedTag]: "置顶",
 };

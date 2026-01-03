@@ -88,7 +88,7 @@ export const zh_TW: Translation = {
 	[Key.pageNotFoundArchiveButton]: "文章歸檔",
 	[Key.pageNotFoundBackButtonHint]: "您也可以使用瀏覽器的後退按鈕返回上一頁",
 
-	//最後編輯時間卡片
+	// 最後編輯時間卡片
 	[Key.lastModifiedPrefix]: "最後修改於 ",
 	[Key.lastModifiedOutdated]: "部分內容可能已過時",
 	[Key.lastModifiedDaysAgo]: "{days} 天前",
@@ -130,4 +130,30 @@ export const zh_TW: Translation = {
 
 	// Footer Build Date
 	[Key.lastBuildAt]: "最後建構於",
+
+	// Twikoo Lite
+	[Key.reply]: "回覆",
+	[Key.replyTo]: "回覆 @{nick}:",
+	[Key.noComments]: "暫無留言，來做第一個吧！",
+	[Key.placeholder]: "支援 Markdown 語法...",
+	[Key.nickRequired]: "請輸入暱稱",
+	[Key.sending]: "傳送中...",
+	[Key.submitFailed]: "提交失敗",
+	[Key.blogger]: "站長",
+	[Key.refresh]: "重新整理留言",
+	[Key.email]: "郵箱",
+	[Key.website]: "網址",
+	[Key.repliesCount]: "則留言",
+	[Key.cancel]: "取消",
+	[Key.like]: "喜歡",
+	[Key.login]: "登入管理",
+	[Key.logout]: "登出管理",
+	[Key.loginSuccess]: "登入成功",
+	[Key.loginFailed]: "登入失敗，請檢查密碼",
+	[Key.delete]: "刪除",
+	[Key.deleteConfirm]: "確認刪除這條留言嗎？",
+	[Key.submit]: "提交留言",
+	[Key.pin]: "置頂",
+	[Key.unpin]: "取消置頂",
+	[Key.pinnedTag]: "置頂",
 };

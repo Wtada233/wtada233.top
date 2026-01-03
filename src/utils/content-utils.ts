@@ -73,10 +73,10 @@ export async function getGroupedPosts(): Promise<GroupedPost[]> {
 
 		// Map special lang codes if necessary
 		if (post.id.endsWith(".en.md")) lang = "en";
-		if (post.id.endsWith(".zh_CN.md")) lang = "zh_CN";
-		if (post.id.endsWith(".zh_TW.md")) lang = "zh_TW";
-		if (post.id.endsWith(".ja.md")) lang = "ja";
-		if (post.id.endsWith(".ko.md")) lang = "ko";
+		else if (post.id.endsWith(".zh_CN.md")) lang = "zh_CN";
+		else if (post.id.endsWith(".zh_TW.md")) lang = "zh_TW";
+		else if (post.id.endsWith(".ja.md")) lang = "ja";
+		else if (post.id.endsWith(".ko.md")) lang = "ko";
 
 		group.translations[lang] = post;
 	}
@@ -86,7 +86,8 @@ export async function getGroupedPosts(): Promise<GroupedPost[]> {
 		const defaultLang = siteConfig.lang as SupportedLanguage;
 		const representative = group.translations[defaultLang] || Object.values(group.translations)[0];
 		if (representative) {
-			group.data = representative.data;
+			// CRITICAL: Shallow copy the data to avoid modifying the original entry in memory
+			group.data = { ...representative.data };
 		}
 		return import.meta.env.PROD ? group.data.draft !== true : true;
 	});
@@ -95,7 +96,10 @@ export async function getGroupedPosts(): Promise<GroupedPost[]> {
 		if (pinningConfig.enabled && a.data.order !== b.data.order) {
 			return b.data.order - a.data.order;
 		}
-		return new Date(b.data.published).getTime() - new Date(a.data.published).getTime();
+		const dateA = new Date(a.data.published).getTime();
+		const dateB = new Date(b.data.published).getTime();
+		if (dateA !== dateB) return dateB - dateA;
+		return a.slug.localeCompare(b.slug); // Stable sort fallback
 	});
 }
 
@@ -103,7 +107,13 @@ export async function getGroupedPosts(): Promise<GroupedPost[]> {
  * 获取排序后的文章列表（带上下篇信息）
  */
 export async function getSortedPosts(): Promise<GroupedPost[]> {
-	const sorted = await getGroupedPosts();
+	const grouped = await getGroupedPosts();
+	// Create deep copy of the structure to be safe during linking
+	const sorted = grouped.map((p) => ({
+		...p,
+		data: { ...p.data },
+	}));
+
 	for (let i = 1; i < sorted.length; i++) {
 		sorted[i].data.nextSlug = sorted[i - 1].slug;
 		sorted[i].data.nextTitle = sorted[i - 1].data.title;

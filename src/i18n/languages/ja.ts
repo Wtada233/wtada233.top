@@ -130,4 +130,30 @@ export const ja: Translation = {
 
 	// Footer Build Date
 	[Key.lastBuildAt]: "最終ビルド日時",
+
+	// Twikoo Lite
+	[Key.reply]: "返信",
+	[Key.replyTo]: "@{nick} に返信:",
+	[Key.noComments]: "コメントはまだありません。最初のコメントを書いてみませんか？",
+	[Key.placeholder]: "Markdownをサポートしています...",
+	[Key.nickRequired]: "ニックネームを入力してください",
+	[Key.sending]: "送信中...",
+	[Key.submitFailed]: "送信に失敗しました",
+	[Key.blogger]: "ブロガー",
+	[Key.refresh]: "コメントを更新",
+	[Key.email]: "メールアドレス",
+	[Key.website]: "ウェブサイト",
+	[Key.repliesCount]: "件の返信",
+	[Key.cancel]: "キャンセル",
+	[Key.like]: "いいね",
+	[Key.login]: "管理者ログイン",
+	[Key.logout]: "ログアウト",
+	[Key.loginSuccess]: "ログインに成功しました",
+	[Key.loginFailed]: "ログインに失敗しました。パスワードを確認してください",
+	[Key.delete]: "削除",
+	[Key.deleteConfirm]: "このコメントを削除してもよろしいですか？",
+	[Key.submit]: "コメントを送信",
+	[Key.pin]: "固定する",
+	[Key.unpin]: "固定を解除",
+	[Key.pinnedTag]: "固定済み",
 };

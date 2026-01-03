@@ -129,4 +129,30 @@ export const en: Translation = {
 
 	// Footer Build Date
 	[Key.lastBuildAt]: "Last build at",
+
+	// Twikoo Lite
+	[Key.reply]: "Reply",
+	[Key.replyTo]: "Reply to @{nick}:",
+	[Key.noComments]: "No comments yet. Be the first!",
+	[Key.placeholder]: "Supports Markdown...",
+	[Key.nickRequired]: "Nickname is required",
+	[Key.sending]: "Sending...",
+	[Key.submitFailed]: "Submit failed",
+	[Key.blogger]: "Blogger",
+	[Key.refresh]: "Refresh comments",
+	[Key.email]: "Email",
+	[Key.website]: "Website",
+	[Key.repliesCount]: "replies",
+	[Key.cancel]: "Cancel",
+	[Key.like]: "Like",
+	[Key.login]: "Admin Login",
+	[Key.logout]: "Logout",
+	[Key.loginSuccess]: "Login Successful",
+	[Key.loginFailed]: "Login Failed, please check your password",
+	[Key.delete]: "Delete",
+	[Key.deleteConfirm]: "Are you sure you want to delete this comment?",
+	[Key.submit]: "Submit",
+	[Key.pin]: "Pin",
+	[Key.unpin]: "Unpin",
+	[Key.pinnedTag]: "Pinned",
 };

@@ -130,6 +130,32 @@ enum I18nKey {
 
 	// Footer Build Date
 	lastBuildAt = "lastBuildAt",
+
+	// Twikoo Lite
+	reply = "reply",
+	replyTo = "replyTo",
+	noComments = "noComments",
+	placeholder = "placeholder",
+	nickRequired = "nickRequired",
+	sending = "sending",
+	submitFailed = "submitFailed",
+	blogger = "blogger",
+	refresh = "refresh",
+	email = "email",
+	website = "website",
+	repliesCount = "repliesCount",
+	cancel = "cancel",
+	like = "like",
+	login = "login",
+	logout = "logout",
+	loginSuccess = "loginSuccess",
+	loginFailed = "loginFailed",
+	delete = "delete",
+	deleteConfirm = "deleteConfirm",
+	submit = "submit",
+	pin = "pin",
+	unpin = "unpin",
+	pinnedTag = "pinnedTag",
 }
 
 export default I18nKey;

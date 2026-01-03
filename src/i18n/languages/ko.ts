@@ -130,4 +130,30 @@ export const ko: Translation = {
 
 	// Footer Build Date
 	[Key.lastBuildAt]: "최종 빌드 시간",
+
+	// Twikoo Lite
+	[Key.reply]: "답글",
+	[Key.replyTo]: "@{nick}님에게 답글:",
+	[Key.noComments]: "아직 댓글이 없습니다. 첫 번째 댓글을 남겨보세요!",
+	[Key.placeholder]: "Markdown 형식을 지원합니다...",
+	[Key.nickRequired]: "닉네임을 입력해 주세요",
+	[Key.sending]: "전송 중...",
+	[Key.submitFailed]: "전송 실패",
+	[Key.blogger]: "관리자",
+	[Key.refresh]: "댓글 새로고침",
+	[Key.email]: "이메일",
+	[Key.website]: "웹사이트",
+	[Key.repliesCount]: "개의 답글",
+	[Key.cancel]: "취소",
+	[Key.like]: "좋아요",
+	[Key.login]: "관리자 로그인",
+	[Key.logout]: "로그아웃",
+	[Key.loginSuccess]: "로그인 성공",
+	[Key.loginFailed]: "로그인 실패, 비밀번호를 확인해 주세요",
+	[Key.delete]: "삭제",
+	[Key.deleteConfirm]: "이 댓글을 삭제하시겠습니까?",
+	[Key.submit]: "댓글 등록",
+	[Key.pin]: "고정",
+	[Key.unpin]: "고정 해제",
+	[Key.pinnedTag]: "고정됨",
 };

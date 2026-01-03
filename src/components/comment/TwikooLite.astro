@@ -1,0 +1,537 @@
+---
+import Icon from "@components/common/Icon.astro";
+import { twikooConfig } from "@configs/twikoo";
+import I18nKey from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
+import { getLangFromPathname } from "@utils/i18n-runtime";
+
+interface Props {
+	path: string;
+}
+
+const { path } = Astro.props;
+const lang = getLangFromPathname(Astro.url.pathname);
+
+const translations = {
+	reply: i18n(I18nKey.reply, {}, lang),
+	replyTo: i18n(I18nKey.replyTo, {}, lang),
+	noComments: i18n(I18nKey.noComments, {}, lang),
+	placeholder: i18n(I18nKey.placeholder, {}, lang),
+	nickRequired: i18n(I18nKey.nickRequired, {}, lang),
+	sending: i18n(I18nKey.sending, {}, lang),
+	submitFailed: i18n(I18nKey.submitFailed, {}, lang),
+	blogger: i18n(I18nKey.blogger, {}, lang),
+	refresh: i18n(I18nKey.refresh, {}, lang),
+	submit: i18n(I18nKey.submit, {}, lang),
+	email: i18n(I18nKey.email, {}, lang),
+	website: i18n(I18nKey.website, {}, lang),
+	repliesCount: i18n(I18nKey.repliesCount, {}, lang),
+	cancel: i18n(I18nKey.cancel, {}, lang),
+	like: i18n(I18nKey.like, {}, lang),
+	login: i18n(I18nKey.login, {}, lang),
+	logout: i18n(I18nKey.logout, {}, lang),
+	loginSuccess: i18n(I18nKey.loginSuccess, {}, lang),
+	loginFailed: i18n(I18nKey.loginFailed, {}, lang),
+	delete: i18n(I18nKey.delete, {}, lang),
+	deleteConfirm: i18n(I18nKey.deleteConfirm, {}, lang),
+	pin: i18n(I18nKey.pin, {}, lang),
+	unpin: i18n(I18nKey.unpin, {}, lang),
+	pinnedTag: i18n(I18nKey.pinnedTag, {}, lang),
+};
+---
+
+<div id="tcomment" class="twikoo-lite" data-envid={twikooConfig.envId} data-path={path} data-i18n={JSON.stringify(translations)} data-admin="false">
+    
+    <div id="tk-submit-parent" class="mb-10">
+        <!-- 评论表单容器 -->
+        <div id="tk-submit-form" class="tk-submit-v2 card-base p-6 border border-black/5 dark:border-white/5 shadow-sm transition-all duration-500" data-replying="false">
+            <div class="flex flex-col sm:flex-row gap-4 mb-4">
+                <div class="flex-1 relative">
+                    <input type="text" id="tk-nick" placeholder={i18n(I18nKey.author, {}, lang)} class="tk-input w-full pl-11 pr-4" />
+                    <div class="absolute left-3.5 top-1/2 -translate-y-1/2 flex items-center text-black/40 dark:text-white/40"><Icon name="material-symbols:person-outline" class="text-xl" /></div>
+                </div>
+                <div class="flex-1 relative">
+                    <input type="email" id="tk-mail" placeholder={translations.email} class="tk-input w-full pl-11 pr-4" />
+                    <div class="absolute left-3.5 top-1/2 -translate-y-1/2 flex items-center text-black/40 dark:text-white/40"><Icon name="material-symbols:mail-outline" class="text-xl" /></div>
+                </div>
+                <div class="flex-1 relative">
+                    <input type="url" id="tk-link" placeholder={translations.website} class="tk-input w-full pl-11 pr-4" />
+                    <div class="absolute left-3.5 top-1/2 -translate-y-1/2 flex items-center text-black/40 dark:text-white/40"><Icon name="material-symbols:link" class="text-xl" /></div>
+                </div>
+            </div>
+            <div class="relative mb-4">
+                <textarea id="tk-content" placeholder={translations.placeholder} class="tk-input w-full min-h-[120px] px-4 py-3 resize-y"></textarea>
+            </div>
+            <div class="flex items-center justify-between">
+                <div id="tk-submit-error" class="text-red-500 text-xs sm:text-sm font-medium max-w-[60%]"></div>
+                <div class="flex gap-2">
+                    <button id="tk-cancel-reply" class="btn-regular px-4 py-2.5 rounded-xl font-bold bg-black/10 dark:bg-white/10 text-black/70 dark:text-white/70 transition-all hover:bg-black/20 dark:hover:bg-white/20">
+                        {translations.cancel}
+                    </button>
+                    <button id="tk-send" class="btn-regular px-8 py-2.5 rounded-xl font-bold bg-[var(--primary)] text-[var(--deep-text)] transition-all active:scale-95 disabled:opacity-50">
+                        {translations.submit}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 评论列表 -->
+    <div class="tk-comments-v2">
+        <div class="flex items-center justify-between mb-6 px-2">
+            <h3 class="text-xl font-bold text-black/90 dark:text-white/90 flex items-center gap-2">
+                <Icon name="material-symbols:chat-bubble-rounded" class="text-[var(--primary)]" />
+                <span id="tk-count">0</span> {translations.repliesCount}
+            </h3>
+            <div class="flex gap-1">
+                <button id="tk-admin-login" class="btn-admin btn-plain p-2 rounded-lg text-black/50 dark:text-white/50 hover:text-[var(--primary)]" title={translations.login}>
+                    <Icon name="material-symbols:settings-outline" class="text-xl" />
+                </button>
+                <button id="tk-admin-logout" class="btn-admin btn-plain p-2 rounded-lg text-red-500/50 hover:text-red-500" title={translations.logout}>
+                    <Icon name="material-symbols:logout-rounded" class="text-xl" />
+                </button>
+                <button id="tk-refresh" class="btn-plain p-2 rounded-lg text-black/50 dark:text-white/50 hover:text-[var(--primary)]" title={translations.refresh}>
+                    <Icon name="material-symbols:refresh" class="text-xl" />
+                </button>
+            </div>
+        </div>
+        <div id="tk-comments-container" class="space-y-6 text-black dark:text-white">
+            <div class="flex justify-center py-20">
+                <Icon name="eos-icons:loading" class="text-4xl text-[var(--primary)] animate-spin" />
+            </div>
+        </div>
+    </div>
+
+    <!-- 隐藏的图标模板用于 JS 生成 -->
+    <div class="hidden" id="tk-icons">
+        <div id="icon-heart-outline"><Icon name="material-symbols:favorite-outline" /></div>
+        <div id="icon-heart-solid"><Icon name="material-symbols:favorite-rounded" /></div>
+    </div>
+</div>
+
+<script>
+    import { setupComponent } from "@utils/lifecycle";
+    import { marked } from "marked";
+    import md5 from "blueimp-md5";
+
+    class TwikooLite {
+        envId: string;
+        path: string;
+        container: HTMLElement;
+        listContainer: HTMLElement;
+        countEl: HTMLElement;
+        i18n: Record<string, string>;
+        replyingTo: { id: string, rid: string, nick: string } | null = null;
+        isAdmin: boolean = false;
+        likeLoading: Set<string> = new Set();
+        destroyed: boolean = false;
+        abortController: AbortController = new AbortController();
+
+        constructor(container: HTMLElement) {
+            this.container = container;
+            this.envId = container.dataset.envid || '';
+            this.path = container.dataset.path || window.location.pathname;
+            this.i18n = JSON.parse(container.dataset.i18n || '{}');
+            this.listContainer = document.getElementById('tk-comments-container')!;
+            this.countEl = document.getElementById('tk-count')!;
+        }
+
+        async call(event: string, data: any = {}) {
+            if (this.destroyed) return;
+            try {
+                const res = await fetch(this.envId, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        event,
+                        accessToken: localStorage.getItem('twikoo-access-token'),
+                        url: this.path,
+                        href: window.location.href,
+                        ...data
+                    }),
+                    signal: this.abortController.signal
+                });
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                return await res.json();
+            } catch (e: any) {
+                if (e.name === 'AbortError') return;
+                throw e;
+            }
+        }
+
+        async init() {
+            this.loadInputs();
+            await this.checkAuth();
+            if (this.destroyed) return;
+            await this.fetchComments();
+            if (this.destroyed) return;
+            this.bindEvents();
+        }
+
+        async checkAuth() {
+            try {
+                const res = await this.call('GET_CONFIG');
+                if (this.destroyed || !res) return;
+                this.isAdmin = !!(res.result?.config?.IS_ADMIN || res.config?.IS_ADMIN);
+                this.container.dataset.admin = String(this.isAdmin);
+            } catch (e) {
+                this.isAdmin = false;
+                this.container.dataset.admin = "false";
+            }
+        }
+
+        destroy() {
+            this.destroyed = true;
+            this.abortController.abort();
+            if (this.listContainer) {
+                this.listContainer.onclick = null;
+            }
+        }
+
+        loadInputs() {
+            const saved = localStorage.getItem('twikoo-user');
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    (document.getElementById('tk-nick') as HTMLInputElement).value = data.nick || '';
+                    (document.getElementById('tk-mail') as HTMLInputElement).value = data.mail || '';
+                    (document.getElementById('tk-link') as HTMLInputElement).value = data.link || '';
+                } catch (e) {}
+            }
+        }
+
+        saveInputs() {
+            const data = {
+                nick: (document.getElementById('tk-nick') as HTMLInputElement).value,
+                mail: (document.getElementById('tk-mail') as HTMLInputElement).value,
+                link: (document.getElementById('tk-link') as HTMLInputElement).value,
+            };
+            localStorage.setItem('twikoo-user', JSON.stringify(data));
+        }
+
+        bindEvents() {
+            document.getElementById('tk-send')?.addEventListener('click', () => this.submitComment());
+            document.getElementById('tk-refresh')?.addEventListener('click', () => this.fetchComments());
+            document.getElementById('tk-cancel-reply')?.addEventListener('click', () => this.resetReply());
+            document.getElementById('tk-admin-login')?.addEventListener('click', () => this.adminLogin());
+            document.getElementById('tk-admin-logout')?.addEventListener('click', () => this.adminLogout());
+            
+            ['tk-nick', 'tk-mail', 'tk-link'].forEach(id => {
+                document.getElementById(id)?.addEventListener('input', () => this.saveInputs());
+            });
+
+            this.listContainer.onclick = (e) => {
+                const target = e.target as HTMLElement;
+                const replyBtn = target.closest('.tk-reply-btn') as HTMLElement;
+                if (replyBtn) {
+                    this.setReply(replyBtn.dataset.id!, replyBtn.dataset.rid!, replyBtn.dataset.nick!, replyBtn);
+                    return;
+                }
+                const likeBtn = target.closest('.tk-like-btn') as HTMLElement;
+                if (likeBtn) {
+                    this.handleLike(likeBtn.dataset.id!, likeBtn);
+                    return;
+                }
+                const deleteBtn = target.closest('.tk-delete-btn') as HTMLElement;
+                if (deleteBtn) {
+                    this.handleDelete(deleteBtn.dataset.id!);
+                    return;
+                }
+                const pinBtn = target.closest('.tk-pin-btn') as HTMLElement;
+                if (pinBtn) {
+                    this.handleTop(pinBtn.dataset.id!, pinBtn.dataset.top === 'true');
+                    return;
+                }
+            };
+        }
+
+        async adminLogin() {
+            const pwd = prompt("Enter Admin Password:");
+            if (!pwd) return;
+            const token = md5(pwd);
+            const oldToken = localStorage.getItem('twikoo-access-token');
+            localStorage.setItem('twikoo-access-token', token);
+            await this.checkAuth();
+            if (this.isAdmin) {
+                alert(this.i18n.loginSuccess);
+                this.fetchComments();
+            } else {
+                alert(this.i18n.loginFailed);
+                if (oldToken) localStorage.setItem('twikoo-access-token', oldToken);
+                else localStorage.removeItem('twikoo-access-token');
+                this.container.dataset.admin = "false";
+            }
+        }
+
+        adminLogout() {
+            localStorage.removeItem('twikoo-access-token');
+            this.isAdmin = false;
+            this.container.dataset.admin = "false";
+            this.fetchComments();
+        }
+
+        async handleLike(id: string, btn: HTMLElement) {
+            if (this.likeLoading.has(id)) return;
+            this.likeLoading.add(id);
+            
+            const isLiked = btn.classList.contains('liked');
+            const countEl = btn.querySelector('.tk-like-count')!;
+            const iconContainer = btn.querySelector('.tk-like-icon-container')!;
+            const outlineIcon = document.getElementById('icon-heart-outline')!.innerHTML;
+            const solidIcon = document.getElementById('icon-heart-solid')!.innerHTML;
+
+            if (isLiked) {
+                btn.classList.remove('liked', 'text-red-500');
+                btn.classList.add('text-black/60', 'dark:text-white/60');
+                iconContainer.innerHTML = outlineIcon;
+                countEl.textContent = String(Math.max(0, parseInt(countEl.textContent || '0') - 1));
+            } else {
+                btn.classList.add('liked', 'text-red-500');
+                btn.classList.remove('text-black/60', 'dark:text-white/60');
+                iconContainer.innerHTML = solidIcon;
+                countEl.textContent = String(parseInt(countEl.textContent || '0') + 1);
+            }
+
+            try {
+                await this.call('COMMENT_LIKE', { id });
+            } catch (e) {} finally {
+                this.likeLoading.delete(id);
+            }
+        }
+
+        async handleDelete(id: string) {
+            if (!confirm(this.i18n.deleteConfirm)) return;
+            try {
+                const res = await this.call('COMMENT_DELETE_FOR_ADMIN', { id });
+                if (res.result?.code === 0 || !res.code) {
+                    this.fetchComments();
+                } else {
+                    alert(`Delete failed: ${res.result?.message || res.message}`);
+                }
+            } catch (e) {
+                alert(`Delete error: ${e}`);
+            }
+        }
+
+        async handleTop(id: string, currentTop: boolean) {
+            try {
+                const res = await this.call('COMMENT_SET_FOR_ADMIN', {
+                    id,
+                    set: { top: !currentTop }
+                });
+                if (res.result?.code === 0 || !res.code) {
+                    this.fetchComments();
+                } else {
+                    alert(`Operation failed: ${res.result?.message || res.message}`);
+                }
+            } catch (e) {
+                alert(`Error: ${e}`);
+            }
+        }
+
+        setReply(id: string, rid: string, nick: string, el: HTMLElement) {
+            this.replyingTo = { id, rid, nick };
+            const form = document.getElementById('tk-submit-form')!;
+            const commentNode = el.closest('.tk-comment-main')!;
+            
+            commentNode.appendChild(form);
+            form.dataset.replying = "true";
+            
+            const textarea = document.getElementById('tk-content') as HTMLTextAreaElement;
+            textarea.placeholder = this.i18n.replyTo.replace('{nick}', nick);
+            textarea.focus();
+        }
+
+        resetReply() {
+            this.replyingTo = null;
+            const form = document.getElementById('tk-submit-form')!;
+            const parent = document.getElementById('tk-submit-parent')!;
+            const textarea = document.getElementById('tk-content') as HTMLTextAreaElement;
+            
+            parent.appendChild(form);
+            form.dataset.replying = "false";
+            textarea.placeholder = this.i18n.placeholder;
+        }
+
+        async fetchComments() {
+            try {
+                const res = await this.call('COMMENT_GET');
+                if (this.destroyed || !res) return;
+                const comments = res.result?.data || res.data || [];
+                this.countEl.innerText = String(res.result?.count || comments.length);
+                this.renderList(comments);
+            } catch (e) {
+                if (!this.destroyed) {
+                    this.listContainer.innerHTML = `<div class="text-center py-10 text-red-500">${this.i18n.submitFailed}: ${e}</div>`;
+                }
+            }
+        }
+
+        renderList(comments: any[]) {
+            if (!comments || comments.length === 0) {
+                this.listContainer.innerHTML = `<div class="card-base p-10 text-center opacity-40">${this.i18n.noComments}</div>`;
+                return;
+            }
+            this.listContainer.innerHTML = comments.map(c => this.renderCommentItem(c, null)).join('');
+        }
+
+        getAvatar(c: any) {
+            // 极致本地化：完全断开外部头像服务连接
+            const nick = (c.nick || 'A').trim();
+            const firstChar = nick.charAt(0).toLowerCase();
+            let avatarName = 'default';
+            
+            if (/[a-z]/.test(firstChar)) {
+                avatarName = firstChar;
+            } else if (/[0-9]/.test(firstChar)) {
+                avatarName = firstChar;
+            }
+            
+            return `/assets/twikoo/avatar_${avatarName}.png`;
+        }
+
+        renderCommentItem(c: any, rid: string | null) {
+            const isChild = rid !== null;
+            const rootId = rid || c.id;
+            const time = new Date(c.created).toLocaleDateString();
+            const masterTag = c.master ? `<span class="px-1.5 py-0.5 text-[10px] bg-[var(--primary)] text-[var(--deep-text)] rounded font-bold">${this.i18n.blogger}</span>` : '';
+            const pinnedTag = c.top ? `<span class="px-1.5 py-0.5 text-[10px] bg-red-500 text-white rounded font-bold">${this.i18n.pinnedTag}</span>` : '';
+            const avatar = this.getAvatar(c);
+            const deleteBtn = this.isAdmin ? `<button class="tk-delete-btn text-[12px] text-red-500 font-bold hover:underline" data-id="${c.id}">${this.i18n.delete}</button>` : '';
+            const pinBtn = (this.isAdmin && !isChild) ? `<button class="tk-pin-btn text-[12px] text-[var(--primary)] font-bold hover:underline" data-id="${c.id}" data-top="${c.top ? 'true' : 'false'}">${c.top ? this.i18n.unpin : this.i18n.pin}</button>` : '';
+            const replyToMention = (isChild && c.ruser) ? `<a class="tk-ruser text-[var(--primary)] font-bold no-underline mr-1" href="#${c.pid}">@${c.ruser}</a>` : '';
+
+            const likeIcon = c.liked ? document.getElementById('icon-heart-solid')!.innerHTML : document.getElementById('icon-heart-outline')!.innerHTML;
+            const likedClass = c.liked ? 'liked text-red-500' : 'text-black/60 dark:text-white/60';
+
+            return `
+                <div class="tk-comment-node ${isChild ? 'ml-6 sm:ml-12 mt-4 border-l-2 border-black/5 dark:border-white/5 pl-4' : 'card-base p-5 border border-black/5 dark:border-white/5'}">
+                    <div class="flex items-start gap-3">
+                        <img src="${avatar}" class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl shadow-sm flex-shrink-0 bg-black/5" loading="lazy" />
+                        <div class="flex-1 min-w-0 tk-comment-main">
+                            <div class="flex items-center justify-between mb-1">
+                                <div class="flex items-center gap-2">
+                                    <span class="font-bold text-black/90 dark:text-white/90 truncate max-w-[150px]">${c.nick}</span>
+                                    ${masterTag}
+                                    ${pinnedTag}
+                                    <span class="text-[11px] text-black/60 dark:text-white/60 font-bold uppercase hidden sm:inline">${c.ipRegion || ''}</span>
+                                </div>
+                                <span class="text-[11px] text-black/60 dark:text-white/60 font-bold">${time}</span>
+                            </div>
+                            <div class="tk-content prose dark:prose-invert max-w-none text-[14px] sm:text-[15px] leading-relaxed mb-2 text-black/80 dark:text-white/80">
+                                ${replyToMention}${c.comment}
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <button class="tk-reply-btn text-[12px] text-[var(--primary)] font-bold hover:underline" data-id="${c.id}" data-rid="${rootId}" data-nick="${c.nick}">${this.i18n.reply}</button>
+                                <button class="tk-like-btn text-[12px] font-bold flex items-center gap-1 transition-colors ${likedClass}" data-id="${c.id}">
+                                    <span class="tk-like-icon-container flex items-center w-3.5 h-3.5">${likeIcon}</span>
+                                    <span class="tk-like-count">${c.like || 0}</span>
+                                </button>
+                                ${pinBtn}
+                                ${deleteBtn}
+                                <span class="text-[11px] text-black/40 dark:text-white/40 font-bold hidden sm:inline">${c.os || ''} · ${c.browser || ''}</span>
+                            </div>
+                            <div class="tk-replies-container">
+                                ${c.replies ? c.replies.map((r: any) => this.renderCommentItem(r, rootId)).join('') : ''}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        async submitComment() {
+            const nickInput = document.getElementById('tk-nick') as HTMLInputElement;
+            const mailInput = document.getElementById('tk-mail') as HTMLInputElement;
+            const linkInput = document.getElementById('tk-link') as HTMLInputElement;
+            const contentInput = document.getElementById('tk-content') as HTMLTextAreaElement;
+            const errorEl = document.getElementById('tk-submit-error')!;
+            const btn = document.getElementById('tk-send') as HTMLButtonElement;
+
+            const nick = nickInput.value.trim();
+            const mail = mailInput.value.trim();
+            const content = contentInput.value.trim();
+
+            if (!content) return;
+            if (!nick) { errorEl.innerText = this.i18n.nickRequired; return; }
+            if (mail && !/^\S+@\S+\.\S+$/.test(mail)) { errorEl.innerText = "邮箱格式不正确"; return; }
+
+            errorEl.innerText = "";
+            btn.disabled = true;
+            const originalText = btn.innerText;
+            btn.innerText = this.i18n.sending;
+
+            try {
+                const renderedComment = await marked.parse(content);
+                if (this.destroyed) return;
+                const res = await this.call('COMMENT_SUBMIT', {
+                    nick,
+                    mail,
+                    link: linkInput.value.trim(),
+                    comment: renderedComment,
+                    pid: this.replyingTo?.id,
+                    rid: this.replyingTo?.rid,
+                    ua: navigator.userAgent
+                });
+
+                if (this.destroyed) return;
+                if (res && (res.result?.id || res.id)) {
+                    this.saveInputs();
+                    contentInput.value = '';
+                    this.resetReply();
+                    await this.fetchComments();
+                } else {
+                    const msg = res?.result?.message || res?.message || "未知错误";
+                    throw new Error(msg);
+                }
+            } catch (e: any) {
+                errorEl.innerText = `${this.i18n.submitFailed}: ${e.message || e}`;
+            } finally {
+                btn.disabled = false;
+                btn.innerText = originalText;
+            }
+        }
+    }
+
+    let twikooInst: TwikooLite | null = null;
+
+    setupComponent('TwikooLite', () => {
+        const el = document.getElementById('tcomment');
+        if (el) {
+            twikooInst = new TwikooLite(el);
+            twikooInst.init();
+        }
+    }, () => {
+        if (twikooInst) {
+            twikooInst.destroy();
+            twikooInst = null;
+        }
+    });
+</script>
+
+<style>
+    .tk-input {
+        @apply bg-black/[0.03] dark:bg-white/[0.05] border border-black/10 dark:border-white/10 rounded-xl py-2 focus:border-[var(--primary)] outline-none transition-all text-black/90 dark:text-white/90;
+    }
+    .tk-comment-node {
+        @apply transition-all duration-300;
+    }
+    .liked {
+        @apply text-red-500 !important;
+    }
+    .tk-content :global(p) { @apply my-1; }
+    .tk-content :global(img) { @apply max-w-[200px] rounded-lg inline-block align-bottom; }
+    .tk-content :global(code) { @apply bg-black/5 dark:bg-white/10 px-1 rounded font-mono text-sm; }
+    .tk-content :global(pre) { @apply bg-black/5 dark:bg-white/10 p-3 rounded-lg overflow-x-auto my-2 text-sm; }
+    .tk-content :global(a) { @apply text-[var(--primary)] font-bold hover:underline; }
+
+    /* 管理按钮切换逻辑 */
+    .twikoo-lite[data-admin="true"] #tk-admin-login { display: none; }
+    .twikoo-lite[data-admin="true"] #tk-admin-logout { display: flex; }
+    .twikoo-lite[data-admin="false"] #tk-admin-login { display: flex; }
+    .twikoo-lite[data-admin="false"] #tk-admin-logout { display: none; }
+
+    /* 取消回复按钮显示逻辑 */
+    #tk-submit-form[data-replying="false"] #tk-cancel-reply { display: none; }
+    #tk-submit-form[data-replying="true"] #tk-cancel-reply { display: block; }
+</style>
