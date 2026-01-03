@@ -1,7 +1,7 @@
 import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
-import type { Image, Root } from "mdast";
+import type { HTML, Image, Root } from "mdast";
 import remarkDirective from "remark-directive";
 import remarkParse from "remark-parse";
 import { unified } from "unified";
@@ -147,7 +147,7 @@ async function main() {
 					});
 				}
 			} else if (node.type === "html") {
-				const n = node as { value: string; position?: any };
+				const n = node as HTML;
 				const imgRegex = /<img\s+[^>]*src=(["'])([^"']+)\1[^>]*>/gi;
 				let match: RegExpExecArray | null;
 				// biome-ignore lint/suspicious/noAssignInExpressions: <check later>

@@ -28,7 +28,7 @@ import { pluginCustomCopyButton } from "./src/plugins/expressive-code/custom-cop
 // https://astro.build/config
 export default defineConfig({
 	site: "https://wtada233.top/",
-	base: "/",
+	base: "/", // This project does not support subdirectories. Do not change this.
 	trailingSlash: "always",
 	integrations: [
 		tailwind({
