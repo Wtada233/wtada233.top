@@ -154,4 +154,9 @@ export const zh_CN: Translation = {
 	[Key.pin]: "置顶",
 	[Key.unpin]: "取消置顶",
 	[Key.pinnedTag]: "置顶",
+	[Key.invalidEmail]: "邮箱格式不正确",
+	[Key.unknownError]: "未知错误",
+	[Key.adminPasswordPrompt]: "请输入管理密码：",
+	[Key.deleteFailed]: "删除失败",
+	[Key.operationFailed]: "操作失败",
 };

@@ -155,4 +155,9 @@ export const en: Translation = {
 	[Key.pin]: "Pin",
 	[Key.unpin]: "Unpin",
 	[Key.pinnedTag]: "Pinned",
+	[Key.invalidEmail]: "Invalid email format",
+	[Key.unknownError]: "Unknown error",
+	[Key.adminPasswordPrompt]: "Enter Admin Password:",
+	[Key.deleteFailed]: "Delete failed",
+	[Key.operationFailed]: "Operation failed",
 };

@@ -34,9 +34,15 @@ const translations = {
 	loginFailed: i18n(I18nKey.loginFailed, {}, lang),
 	delete: i18n(I18nKey.delete, {}, lang),
 	deleteConfirm: i18n(I18nKey.deleteConfirm, {}, lang),
+	submit: i18n(I18nKey.submit, {}, lang),
 	pin: i18n(I18nKey.pin, {}, lang),
 	unpin: i18n(I18nKey.unpin, {}, lang),
 	pinnedTag: i18n(I18nKey.pinnedTag, {}, lang),
+	invalidEmail: i18n(I18nKey.invalidEmail, {}, lang),
+	unknownError: i18n(I18nKey.unknownError, {}, lang),
+	adminPasswordPrompt: i18n(I18nKey.adminPasswordPrompt, {}, lang),
+	deleteFailed: i18n(I18nKey.deleteFailed, {}, lang),
+	operationFailed: i18n(I18nKey.operationFailed, {}, lang),
 };
 ---
 
@@ -47,7 +53,7 @@ const translations = {
         <div id="tk-submit-form" class="tk-submit-v2 card-base p-6 border border-black/5 dark:border-white/5 shadow-sm transition-all duration-500" data-replying="false">
             <div class="flex flex-col sm:flex-row gap-4 mb-4">
                 <div class="flex-1 relative">
-                    <input type="text" id="tk-nick" placeholder={i18n(I18nKey.author, {}, lang)} class="tk-input w-full pl-11 pr-4" />
+                    <input type="text" id="tk-nick" placeholder={translations.blogger} class="tk-input w-full pl-11 pr-4" />
                     <div class="absolute left-3.5 top-1/2 -translate-y-1/2 flex items-center text-black/40 dark:text-white/40"><Icon name="material-symbols:person-outline" class="text-xl" /></div>
                 </div>
                 <div class="flex-1 relative">
@@ -246,7 +252,7 @@ const translations = {
         }
 
         async adminLogin() {
-            const pwd = prompt("Enter Admin Password:");
+            const pwd = prompt(this.i18n.adminPasswordPrompt);
             if (!pwd) return;
             const token = md5(pwd);
             const oldToken = localStorage.getItem('twikoo-access-token');
@@ -303,13 +309,13 @@ const translations = {
             if (!confirm(this.i18n.deleteConfirm)) return;
             try {
                 const res = await this.call('COMMENT_DELETE_FOR_ADMIN', { id });
-                if (res.result?.code === 0 || !res.code) {
+                if (res && (res.result?.code === 0 || !res.code)) {
                     this.fetchComments();
                 } else {
-                    alert(`Delete failed: ${res.result?.message || res.message}`);
+                    alert(`${this.i18n.deleteFailed}: ${res?.result?.message || res?.message || this.i18n.unknownError}`);
                 }
             } catch (e) {
-                alert(`Delete error: ${e}`);
+                alert(`${this.i18n.deleteFailed}: ${e}`);
             }
         }
 
@@ -319,13 +325,13 @@ const translations = {
                     id,
                     set: { top: !currentTop }
                 });
-                if (res.result?.code === 0 || !res.code) {
+                if (res && (res.result?.code === 0 || !res.code)) {
                     this.fetchComments();
                 } else {
-                    alert(`Operation failed: ${res.result?.message || res.message}`);
+                    alert(`${this.i18n.operationFailed}: ${res?.result?.message || res?.message || this.i18n.unknownError}`);
                 }
             } catch (e) {
-                alert(`Error: ${e}`);
+                alert(`${this.i18n.operationFailed}: ${e}`);
             }
         }
 
@@ -454,7 +460,7 @@ const translations = {
 
             if (!content) return;
             if (!nick) { errorEl.innerText = this.i18n.nickRequired; return; }
-            if (mail && !/^\S+@\S+\.\S+$/.test(mail)) { errorEl.innerText = "邮箱格式不正确"; return; }
+            if (mail && !/^\S+@\S+\.\S+$/.test(mail)) { errorEl.innerText = this.i18n.invalidEmail; return; }
 
             errorEl.innerText = "";
             btn.disabled = true;
@@ -481,7 +487,7 @@ const translations = {
                     this.resetReply();
                     await this.fetchComments();
                 } else {
-                    const msg = res?.result?.message || res?.message || "未知错误";
+                    const msg = res?.result?.message || res?.message || this.i18n.unknownError;
                     throw new Error(msg);
                 }
             } catch (e: any) {

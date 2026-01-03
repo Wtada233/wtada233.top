@@ -156,6 +156,11 @@ enum I18nKey {
 	pin = "pin",
 	unpin = "unpin",
 	pinnedTag = "pinnedTag",
+	invalidEmail = "invalidEmail",
+	unknownError = "unknownError",
+	adminPasswordPrompt = "adminPasswordPrompt",
+	deleteFailed = "deleteFailed",
+	operationFailed = "operationFailed",
 }
 
 export default I18nKey;
