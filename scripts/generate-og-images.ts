@@ -22,24 +22,21 @@ function parseFrontmatter(content: string) {
 	if (!match) return result;
 
 	const yamlContent = match[1];
-	const lines = yamlContent.split(/[\r\n]+/);
-
-	for (const line of lines) {
-		const colonIndex = line.indexOf(":");
-		if (colonIndex === -1) continue;
-
-		const key = line.slice(0, colonIndex).trim();
-		let value = line.slice(colonIndex + 1).trim();
-
-		// Remove surrounding quotes if present
-		if ((value.startsWith("'") && value.endsWith("'")) || (value.startsWith('"') && value.endsWith('"'))) {
-			value = value.slice(1, -1);
+	// More robust field extraction
+	const getField = (field: string) => {
+		const regex = new RegExp(`^${field}:\\s*(.*)$`, "m");
+		const m = yamlContent.match(regex);
+		if (!m) return "";
+		let val = m[1].trim();
+		if ((val.startsWith("'") && val.endsWith("'")) || (val.startsWith('"') && val.endsWith('"'))) {
+			val = val.slice(1, -1);
 		}
+		return val;
+	};
 
-		if (key === "title") result.title = value;
-		else if (key === "image") result.image = value;
-		else if (key === "og_theme") result.og_theme = value;
-	}
+	result.title = getField("title") || "Untitled";
+	result.image = getField("image");
+	result.og_theme = getField("og_theme") || "light";
 
 	return result;
 }

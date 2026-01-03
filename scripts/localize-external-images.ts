@@ -132,18 +132,36 @@ async function main() {
 			}
 		}
 
-		// 2. Process Markdown image nodes via AST
+		// 2. Process Markdown image nodes & HTML img tags via AST
 		const tree = processor.parse(content) as Root;
 		const changes: { start: number; end: number; newUrl: string }[] = [];
 
-		visit(tree, "image", (node: Image) => {
-			const url = node.url;
-			if (url.startsWith("http") && !ALLOWED_DOMAINS.some((domain) => url.includes(domain))) {
-				changes.push({
-					start: node.position?.start.offset || 0,
-					end: node.position?.end.offset || 0,
-					newUrl: url,
-				});
+		visit(tree, (node) => {
+			if (node.type === "image") {
+				const n = node as Image;
+				if (n.url.startsWith("http") && !ALLOWED_DOMAINS.some((domain) => n.url.includes(domain))) {
+					changes.push({
+						start: node.position?.start.offset || 0,
+						end: node.position?.end.offset || 0,
+						newUrl: n.url,
+					});
+				}
+			} else if (node.type === "html") {
+				const n = node as { value: string; position?: any };
+				const imgRegex = /<img\s+[^>]*src=(["'])([^"']+)\1[^>]*>/gi;
+				let match: RegExpExecArray | null;
+				// biome-ignore lint/suspicious/noAssignInExpressions: <check later>
+				while ((match = imgRegex.exec(n.value)) !== null) {
+					const url = match[2];
+					if (url.startsWith("http") && !ALLOWED_DOMAINS.some((domain) => url.includes(domain))) {
+						const startOffset = (node.position?.start.offset || 0) + match.index;
+						changes.push({
+							start: startOffset,
+							end: startOffset + match[0].length,
+							newUrl: url,
+						});
+					}
+				}
 			}
 		});
 

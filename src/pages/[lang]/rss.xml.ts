@@ -56,13 +56,13 @@ export async function GET(context: APIContext): Promise<Response> {
 		let renderedContent = await marked.parse(cleanedContent);
 
 		// Resolve absolute image paths properly with async resolveImage
-		const imgRegex = /<img\s+[^>]*src=(["'])([^"']+)\1[^>]*>/gi;
+		const imgRegex = /<img\s+[^>]*src=(?:(["'])(.*?)\1|([^>\s]+))[^>]*>/gi;
 		const matches = Array.from(renderedContent.matchAll(imgRegex));
 
 		const resolvedUrls = new Map<string, string>();
 		await Promise.all(
 			matches.map(async (match) => {
-				const src = match[2];
+				const src = match[2] || match[3];
 				if (!src || src.startsWith("http") || src.startsWith("data:")) return;
 
 				try {
