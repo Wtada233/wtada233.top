@@ -142,6 +142,7 @@ export const zh_CN: Translation = {
 	[Key.email]: "邮箱",
 	[Key.website]: "网址",
 	[Key.repliesCount]: "个回复",
+	[Key.commentsCount]: "条评论",
 	[Key.cancel]: "取消",
 	[Key.like]: "喜欢",
 	[Key.login]: "登录管理",

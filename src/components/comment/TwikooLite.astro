@@ -22,10 +22,10 @@ const translations = {
 	submitFailed: i18n(I18nKey.submitFailed, {}, lang),
 	blogger: i18n(I18nKey.blogger, {}, lang),
 	refresh: i18n(I18nKey.refresh, {}, lang),
-	submit: i18n(I18nKey.submit, {}, lang),
 	email: i18n(I18nKey.email, {}, lang),
 	website: i18n(I18nKey.website, {}, lang),
 	repliesCount: i18n(I18nKey.repliesCount, {}, lang),
+	commentsCount: i18n(I18nKey.commentsCount, {}, lang),
 	cancel: i18n(I18nKey.cancel, {}, lang),
 	like: i18n(I18nKey.like, {}, lang),
 	login: i18n(I18nKey.login, {}, lang),
@@ -53,7 +53,7 @@ const translations = {
         <div id="tk-submit-form" class="tk-submit-v2 card-base p-6 border border-black/5 dark:border-white/5 shadow-sm transition-all duration-500" data-replying="false">
             <div class="flex flex-col sm:flex-row gap-4 mb-4">
                 <div class="flex-1 relative">
-                    <input type="text" id="tk-nick" placeholder={translations.blogger} class="tk-input w-full pl-11 pr-4" />
+                    <input type="text" id="tk-nick" placeholder={i18n(I18nKey.author, {}, lang)} class="tk-input w-full pl-11 pr-4" />
                     <div class="absolute left-3.5 top-1/2 -translate-y-1/2 flex items-center text-black/40 dark:text-white/40"><Icon name="material-symbols:person-outline" class="text-xl" /></div>
                 </div>
                 <div class="flex-1 relative">
@@ -87,7 +87,7 @@ const translations = {
         <div class="flex items-center justify-between mb-6 px-2">
             <h3 class="text-xl font-bold text-black/90 dark:text-white/90 flex items-center gap-2">
                 <Icon name="material-symbols:chat-bubble-rounded" class="text-[var(--primary)]" />
-                <span id="tk-count">0</span> {translations.repliesCount}
+                <span id="tk-count">0</span> {translations.commentsCount}
             </h3>
             <div class="flex gap-1">
                 <button id="tk-admin-login" class="btn-admin btn-plain p-2 rounded-lg text-black/50 dark:text-white/50 hover:text-[var(--primary)]" title={translations.login}>
@@ -491,7 +491,7 @@ const translations = {
                     throw new Error(msg);
                 }
             } catch (e: any) {
-                errorEl.innerText = `${this.i18n.submitFailed}: ${e.message || e}`;
+                errorEl.innerText = `${this.i18n.submitFailed} ${e.message || e}`;
             } finally {
                 btn.disabled = false;
                 btn.innerText = originalText;

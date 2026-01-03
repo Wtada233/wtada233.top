@@ -144,6 +144,7 @@ export const ko: Translation = {
 	[Key.email]: "이메일",
 	[Key.website]: "웹사이트",
 	[Key.repliesCount]: "개의 답글",
+	[Key.commentsCount]: "개의 댓글",
 	[Key.cancel]: "취소",
 	[Key.like]: "좋아요",
 	[Key.login]: "관리자 로그인",
@@ -156,4 +157,9 @@ export const ko: Translation = {
 	[Key.pin]: "고정",
 	[Key.unpin]: "고정 해제",
 	[Key.pinnedTag]: "고정됨",
+	[Key.invalidEmail]: "이메일 형식이 올바르지 않습니다",
+	[Key.unknownError]: "알 수 없는 오류",
+	[Key.adminPasswordPrompt]: "관리자 비밀번호를 입력해 주세요:",
+	[Key.deleteFailed]: "삭제 실패",
+	[Key.operationFailed]: "작업 실패",
 };

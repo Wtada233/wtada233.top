@@ -143,6 +143,7 @@ export const en: Translation = {
 	[Key.email]: "Email",
 	[Key.website]: "Website",
 	[Key.repliesCount]: "replies",
+	[Key.commentsCount]: "Comments",
 	[Key.cancel]: "Cancel",
 	[Key.like]: "Like",
 	[Key.login]: "Admin Login",

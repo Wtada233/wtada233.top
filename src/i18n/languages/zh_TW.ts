@@ -144,6 +144,7 @@ export const zh_TW: Translation = {
 	[Key.email]: "郵箱",
 	[Key.website]: "網址",
 	[Key.repliesCount]: "則留言",
+	[Key.commentsCount]: "條評論",
 	[Key.cancel]: "取消",
 	[Key.like]: "喜歡",
 	[Key.login]: "登入管理",
@@ -156,4 +157,9 @@ export const zh_TW: Translation = {
 	[Key.pin]: "置頂",
 	[Key.unpin]: "取消置頂",
 	[Key.pinnedTag]: "置頂",
+	[Key.invalidEmail]: "郵箱格式不正確",
+	[Key.unknownError]: "未知錯誤",
+	[Key.adminPasswordPrompt]: "請輸入管理密碼：",
+	[Key.deleteFailed]: "刪除失敗",
+	[Key.operationFailed]: "操作失敗",
 };

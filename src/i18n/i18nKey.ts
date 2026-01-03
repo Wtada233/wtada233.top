@@ -144,6 +144,7 @@ enum I18nKey {
 	email = "email",
 	website = "website",
 	repliesCount = "repliesCount",
+	commentsCount = "commentsCount",
 	cancel = "cancel",
 	like = "like",
 	login = "login",

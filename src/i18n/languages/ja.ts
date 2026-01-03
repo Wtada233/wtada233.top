@@ -144,6 +144,7 @@ export const ja: Translation = {
 	[Key.email]: "メールアドレス",
 	[Key.website]: "ウェブサイト",
 	[Key.repliesCount]: "件の返信",
+	[Key.commentsCount]: "件のコメント",
 	[Key.cancel]: "キャンセル",
 	[Key.like]: "いいね",
 	[Key.login]: "管理者ログイン",
@@ -156,4 +157,9 @@ export const ja: Translation = {
 	[Key.pin]: "固定する",
 	[Key.unpin]: "固定を解除",
 	[Key.pinnedTag]: "固定済み",
+	[Key.invalidEmail]: "メールアドレスの形式が正しくありません",
+	[Key.unknownError]: "不明なエラー",
+	[Key.adminPasswordPrompt]: "管理者パスワードを入力してください：",
+	[Key.deleteFailed]: "削除に失敗しました",
+	[Key.operationFailed]: "操作に失敗しました",
 };
