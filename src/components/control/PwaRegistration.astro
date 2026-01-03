@@ -1,0 +1,89 @@
+---
+---
+<script>
+  import { registerSW } from 'virtual:pwa-register';
+  import { setupComponent } from "@utils/lifecycle";
+
+  /**
+   * PWA 注册与安装逻辑
+   */
+  
+  let deferredPrompt: any = null;
+
+  // 1. 手动注册 Service Worker
+  registerSW({
+    immediate: true,
+    onRegisteredSW(_swUrl: string, _r: ServiceWorkerRegistration | undefined) {
+    },
+    onRegisterError(error: unknown) {
+      console.error('>> SW registration error!', error);
+    },
+  });
+
+  function getButton() {
+    return document.getElementById('pwa-install-btn');
+  }
+
+  function showInstallButton() {
+    const btn = getButton();
+    if (btn) {
+      btn.style.setProperty('display', 'flex', 'important');
+      btn.classList.remove('hidden');
+    }
+  }
+
+  function hideInstallButton() {
+    const btn = getButton();
+    if (btn) {
+      btn.style.setProperty('display', 'none', 'important');
+      btn.classList.add('hidden');
+    }
+  }
+
+  const handleInstallPrompt = (e: any) => {
+    deferredPrompt = e;
+    if (!window.matchMedia('(display-mode: standalone)').matches) {
+        showInstallButton();
+    }
+  };
+
+  const handleAppInstalled = () => {
+    hideInstallButton();
+    deferredPrompt = null;
+  };
+
+  const handleGlobalClick = (e: MouseEvent) => {
+    const target = e.target as HTMLElement;
+    const btn = target.closest('#pwa-install-btn');
+    
+    if (btn && deferredPrompt) {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then((choiceResult: any) => {
+        if (choiceResult.outcome === 'accepted') {
+          deferredPrompt = null;
+          hideInstallButton();
+        }
+      });
+    }
+  };
+
+  const init = () => {
+    window.addEventListener('beforeinstallprompt', handleInstallPrompt);
+    window.addEventListener('appinstalled', handleAppInstalled);
+    document.addEventListener('click', handleGlobalClick);
+    
+    if (deferredPrompt && !window.matchMedia('(display-mode: standalone)').matches) {
+      showInstallButton();
+    } else {
+      hideInstallButton();
+    }
+  };
+
+  const cleanup = () => {
+    window.removeEventListener('beforeinstallprompt', handleInstallPrompt);
+    window.removeEventListener('appinstalled', handleAppInstalled);
+    document.removeEventListener('click', handleGlobalClick);
+  };
+
+  setupComponent('PwaRegistration', init, cleanup);
+</script>

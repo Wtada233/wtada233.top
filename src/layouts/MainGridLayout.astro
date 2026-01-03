@@ -1,0 +1,217 @@
+---
+import Comment from "@components/comment/index.astro";
+import Icon from "@components/common/Icon.astro";
+import BackToTop from "@components/control/BackToTop.astro";
+import Footer from "@components/Footer.astro";
+import ImageWrapper from "@components/misc/ImageWrapper.astro";
+import Navbar from "@components/Navbar.astro";
+import SideBar from "@components/widget/SideBar.astro";
+import TOC from "@components/widget/TOC.astro";
+import { bannerConfig } from "@configs/banner";
+import { siteConfig } from "@configs/site";
+import { BANNER_HEIGHT, BANNER_HEIGHT_EXTEND, MAIN_PANEL_OVERLAPS_BANNER_HEIGHT } from "@constants/constants";
+import Layout from "@layouts/Layout.astro";
+import { getPathWithoutLang } from "@utils/i18n-runtime";
+import { isHomePage, url } from "@utils/url-utils";
+import type { MarkdownHeading } from "astro";
+
+interface Props {
+	title?: string;
+	description?: string;
+	keywords?: string;
+	lang?: string;
+	setOGTypeArticle?: boolean;
+	series?: string;
+	headings?: MarkdownHeading[] | Record<string, MarkdownHeading[]>;
+	ogImage?: string;
+	comment?: boolean;
+	prevLink?: { title: string; url: string };
+	nextLink?: { title: string; url: string };
+}
+
+let { title, description, keywords, lang, setOGTypeArticle, series, headings, ogImage, comment, prevLink, nextLink } = Astro.props;
+const hasBannerCredit = bannerConfig.enable && bannerConfig.credit.enable;
+const hasBannerLink = !!bannerConfig.credit.url;
+
+const mainPanelTop = bannerConfig.enable ? `calc(${BANNER_HEIGHT}vh - ${MAIN_PANEL_OVERLAPS_BANNER_HEIGHT}rem)` : "5.5rem";
+
+const isPostsRoute = Astro.url.pathname.startsWith(url("/posts/"));
+const isHomePageCheck = isHomePage(Astro.url.pathname);
+
+const commentPath = getPathWithoutLang(Astro.url.pathname);
+---
+
+<Layout title={title} description={description} keywords={keywords} lang={lang} setOGTypeArticle={setOGTypeArticle} ogImage={ogImage}>
+
+<!-- Navbar -->
+<slot slot="head" name="head"></slot>
+<div id="top-row" class="z-50 pointer-events-none relative transition-all duration-700 max-w-[var(--page-width)] px-0 md:px-4 mx-auto" class:list={[""]}>
+    <div id="navbar-wrapper" class="pointer-events-auto sticky top-0 transition-all">
+        <Navbar></Navbar>
+    </div>
+</div>
+
+<!-- Banner -->
+{bannerConfig.enable && <div id="banner-wrapper" class={`absolute z-10 w-full transition duration-700 overflow-hidden`} style={`top: -${BANNER_HEIGHT_EXTEND}vh`}>
+    <ImageWrapper id="banner" alt="Banner image of the blog" class:list={["object-cover h-full transition duration-700 opacity-0 scale-105"]}
+                  src={bannerConfig.src} position={bannerConfig.position}
+                  loading="eager" decoding="sync"
+    >
+    </ImageWrapper>
+    {bannerConfig.enable && bannerConfig.text?.enable && (
+        <div class:list={["banner-text-overlay absolute inset-0 flex flex-col justify-center items-center text-white text-center p-4 z-20 pointer-events-none transition-all duration-500", {"banner-text-hidden": !isHomePageCheck}]}>
+            <h1 class="text-6xl md:text-6xl font-bold drop-shadow-lg animate-fade-in-down" style="animation-delay: 0.2s;">{siteConfig.title}</h1>
+            <p class="mt-4 text-2xl md:text-2xl drop-shadow-lg animate-fade-in-up" style="animation-delay: 0.4s;">{siteConfig.subtitle}</p>
+        </div>
+    )}
+    {bannerConfig.waves?.enable && (
+        <div class="waves absolute -bottom-[1px] h-[10vh] max-h-[9.375rem] min-h-[3.125rem] w-full md:h-[15vh]" id="header-waves" style="transform: translateZ(0); will-change: fill;">
+            <svg
+                class="waves"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+                viewBox="20 20 150 32"
+                preserveAspectRatio="none"
+                shape-rendering="auto"
+                style="transform: translateZ(0); backface-visibility: hidden;"
+            >
+                <defs>
+                    <path
+                        id="gentle-wave"
+                        d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v48h-352z"
+                    >
+                    </path>
+                </defs>
+                <g class="parallax" style="transform: translateZ(0);">
+                    <use
+                        xlink:href="#gentle-wave"
+                        x="48"
+                        y="0"
+                        class="opacity-25 fill-[var(--page-bg)]"
+                        style="animation-delay: -2s; animation-duration: 7s; will-change: transform;"
+                    ></use>
+                    <use
+                        xlink:href="#gentle-wave"
+                        x="48"
+                        y="3"
+                        class="opacity-50 fill-[var(--page-bg)]"
+                        style="animation-delay: -3s; animation-duration: 10s; will-change: transform;"
+                    ></use>
+                    <use
+                        xlink:href="#gentle-wave"
+                        x="48"
+                        y="5"
+                        class="opacity-75 fill-[var(--page-bg)]"
+                        style="animation-delay: -4s; animation-duration: 13s; will-change: transform;"
+                    ></use>
+                    <use
+                        xlink:href="#gentle-wave"
+                        x="48"
+                        y="7"
+                        class="fill-[var(--page-bg)]"
+                        style="animation-delay: -5s; animation-duration: 20s; will-change: transform;"
+                    ></use>
+                </g>
+            </svg>
+        </div>
+    )}
+</div>}
+
+<!-- Main content -->
+<div class="absolute w-full z-30 pointer-events-none" style={`top: ${mainPanelTop}`}>
+    <div class="relative max-w-[var(--page-width)] mx-auto pointer-events-auto">
+        <div id="main-grid" class="transition duration-700 w-full left-0 right-0 grid grid-cols-1 lg:grid-cols-[17.5rem_auto] grid-rows-[auto_auto]
+    mx-auto gap-4 px-4"
+        >            <!-- Banner image credit -->
+            {hasBannerCredit && <a href={bannerConfig.credit.url} id="banner-credit" target="_blank" rel="noopener" aria-label="Visit image source"
+                                   class:list={["group onload-animation transition-all absolute flex justify-center items-center rounded-full " +
+                                   "px-3 right-4 -top-[3.25rem] bg-black/60 hover:bg-black/70 h-9", {"hover:pr-9 active:bg-black/80": hasBannerLink}]}
+            >
+                <Icon class="text-white/75 text-[1.25rem] mr-1" name="material-symbols:copyright-outline-rounded" ></Icon>
+                <div class="text-white/75 text-xs">{bannerConfig.credit.text}</div>
+                <Icon class:list={["transition absolute text-[oklch(0.75_0.14_var(--hue))] right-4 text-[0.75rem] opacity-0",
+                    {"group-hover:opacity-100": hasBannerLink}]}
+                      name="fa6-solid:arrow-up-right-from-square">
+                </Icon>
+            </a>}
+
+
+            <SideBar class="mb-4 col-span-1" series={ series } isPostsRoute={isPostsRoute}></SideBar>
+
+            <main id="main" class="transition-swup-fade col-span-1 lg:col-start-2 lg:col-end-3 lg:row-start-1">
+                <TOC headings={headings}></TOC>
+                <div id="content-wrapper" class="onload-animation">
+                    <slot></slot>
+                    {comment && <div class="mt-4"><Comment path={commentPath} /></div>}
+                    {(prevLink || nextLink) && (
+                        <div class="flex flex-col md:flex-row justify-between mt-4 gap-4 overflow-hidden w-full">
+                            <a href={nextLink ? nextLink.url : "#"}
+                               class:list={["w-full font-bold overflow-hidden active:scale-95", {"pointer-events-none opacity-0": !nextLink}]}>
+                                {nextLink && <div class="btn-card rounded-2xl w-full h-[3.75rem] max-w-full px-4 flex items-center !justify-start gap-4" >
+                                    <Icon name="material-symbols:chevron-left-rounded" class="text-[2rem] text-[var(--primary)]" />
+                                    <div class="overflow-hidden transition overflow-ellipsis whitespace-nowrap max-w-[calc(100%_-_3rem)] text-black/75 dark:text-white/75">
+                                        {nextLink.title}
+                                    </div>
+                                </div>}
+                            </a>
+
+                            <a href={prevLink ? prevLink.url : "#"}
+                               class:list={["w-full font-bold overflow-hidden active:scale-95", {"pointer-events-none opacity-0": !prevLink}]}>
+                                {prevLink && <div class="btn-card rounded-2xl w-full h-[3.75rem] max-w-full px-4 flex items-center !justify-end gap-4">
+                                    <div class="overflow-hidden transition overflow-ellipsis whitespace-nowrap max-w-[calc(100%_-_3rem)] text-black/75 dark:text-white/75">
+                                        {prevLink.title}
+                                    </div>
+                                    <Icon name="material-symbols:chevron-right-rounded" class="text-[2rem] text-[var(--primary)]" />
+                                </div>}
+                            </a>
+                        </div>
+                    )}
+                </div>
+            </main>
+
+            <div class="footer col-span-1 lg:col-span-2 onload-animation hidden lg:block lg:row-start-2">
+                <Footer></Footer>
+            </div>
+
+            <div class="footer col-span-1 onload-animation block lg:hidden">
+                <Footer></Footer>
+            </div>
+        </div>
+
+        <BackToTop></BackToTop>
+    </div>
+</div>
+</Layout>
+
+<style>
+    @keyframes fade-in-down {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    @keyframes fade-in-up {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    .animate-fade-in-down {
+        animation: fade-in-down 0.8s ease-out forwards;
+    }
+    .animate-fade-in-up {
+        animation: fade-in-up 0.8s ease-out forwards;
+    }
+    .banner-text-hidden {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+</style>

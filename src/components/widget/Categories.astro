@@ -1,0 +1,38 @@
+---
+import ButtonLink from "@components/control/ButtonLink.astro";
+import WidgetLayout from "@components/widget/WidgetLayout.astro";
+import { siteConfig } from "@configs/site";
+import I18nKey from "@i18n/i18nKey";
+import { type Category, getCategoryList } from "@utils/content-utils";
+import { getLangFromPathname, type SupportedLanguage } from "@utils/i18n-runtime";
+
+const categoriesMap = await getCategoryList();
+
+const COLLAPSED_HEIGHT = "7.5rem";
+const COLLAPSE_THRESHOLD = 5;
+
+const isCollapsed = Object.values(categoriesMap)[0].length >= COLLAPSE_THRESHOLD;
+
+const className = Astro.props.class;
+const style = Astro.props.style;
+
+// Get current lang from URL
+const lang = getLangFromPathname(Astro.url.pathname);
+const categories: Category[] = categoriesMap[lang] || categoriesMap[siteConfig.lang as SupportedLanguage];
+---
+
+<WidgetLayout i18nKey={I18nKey.categories} isI18nName={true} id="categories" isCollapsed={isCollapsed} collapsedHeight={COLLAPSED_HEIGHT}
+                class={className} style={style}
+>
+    <div class="translation-unit">
+        {categories.map((c: Category) =>
+            <ButtonLink
+                url={c.url}
+                badge={String(c.count)}
+                label={`View all posts in the ${c.name.trim()} category`}
+            >
+                {c.name.trim()}
+            </ButtonLink>
+        )}
+    </div>
+</WidgetLayout>

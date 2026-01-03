@@ -1,0 +1,23 @@
+---
+import { siteConfig } from "@configs/site";
+
+// This page will be built to /404.html
+// It handles redirection to localized 404 pages
+---
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>404 - Redirecting...</title>
+    <meta http-equiv="refresh" content={`0;url=/${siteConfig.lang}/404/`} />
+    <script>
+        import { resolveRedirectLanguage } from "@utils/i18n-runtime";
+        const lang = resolveRedirectLanguage();
+        // Redirect to the localized 404 page
+        window.location.href = "/" + lang + "/404/";
+    </script>
+</head>
+<body>
+    <p>Page not found. Redirecting to <a href={`/${siteConfig.lang}/404/`}>error page</a>...</p>
+</body>
+</html>

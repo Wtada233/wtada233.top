@@ -1,0 +1,495 @@
+---
+import Icon from "@components/common/Icon.astro";
+import { musicPlayerConfig } from "@configs/music";
+import { siteConfig } from "@configs/site";
+import Key from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
+
+const currentLang = siteConfig.lang;
+---
+
+{musicPlayerConfig.enable && (
+<music-player 
+    data-config={JSON.stringify(musicPlayerConfig)} 
+    data-current-lang={currentLang}
+>
+    <!-- Error Message -->
+    <div id="error-toast" class="fixed bottom-20 right-4 z-[60] max-w-sm hidden">
+        <div class="bg-red-500 text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-3 animate-slide-up">
+            <Icon name="material-symbols:error" class="text-xl flex-shrink-0" />
+            <span id="error-message" class="text-sm flex-1"></span>
+            <button id="close-error" class="text-white/80 hover:text-white transition-colors">
+                <Icon name="material-symbols:close" class="text-lg" />
+            </button>
+        </div>
+    </div>
+
+    <div id="player-container" class="music-player fixed bottom-4 left-4 z-50 transition-all duration-300 ease-in-out hidden-mode">
+        <!-- Orb Mode -->
+        <div id="orb-player" class="orb-player w-12 h-12 bg-[var(--primary)] rounded-full shadow-lg cursor-pointer transition-all duration-500 ease-in-out flex items-center justify-center hover:scale-110 active:scale-95" role="button" tabindex="0" aria-label="Show Music Player">
+            <div id="orb-icon-loading" class="hidden"><Icon name="eos-icons:loading" class="text-white text-lg" /></div>
+            <div id="orb-icon-playing" class="hidden flex space-x-0.5">
+                <div class="w-0.5 h-3 bg-white rounded-full animate-pulse"></div>
+                <div class="w-0.5 h-4 bg-white rounded-full animate-pulse" style="animation-delay: 150ms;"></div>
+                <div class="w-0.5 h-2 bg-white rounded-full animate-pulse" style="animation-delay: 300ms;"></div>
+            </div>
+            <div id="orb-icon-default"><Icon name="material-symbols:music-note" class="text-white text-lg" /></div>
+        </div>
+
+        <!-- Mini Player -->
+        <div id="mini-player" class="mini-player card-base bg-[var(--float-panel-bg)] shadow-xl rounded-2xl p-3 transition-all duration-500 ease-in-out opacity-0 scale-95 pointer-events-none">
+            <div class="flex items-center gap-3">
+                <div id="mini-cover-btn" class="cover-container relative w-12 h-12 rounded-full overflow-hidden cursor-pointer" role="button" tabindex="0">
+                    <img id="mini-cover" src="" alt="Cover" class="w-full h-full object-cover transition-transform duration-300" />
+                    <div class="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                        <Icon id="mini-play-icon" name="material-symbols:play-arrow" class="text-white text-xl" />
+                        <Icon id="mini-pause-icon" name="material-symbols:pause" class="text-white text-xl hidden" />
+                        <Icon id="mini-loading-icon" name="eos-icons:loading" class="text-white text-xl hidden" />
+                    </div>
+                </div>
+                <div id="mini-info-btn" class="flex-1 min-w-0 cursor-pointer" role="button" tabindex="0">
+                    <div id="mini-title" class="text-sm font-medium text-90 truncate"></div>
+                    <div id="mini-artist" class="text-xs text-50 truncate"></div>
+                </div>
+                <div class="flex items-center gap-1">
+                    <button id="mini-hide-btn" class="btn-plain w-8 h-8 rounded-lg flex items-center justify-center" title="Hide Player">
+                        <Icon name="material-symbols:visibility-off" class="text-lg" />
+                    </button>
+                    <button id="mini-expand-btn" class="btn-plain w-8 h-8 rounded-lg flex items-center justify-center">
+                        <Icon name="material-symbols:expand-less" class="text-lg" />
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Expanded Player -->
+        <div id="expanded-player" class="expanded-player card-base bg-[var(--float-panel-bg)] shadow-xl rounded-2xl p-4 transition-all duration-500 ease-in-out opacity-0 scale-95 pointer-events-none">
+            <div class="flex items-center gap-4 mb-4">
+                <div class="cover-container relative w-16 h-16 rounded-full overflow-hidden flex-shrink-0">
+                    <img id="expanded-cover" src="" alt="Cover" class="w-full h-full object-cover transition-transform duration-300" />
+                </div>
+                <div class="flex-1 min-w-0">
+                    <div id="expanded-title" class="song-title text-lg font-bold text-90 truncate mb-1"></div>
+                    <div id="expanded-artist" class="song-artist text-sm text-50 truncate"></div>
+                    <div id="expanded-time" class="text-xs text-30 mt-1">0:00 / 0:00</div>
+                </div>
+                <div class="flex items-center gap-1">
+                    <button id="expanded-hide-btn" class="btn-plain w-8 h-8 rounded-lg flex items-center justify-center" title="Hide Player">
+                        <Icon name="material-symbols:visibility-off" class="text-lg" />
+                    </button>
+                    <button id="expanded-playlist-btn" class="btn-plain w-8 h-8 rounded-lg flex items-center justify-center" title="Playlist">
+                        <Icon name="material-symbols:queue-music" class="text-lg" />
+                    </button>
+                </div>
+            </div>
+            <div class="progress-section mb-4">
+                <div id="progress-bar" class="progress-bar flex-1 h-2 bg-[var(--btn-regular-bg)] rounded-full cursor-pointer" role="slider" tabindex="0" aria-label="Progress">
+                    <div id="progress-fill" class="h-full bg-[var(--primary)] rounded-full transition-all duration-100" style="width: 0%"></div>
+                </div>
+            </div>
+            <div class="controls flex items-center justify-center gap-2 mb-4">
+                <button id="shuffle-btn" class="w-10 h-10 rounded-lg btn-plain"><Icon name="material-symbols:shuffle" class="text-lg" /></button>
+                <button id="prev-btn" class="btn-plain w-10 h-10 rounded-lg"><Icon name="material-symbols:skip-previous" class="text-xl" /></button>
+                <button id="main-play-btn" class="btn-regular w-12 h-12 rounded-full">
+                    <Icon id="main-play-icon" name="material-symbols:play-arrow" class="text-xl" />
+                    <Icon id="main-pause-icon" name="material-symbols:pause" class="text-xl hidden" />
+                    <Icon id="main-loading-icon" name="eos-icons:loading" class="text-xl hidden" />
+                </button>
+                <button id="next-btn" class="btn-plain w-10 h-10 rounded-lg"><Icon name="material-symbols:skip-next" class="text-xl" /></button>
+                <button id="repeat-btn" class="w-10 h-10 rounded-lg btn-plain"><Icon name="material-symbols:repeat" class="text-lg opacity-50" /></button>
+            </div>
+            <div class="bottom-controls flex items-center gap-2">
+                <button id="mute-btn" class="btn-plain w-8 h-8 rounded-lg"><Icon id="vol-up-icon" name="material-symbols:volume-up" class="text-lg" /></button>
+                <div id="volume-bar" class="flex-1 h-2 bg-[var(--btn-regular-bg)] rounded-full cursor-pointer" role="slider" tabindex="0" aria-label="Volume">
+                    <div id="volume-fill" class="h-full bg-[var(--primary)] rounded-full transition-all" style="width: 70%"></div>
+                </div>
+                <button id="collapse-btn" class="btn-plain w-8 h-8 rounded-lg flex items-center justify-center" title="Collapse Player">
+                    <Icon name="material-symbols:expand-more" class="text-lg" />
+                </button>
+            </div>
+        </div>
+
+        <!-- Playlist -->
+        <div id="playlist-panel" class="playlist-panel float-panel fixed bottom-20 left-4 w-80 max-h-96 overflow-hidden z-50 hidden">
+            <div class="playlist-header flex items-center justify-between p-4 border-b border-[var(--line-divider)]">
+                <h3 class="text-lg font-semibold text-90">{i18n(Key.playlist)}</h3>
+                <button id="close-playlist" class="btn-plain w-8 h-8 rounded-lg"><Icon name="material-symbols:close" class="text-lg" /></button>
+            </div>
+            <div id="playlist-content" class="playlist-content overflow-y-auto max-h-80"></div>
+        </div>
+    </div>
+</music-player>
+)}
+
+<style is:global>
+.music-player .orb-player {
+	position: relative;
+	backdrop-filter: blur(10px);
+	-webkit-backdrop-filter: blur(10px);
+}
+.music-player.hidden-mode {
+	width: 48px;
+	height: 48px;
+}
+.music-player {
+    width: 320px;
+    user-select: none;
+}
+.music-player .mini-player, .music-player .expanded-player {
+    width: 280px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+.music-player .expanded-player {
+    width: 320px;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+.music-player .spinning {
+    animation: spin 10s linear infinite;
+}
+
+@media (max-width: 768px) {
+    .music-player {
+        width: 280px;
+        bottom: 8px !important;
+        left: 8px !important;
+    }
+    .music-player.expanded {
+        width: calc(100vw - 16px);
+    }
+}
+</style>
+
+<script>
+class MusicPlayer extends HTMLElement {
+    config: any;
+    audio: HTMLAudioElement;
+    playlist: any[];
+    currentIndex: number;
+    currentSong: any;
+    isPlaying: boolean;
+    isExpanded: boolean;
+    isHidden: boolean;
+    showPlaylist: boolean;
+    volume: number;
+    isMuted: boolean;
+    isShuffled: boolean;
+    isRepeating: number;
+    isLoading: boolean;
+
+    container!: HTMLElement;
+    orb!: HTMLElement;
+    mini!: HTMLElement;
+    expanded!: HTMLElement;
+    playlistPanel!: HTMLElement;
+    playlistContent!: HTMLElement;
+    progressBar!: HTMLElement;
+    progressFill!: HTMLElement;
+    volumeBar!: HTMLElement;
+    volumeFill!: HTMLElement;
+    timeDisplay!: HTMLElement;
+    errorToast!: HTMLElement;
+    errorMessage!: HTMLElement;
+    errorTimeout: number | undefined;
+
+    constructor() {
+        super();
+        this.config = JSON.parse(this.dataset.config || '{}');
+        this.audio = new Audio();
+        this.playlist = [];
+        this.currentIndex = 0;
+        this.isPlaying = false;
+        this.isExpanded = false;
+        this.isHidden = true;
+        this.showPlaylist = false;
+        this.volume = 0.7;
+        this.isMuted = false;
+        this.isShuffled = false;
+        this.isRepeating = 0; // 0: none, 1: one, 2: all
+        this.isLoading = false;
+
+        this.init();
+    }
+
+    init() {
+        if (this.dataset.initialized) return;
+        this.dataset.initialized = "true";
+        this.cacheElements();
+        this.attachListeners();
+        this.loadPlaylist();
+    }
+
+    cacheElements() {
+        this.container = this.querySelector('#player-container')!;
+        this.orb = this.querySelector('#orb-player')!;
+        this.mini = this.querySelector('#mini-player')!;
+        this.expanded = this.querySelector('#expanded-player')!;
+        this.playlistPanel = this.querySelector('#playlist-panel')!;
+        this.playlistContent = this.querySelector('#playlist-content')!;
+        this.progressBar = this.querySelector('#progress-bar')!;
+        this.progressFill = this.querySelector('#progress-fill')!;
+        this.volumeBar = this.querySelector('#volume-bar')!;
+        this.volumeFill = this.querySelector('#volume-fill')!;
+        this.timeDisplay = this.querySelector('#expanded-time')!;
+        this.errorToast = this.querySelector('#error-toast')!;
+        this.errorMessage = this.querySelector('#error-message')!;
+    }
+
+    attachListeners() {
+        this.orb.addEventListener('click', () => this.toggleHidden());
+        this.querySelector('#mini-cover-btn')?.addEventListener('click', () => this.togglePlay());
+        this.querySelector('#mini-info-btn')?.addEventListener('click', () => this.toggleExpanded());
+        this.querySelector('#mini-hide-btn')?.addEventListener('click', (e) => { e.stopPropagation(); this.toggleHidden(); });
+        this.querySelector('#mini-expand-btn')?.addEventListener('click', (e) => { e.stopPropagation(); this.toggleExpanded(); });
+        
+        this.querySelector('#expanded-hide-btn')?.addEventListener('click', () => this.toggleHidden());
+        this.querySelector('#expanded-playlist-btn')?.addEventListener('click', () => this.togglePlaylist());
+        this.querySelector('#collapse-btn')?.addEventListener('click', () => this.toggleExpanded());
+        
+        this.querySelector('#main-play-btn')?.addEventListener('click', () => this.togglePlay());
+        this.querySelector('#prev-btn')?.addEventListener('click', () => this.previous());
+        this.querySelector('#next-btn')?.addEventListener('click', () => this.next());
+        this.querySelector('#shuffle-btn')?.addEventListener('click', () => this.toggleShuffle());
+        this.querySelector('#repeat-btn')?.addEventListener('click', () => this.toggleRepeat());
+        this.querySelector('#mute-btn')?.addEventListener('click', () => this.toggleMute());
+        
+        this.progressBar.addEventListener('click', (e) => this.setProgress(e));
+        this.volumeBar.addEventListener('mousedown', (e) => this.startVolumeDrag(e));
+        
+        this.audio.addEventListener('play', () => this.onPlay());
+        this.audio.addEventListener('pause', () => this.onPause());
+        this.audio.addEventListener('timeupdate', () => this.onTimeUpdate());
+        this.audio.addEventListener('ended', () => this.onEnded());
+        this.audio.addEventListener('loadstart', () => this.onLoadStart());
+        this.audio.addEventListener('loadeddata', () => this.onLoadSuccess());
+        this.audio.addEventListener('error', () => this.onLoadError());
+
+        this.querySelector('#close-error')?.addEventListener('click', () => this.errorToast.classList.add('hidden'));
+        this.querySelector('#close-playlist')?.addEventListener('click', () => this.togglePlaylist());
+    }
+
+    loadPlaylist() {
+        this.playlist = this.config.local_playlist || [];
+        if (this.playlist.length > 0) this.loadSong(this.playlist[0]);
+        this.renderPlaylist();
+    }
+
+    loadSong(song: any) {
+        this.currentSong = song;
+        this.audio.src = song.url;
+        this.updateMetadata();
+    }
+
+    updateMetadata() {
+        const cover = this.currentSong.cover;
+        (this.querySelector('#mini-cover') as HTMLImageElement).src = cover;
+        (this.querySelector('#expanded-cover') as HTMLImageElement).src = cover;
+        this.querySelector('#mini-title')!.textContent = this.currentSong.title;
+        this.querySelector('#expanded-title')!.textContent = this.currentSong.title;
+        this.querySelector('#mini-artist')!.textContent = this.currentSong.artist;
+        this.querySelector('#expanded-artist')!.textContent = this.currentSong.artist;
+    }
+
+    togglePlay() {
+        if (this.isPlaying) this.audio.pause();
+        else this.audio.play().catch(() => this.showError("Play failed, needs interaction"));
+    }
+
+    previous() {
+        this.currentIndex = (this.currentIndex - 1 + this.playlist.length) % this.playlist.length;
+        this.playSong(this.currentIndex);
+    }
+
+    next() {
+        if (this.isShuffled) {
+            this.currentIndex = Math.floor(Math.random() * this.playlist.length);
+        } else {
+            this.currentIndex = (this.currentIndex + 1) % this.playlist.length;
+        }
+        this.playSong(this.currentIndex);
+    }
+
+    playSong(index: number) {
+        this.currentIndex = index;
+        this.loadSong(this.playlist[index]);
+        this.audio.play();
+        this.renderPlaylist();
+    }
+
+    toggleHidden() {
+        this.isHidden = !this.isHidden;
+        if (this.isHidden) {
+            this.container.classList.add('hidden-mode');
+            this.orb.classList.remove('opacity-0', 'scale-0', 'pointer-events-none');
+            this.mini.classList.add('opacity-0', 'scale-95', 'pointer-events-none');
+            this.expanded.classList.add('opacity-0', 'scale-95', 'pointer-events-none');
+            this.isExpanded = false;
+        } else {
+            this.container.classList.remove('hidden-mode');
+            this.orb.classList.add('opacity-0', 'scale-0', 'pointer-events-none');
+            this.mini.classList.remove('opacity-0', 'scale-95', 'pointer-events-none');
+        }
+    }
+
+    toggleExpanded() {
+        this.isExpanded = !this.isExpanded;
+        if (this.isExpanded) {
+            this.mini.classList.add('opacity-0', 'scale-95', 'pointer-events-none');
+            this.expanded.classList.remove('opacity-0', 'scale-95', 'pointer-events-none');
+        } else {
+            this.expanded.classList.add('opacity-0', 'scale-95', 'pointer-events-none');
+            this.mini.classList.remove('opacity-0', 'scale-95', 'pointer-events-none');
+        }
+    }
+
+    togglePlaylist() {
+        this.showPlaylist = !this.showPlaylist;
+        this.playlistPanel.classList.toggle('hidden', !this.showPlaylist);
+    }
+
+    toggleShuffle() {
+        this.isShuffled = !this.isShuffled;
+        this.querySelector('#shuffle-btn')?.classList.toggle('btn-regular', this.isShuffled);
+        this.querySelector('#shuffle-btn')?.classList.toggle('btn-plain', !this.isShuffled);
+    }
+
+    toggleRepeat() {
+        this.isRepeating = (this.isRepeating + 1) % 3;
+        const btn = this.querySelector('#repeat-btn') as HTMLElement;
+        if (btn) {
+            btn.classList.toggle('btn-regular', this.isRepeating > 0);
+            btn.style.opacity = this.isRepeating === 0 ? '0.5' : '1';
+        }
+    }
+
+    toggleMute() {
+        this.isMuted = !this.isMuted;
+        this.audio.muted = this.isMuted;
+        (this.querySelector('#mute-btn') as HTMLElement).style.color = this.isMuted ? 'var(--primary)' : 'inherit';
+    }
+
+    setProgress(e: any) {
+        const rect = this.progressBar.getBoundingClientRect();
+        const pct = (e.clientX - rect.left) / rect.width;
+        this.audio.currentTime = pct * this.audio.duration;
+    }
+
+    startVolumeDrag(e: MouseEvent) {
+        const move = (ev: MouseEvent) => {
+            const rect = this.volumeBar.getBoundingClientRect();
+            const pct = Math.max(0, Math.min(1, (ev.clientX - rect.left) / rect.width));
+            this.volume = pct;
+            this.audio.volume = pct;
+            this.volumeFill.style.width = `${pct * 100}%`;
+        };
+        const up = () => {
+            document.removeEventListener('mousemove', move);
+            document.removeEventListener('mouseup', up);
+        };
+        document.addEventListener('mousemove', move);
+        document.addEventListener('mouseup', up);
+        move(e);
+    }
+
+    onPlay() {
+        this.isPlaying = true;
+        this.updatePlayState();
+    }
+
+    onPause() {
+        this.isPlaying = false;
+        this.updatePlayState();
+    }
+
+    updatePlayState() {
+        this.querySelector('#mini-play-icon')?.classList.toggle('hidden', this.isPlaying);
+        this.querySelector('#mini-pause-icon')?.classList.toggle('hidden', !this.isPlaying);
+        this.querySelector('#main-play-icon')?.classList.toggle('hidden', this.isPlaying);
+        this.querySelector('#main-pause-icon')?.classList.toggle('hidden', !this.isPlaying);
+        this.querySelector('#orb-icon-playing')?.classList.toggle('hidden', !this.isPlaying);
+        this.querySelector('#orb-icon-default')?.classList.toggle('hidden', this.isPlaying);
+        
+        this.querySelector('#mini-cover')?.classList.toggle('spinning', this.isPlaying);
+        this.querySelector('#expanded-cover')?.classList.toggle('spinning', this.isPlaying);
+    }
+
+    onTimeUpdate() {
+        const pct = (this.audio.currentTime / this.audio.duration) * 100;
+        this.progressFill.style.width = `${pct}%`;
+        this.timeDisplay.textContent = `${this.formatTime(this.audio.currentTime)} / ${this.formatTime(this.audio.duration)}`;
+    }
+
+    onEnded() {
+        if (this.isRepeating === 1) this.audio.play();
+        else this.next();
+    }
+
+    onLoadStart() { this.setLoading(true); }
+    onLoadSuccess() { this.setLoading(false); }
+    onLoadError() {
+        this.setLoading(false);
+        this.showError("Load Error, skipping...");
+        setTimeout(() => this.next(), 2000);
+    }
+
+    setLoading(loading: boolean) {
+        this.isLoading = loading;
+        this.querySelector('#mini-loading-icon')?.classList.toggle('hidden', !loading);
+        this.querySelector('#main-loading-icon')?.classList.toggle('hidden', !loading);
+        this.querySelector('#orb-icon-loading')?.classList.toggle('hidden', !loading);
+        if (loading) {
+            this.querySelector('#orb-icon-playing')?.classList.add('hidden');
+            this.querySelector('#orb-icon-default')?.classList.add('hidden');
+        } else {
+            this.updatePlayState();
+        }
+    }
+
+    formatTime(s: number) {
+        if (isNaN(s)) return "0:00";
+        const mins = Math.floor(s / 60);
+        const secs = Math.floor(s % 60);
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    showError(msg: string) {
+        if (this.errorTimeout) clearTimeout(this.errorTimeout);
+        this.errorMessage.textContent = msg;
+        this.errorToast.classList.remove('hidden');
+        this.errorTimeout = window.setTimeout(() => {
+            this.errorToast.classList.add('hidden');
+            this.errorTimeout = undefined;
+        }, 5000);
+    }
+
+    renderPlaylist() {
+        this.playlistContent.innerHTML = this.playlist.map((s, i) => `
+            <div class="playlist-item flex items-center gap-3 p-3 hover:bg-[var(--btn-plain-bg-hover)] cursor-pointer transition-colors ${i === this.currentIndex ? 'bg-[var(--btn-plain-bg)]' : ''}" data-index="${i}">
+                <div class="w-6 h-6 flex items-center justify-center">
+                    ${i === this.currentIndex ? '<div class="text-[var(--primary)]">▶</div>' : `<span class="text-sm text-50">${i + 1}</span>`}
+                </div>
+                <div class="w-10 h-10 rounded-lg overflow-hidden bg-[var(--btn-regular-bg)] flex-shrink-0">
+                    <img src="${s.cover}" alt="Cover" class="w-full h-full object-cover" />
+                </div>
+                <div class="flex-1 min-w-0">
+                    <div class="font-medium truncate ${i === this.currentIndex ? 'text-[var(--primary)]' : 'text-90'}">${s.title}</div>
+                    <div class="text-sm text-50 truncate">${s.artist}</div>
+                </div>
+            </div>
+        `).join("");
+
+        this.playlistContent.querySelectorAll('.playlist-item').forEach(item => {
+            item.addEventListener('click', () => this.playSong(parseInt((item as HTMLElement).dataset.index!)));
+        });
+    }
+}
+
+if (!customElements.get('music-player')) {
+    customElements.define('music-player', MusicPlayer);
+}
+</script>

@@ -1,0 +1,150 @@
+---
+import Icon from "@components/common/Icon.astro";
+import { webmentionConfig } from "@configs/webmention";
+import I18nKey from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
+import { getLangFromPathname } from "@utils/i18n-runtime";
+
+interface Props {
+	targetUrl: string;
+}
+
+const { targetUrl } = Astro.props;
+const lang = getLangFromPathname(Astro.url.pathname);
+
+if (!webmentionConfig.enable) {
+	return null;
+}
+---
+
+<div class="webmention-container card-base p-6 mb-4 onload-animation" data-target={targetUrl}>
+    <h2 class="flex flex-row items-center font-bold text-lg text-neutral-900 dark:text-neutral-100 transition relative ml-3 mb-4
+        before:w-1 before:h-4 before:rounded-md before:bg-[var(--primary)]
+        before:absolute before:left-[-16px] before:top-[5.5px]"
+    >
+        <Icon name="material-symbols:link" class="text-xl mr-2"></Icon>
+        <span class="translation-unit">{i18n(I18nKey.webmentions, {}, lang)}</span>
+    </h2>
+
+    <div id="webmention-content" class="min-h-[2rem] flex flex-col gap-4">
+        <div class="webmention-loading flex items-center justify-center py-4">
+            <Icon name="eos-icons:loading" class="text-2xl text-[var(--primary)] animate-spin"></Icon>
+        </div>
+    </div>
+
+    <!-- Fallback / Error Template (Hidden) -->
+    <template id="webmention-error-template">
+        <div class="text-center py-4 text-50 text-sm">
+            {i18n(I18nKey.failedToLoadWebmentions, {}, lang)}
+        </div>
+    </template>
+
+    <!-- Empty Template (Hidden) -->
+    <template id="webmention-empty-template">
+        <div class="text-center py-4 text-50 text-sm">
+            {i18n(I18nKey.noWebmentions, {}, lang)}
+        </div>
+    </template>
+</div>
+
+<script>
+    import { setupComponent } from "@utils/lifecycle";
+
+    async function initWebmentions() {
+        const container = document.querySelector('.webmention-container');
+        if (!container) return;
+
+        const target = (container as HTMLElement).dataset.target;
+        const content = document.getElementById('webmention-content');
+        if (!target || !content) return;
+
+        try {
+            // Using jf2 API for webmention.io
+            const url = `https://webmention.io/api/mentions.jf2?target=${encodeURIComponent(target)}`;
+            const response = await fetch(url);
+            
+            if (!response.ok) throw new Error('Network response was not ok');
+            
+            const data = await response.json();
+            renderWebmentions(data.children, content);
+        } catch (error) {
+            console.error('[Webmention] Error fetching data:', error);
+            const errorTemplate = document.getElementById('webmention-error-template') as HTMLTemplateElement;
+            if (errorTemplate) {
+                content.innerHTML = '';
+                content.appendChild(errorTemplate.content.cloneNode(true));
+            }
+        }
+    }
+
+    function renderWebmentions(mentions: any[], container: HTMLElement) {
+        if (!mentions || mentions.length === 0) {
+            const emptyTemplate = document.getElementById('webmention-empty-template') as HTMLTemplateElement;
+            container.innerHTML = '';
+            if (emptyTemplate) container.appendChild(emptyTemplate.content.cloneNode(true));
+            return;
+        }
+
+        container.innerHTML = '';
+        
+        // Group by type
+        const likes = mentions.filter(m => m['wm-property'] === 'like-of');
+        const reposts = mentions.filter(m => m['wm-property'] === 'repost-of');
+        const replies = mentions.filter(m => m['wm-property'] === 'in-reply-to' || m['wm-property'] === 'mention-of');
+
+        const html = [];
+
+        // Render Faces (Likes & Reposts)
+        if (likes.length > 0 || reposts.length > 0) {
+            html.push(`
+                <div class="flex flex-wrap gap-2 items-center mb-4">
+                    ${likes.map(m => `
+                        <a href="${m.author.url}" target="_blank" rel="noopener noreferrer" title="${m.author.name} liked this">
+                            <img src="${m.author.photo}" alt="${m.author.name}" class="w-8 h-8 rounded-full border-2 border-[var(--card-bg)] hover:scale-110 transition-transform" />
+                        </a>
+                    `).join('')}
+                    ${reposts.map(m => `
+                        <a href="${m.author.url}" target="_blank" rel="noopener noreferrer" title="${m.author.name} reposted this">
+                            <img src="${m.author.photo}" alt="${m.author.name}" class="w-8 h-8 rounded-full border-2 border-[var(--primary)] hover:scale-110 transition-transform" />
+                        </a>
+                    `).join('')}
+                </div>
+            `);
+        }
+
+        // Render Content (Replies & Mentions)
+        if (replies.length > 0) {
+            html.push(`
+                <div class="flex flex-col gap-4">
+                    ${replies.map(m => `
+                        <div class="webmention-item p-4 rounded-xl bg-black/5 dark:bg-white/5 border border-transparent hover:border-[var(--primary)] transition-all">
+                            <div class="flex items-center gap-3 mb-2">
+                                <img src="${m.author.photo}" alt="${m.author.name}" class="w-10 h-10 rounded-full" />
+                                <div class="flex flex-col">
+                                    <a href="${m.author.url}" target="_blank" rel="noopener noreferrer" class="text-sm font-bold hover:text-[var(--primary)] transition-colors">
+                                        ${m.author.name}
+                                    </a>
+                                    <time class="text-xs text-50">${new Date(m.published || m['wm-received']).toLocaleDateString()}</time>
+                                </div>
+                            </div>
+                            <div class="text-sm text-75 leading-relaxed">
+                                ${m.content?.text || (m['wm-property'] === 'mention-of' ? 'Mentioned this post' : '')}
+                            </div>
+                            ${m.url ? `<a href="${m.url}" target="_blank" class="text-xs text-[var(--primary)] mt-2 inline-block hover:underline">View Source</a>` : ''}
+                        </div>
+                    `).join('')}
+                </div>
+            `);
+        }
+
+        container.innerHTML = html.join('');
+    }
+
+    setupComponent('Webmention', initWebmentions);
+</script>
+
+<style is:global>
+    .webmention-item img {
+        @apply border border-black/10 dark:border-white/10;
+    }
+</style>

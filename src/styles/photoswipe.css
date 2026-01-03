@@ -1,0 +1,27 @@
+/* 使用 .pswp .pswp__button 提高权重，覆盖默认样式 */
+.pswp .pswp__button {
+    /* 强制不透明度为 1，消除默认的忽明忽暗效果 */
+    opacity: 1;
+    
+    /* 
+       定义背景色和过渡 
+       bg-black/40 -> 默认半透明黑
+       hover:bg-black/70 -> 悬停时明显变深
+       active:bg-black/80 -> 点击时更深
+    */
+    @apply transition-colors duration-200 bg-black/40 hover:bg-black/70 active:bg-black/80 flex items-center justify-center mr-0 w-12 h-12;
+}
+
+/* 调整按钮位置和圆角 */
+.pswp .pswp__button--zoom, 
+.pswp .pswp__button--close {
+    @apply mt-4 rounded-xl active:scale-90;
+}
+
+.pswp .pswp__button--zoom {
+    @apply mr-2.5;
+}
+
+.pswp .pswp__button--close {
+    @apply mr-4;
+}

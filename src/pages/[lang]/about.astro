@@ -1,0 +1,48 @@
+---
+import { getCollection, render } from "astro:content";
+import Markdown from "@components/misc/Markdown.astro";
+import { siteConfig } from "@configs/site";
+import I18nKey from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { SUPPORTED_LANGUAGES, type SupportedLanguage } from "@utils/i18n-runtime";
+
+export async function getStaticPaths() {
+	return SUPPORTED_LANGUAGES.map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params;
+const currentLang = lang as SupportedLanguage;
+const defaultLang = siteConfig.lang as SupportedLanguage;
+
+const allAbout = await getCollection("spec", (e) => e.id.startsWith("about"));
+const aboutMap = Object.fromEntries(
+	allAbout.map((e) => {
+		let l = siteConfig.lang;
+		if (e.id.includes(".en")) l = "en";
+		else if (e.id.includes(".ja")) l = "ja";
+		else if (e.id.includes(".ko")) l = "ko";
+		else if (e.id.includes(".zh_TW")) l = "zh_TW";
+		return [l, e];
+	}),
+);
+
+const entry = aboutMap[currentLang] || aboutMap[defaultLang] || Object.values(aboutMap)[0];
+const { Content } = entry ? await render(entry) : { Content: null };
+---
+<MainGridLayout title={i18n(I18nKey.about, {}, currentLang)} description={i18n(I18nKey.about, {}, currentLang)} lang={currentLang} comment={entry?.data.comment === true}>
+    <div class="card-base p-6 mb-4 flex items-center justify-center">
+        <h1 class="text-2xl font-bold text-90">
+            {i18n(I18nKey.about, {}, currentLang)}
+        </h1>
+    </div>
+    <div class="card-base z-10 px-9 py-6 relative w-full min-h-32">
+        {Content ? (
+            <Markdown class="mt-2">
+                <Content />
+            </Markdown>
+        ) : (
+            <div class="text-center text-50 py-10">No content available.</div>
+        )}
+    </div>
+</MainGridLayout>

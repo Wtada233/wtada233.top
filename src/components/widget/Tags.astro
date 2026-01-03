@@ -1,0 +1,35 @@
+---
+import ButtonTag from "@components/control/ButtonTag.astro";
+import WidgetLayout from "@components/widget/WidgetLayout.astro";
+import { siteConfig } from "@configs/site";
+import I18nKey from "@i18n/i18nKey";
+import { getTagList, type Tag } from "@utils/content-utils";
+import { getLangFromPathname, type SupportedLanguage } from "@utils/i18n-runtime";
+import { getTagUrl } from "@utils/url-utils";
+
+const tagsMap = await getTagList();
+
+const COLLAPSED_HEIGHT = "7.5rem";
+
+// Use representative count for collapse threshold
+
+const isCollapsed = Object.values(tagsMap)[0].length >= 20;
+
+const className = Astro.props.class;
+
+const style = Astro.props.style;
+
+// Get current lang from URL
+const lang = getLangFromPathname(Astro.url.pathname);
+const tags: Tag[] = tagsMap[lang] || tagsMap[siteConfig.lang as SupportedLanguage];
+---
+
+<WidgetLayout i18nKey={I18nKey.tags} isI18nName={true} id="tags" isCollapsed={isCollapsed} collapsedHeight={COLLAPSED_HEIGHT} class={className} style={style}>
+    <div class="flex gap-2 flex-wrap translation-unit">
+        {tags.map((t: Tag) => (
+            <ButtonTag href={getTagUrl(t.name, lang)} label={`View all posts with the ${t.name.trim()} tag`}>
+                {t.name.trim()}
+            </ButtonTag>
+        ))}
+    </div>
+</WidgetLayout>

@@ -1,0 +1,164 @@
+---
+import { pwaInfo } from "virtual:pwa-info";
+import { bannerConfig } from "@configs/banner";
+import { faviconConfig } from "@configs/favicon";
+import { fontConfig } from "@configs/font";
+import { profileConfig } from "@configs/profile";
+import { seoConfig } from "@configs/seo";
+import { siteConfig } from "@configs/site";
+import { umamiConfig } from "@configs/umami";
+import { webmentionConfig } from "@configs/webmention";
+import { defaultFavicons } from "@constants/icon";
+import { getLanguageSwitchUrl, SUPPORTED_LANGUAGES } from "@utils/i18n-runtime";
+import type { Favicon } from "@/types/config";
+import { resolveImage } from "@/utils/image-utils";
+import { url } from "@/utils/url-utils";
+
+interface Props {
+	title?: string;
+	description?: string;
+	keywords?: string;
+	lang?: string;
+	setOGTypeArticle?: boolean;
+	ogImage?: string;
+}
+
+let { title, description, keywords, setOGTypeArticle, ogImage } = Astro.props;
+
+let pageTitle: string;
+if (title) {
+	pageTitle = `${title} - ${siteConfig.title}`;
+} else {
+	pageTitle = `${siteConfig.title} - ${siteConfig.subtitle}`;
+}
+
+const favicons: Favicon[] = faviconConfig.length > 0 ? faviconConfig : defaultFavicons;
+
+let finalImageUrl: string;
+
+if (ogImage) {
+	finalImageUrl = ogImage;
+} else {
+	let resolvedBannerImageUrl: string | undefined;
+	if (bannerConfig.enable && bannerConfig.src) {
+		const bannerImage = await resolveImage(bannerConfig.src);
+		if (bannerImage?.src) {
+			resolvedBannerImageUrl = new URL(bannerImage.src, Astro.site).href;
+		}
+	}
+	const fallbackImageUrl = new URL(url("/gemini-color.png"), Astro.site).href;
+	finalImageUrl = resolvedBannerImageUrl || fallbackImageUrl;
+}
+
+let resolvedAvatarUrl: string | undefined;
+if (profileConfig.avatar) {
+	const avatarImage = await resolveImage(profileConfig.avatar);
+	if (avatarImage?.src) {
+		resolvedAvatarUrl = new URL(avatarImage.src, Astro.site).href;
+	}
+}
+---
+
+{seoConfig?.googleSiteVerification && <meta name="google-site-verification" content={seoConfig.googleSiteVerification} />}
+{seoConfig?.bingSiteVerification && <meta name="msvalidate.01" content={seoConfig.bingSiteVerification} />}
+{seoConfig?.baiduSiteVerification && <meta name="baidu-site-verification" content={seoConfig.baiduSiteVerification} />}
+
+<title>{pageTitle}</title>
+
+<meta charset="UTF-8" />
+<meta name="description" content={description || siteConfig.description}>
+<meta name="keywords" content={keywords || siteConfig.keywords}>
+<meta name="author" content={profileConfig.name}>
+
+<meta property="og:site_name" content={siteConfig.title}>
+<meta property="og:url" content={Astro.url}>
+<meta property="og:title" content={pageTitle}>
+<meta property="og:description" content={description || siteConfig.description || pageTitle}>
+{setOGTypeArticle ? (
+        <meta property="og:type" content="article" />
+    ) : (
+        <meta property="og:type" content="website" />
+    )}
+<meta property="og:image" content={finalImageUrl} />
+<meta name="twitter:image" content={finalImageUrl} />
+<meta name="twitter:card" content="summary_large_image">
+<meta property="twitter:url" content={Astro.url}>
+<meta name="twitter:title" content={pageTitle}>
+<meta name="twitter:description" content={description || siteConfig.description || pageTitle}>
+{seoConfig?.twitterId && <meta name="twitter:creator" content={seoConfig.twitterId} />}
+
+<link rel="canonical" href={Astro.url.href} />
+
+{/* hreflang implementation for MPA */}
+{SUPPORTED_LANGUAGES.map(supportedLang => {
+    const langUrl = new URL(getLanguageSwitchUrl(supportedLang, Astro.url), Astro.site);
+    return (
+        <link rel="alternate" hreflang={supportedLang.replaceAll('_', '-')} href={langUrl.href} />
+    );
+})}
+<link rel="alternate" hreflang="x-default" href={new URL('/' + siteConfig.lang + '/', Astro.site).href} />
+
+<meta name="viewport" content="width=device-width" />
+<meta name="generator" content={Astro.generator} />
+
+{/* Webmentions */}
+{webmentionConfig.enable && webmentionConfig.endpoint && (
+    <>
+        <link rel="webmention" href={webmentionConfig.endpoint} />
+        {/* The pingback endpoint is often the same or similar to the webmention endpoint for webmention.io */}
+        <link rel="pingback" href={webmentionConfig.endpoint.replace('/webmention', '/xmlrpc')} />
+    </>
+)}
+
+{pwaInfo && <Fragment set:html={pwaInfo.webManifest.linkTag} />}
+
+{fontConfig.enable && fontConfig.fonts.map(font => {
+    const mimeType = font.type === 'truetype' ? 'ttf' : font.type;
+    return (
+        <link 
+            rel="preload" 
+            href={font.src.startsWith('/') ? url(font.src) : font.src} 
+            as="font" 
+            type={`font/${mimeType}`} 
+            crossorigin="anonymous" 
+        />
+    )
+})}
+
+{umamiConfig.enabled && (
+    <link rel="dns-prefetch" href={new URL(umamiConfig.apiUrl).origin} />
+    <link rel="preconnect" href={new URL(umamiConfig.apiUrl).origin} crossorigin />
+)}
+<link rel="dns-prefetch" href="https://twikoo.wtada233.top" />
+<link rel="preconnect" href="https://twikoo.wtada233.top" crossorigin />
+
+{favicons.map(favicon => (
+    <link rel="icon"
+          href={favicon.src.startsWith('/') ? url(favicon.src) : favicon.src}
+          sizes={favicon.sizes}
+          media={favicon.theme && `(prefers-color-scheme: ${favicon.theme})`}
+    />
+))}
+
+<slot />
+
+<link rel="alternate" type="application/rss+xml" title={profileConfig.name} href={`${Astro.site}rss.xml`}/>
+{umamiConfig.enabled && (
+    <script is:inline defer src={umamiConfig.scriptUrl} data-website-id={umamiConfig.websiteId} data-auto-track="false" data-do-not-track="true"></script>
+)}
+
+<script type="application/ld+json" is:inline set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": siteConfig.title,
+    "url": Astro.site,
+    "description": siteConfig.description,
+    "author": {
+        "@type": "Person",
+        "name": profileConfig.name,
+        "url": Astro.site,
+        "sameAs": profileConfig.links.map(link => link.url),
+        "image": resolvedAvatarUrl,
+        "description": profileConfig.bio
+    }
+})}></script>

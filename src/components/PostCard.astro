@@ -1,0 +1,189 @@
+---
+import path from "node:path";
+import Icon from "@components/common/Icon.astro";
+import ImageWrapper from "@components/misc/ImageWrapper.astro";
+import PostMetadata from "@components/PostMeta.astro";
+import { effectsConfig } from "@configs/effects";
+import { pinningConfig } from "@configs/pinning";
+import I18nKey from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
+import { type GroupedPost, getPostTranslation } from "@utils/content-utils";
+import { getDir, getPostUrlBySlug } from "@utils/url-utils";
+
+interface Props {
+	class?: string;
+	entry: GroupedPost;
+	title: string;
+	published: Date;
+	updated?: Date;
+	tags: string[];
+	category: string | null;
+	image: string;
+	description: string;
+	draft: boolean;
+	style: string;
+	order: number;
+	loading?: "eager" | "lazy";
+	lang: string;
+}
+const { entry, title, published, updated, tags, category, image, style, order, loading = "lazy", lang } = Astro.props;
+const className = Astro.props.class;
+
+const hasCover = image !== undefined && image !== null && image !== "";
+
+const coverWidth = "28%";
+
+const trans = getPostTranslation(entry, lang);
+const { remarkPluginFrontmatter } = await trans.render();
+
+// Current displayed translation
+const currentTrans = { lang, remarkPluginFrontmatter, data: trans.data };
+
+const scrollAnimationEnabled = (entry.data.effects ?? effectsConfig.scrollAnimation.enable) && effectsConfig.enable;
+const tiltEnabled = effectsConfig.enable && effectsConfig.tilt.enable;
+---
+<div class:list={["card-base flex flex-col-reverse md:flex-col w-full rounded-[var(--radius-large)] overflow-hidden relative", scrollAnimationEnabled && "scroll-animate", tiltEnabled && "tilt-card", className]} style={style}>
+    <div class:list={["pl-6 md:pl-9 pr-6 md:pr-2 pt-6 md:pt-7 pb-6 relative", {"w-full md:w-[calc(100%_-_52px_-_12px)]": !hasCover, "w-full md:w-[calc(100%_-_var(--coverWidth)_-_12px)]": hasCover}]}>
+        <div class="translation-unit">
+            <a href={getPostUrlBySlug(entry.slug, lang)}
+               class="transition group w-full block font-bold mb-3 text-3xl text-90
+            hover:text-[var(--primary)] dark:hover:text-[var(--primary)]
+            active:text-[var(--title-active)] dark:active:text-[var(--title-active)]
+            before:w-1 before:h-5 before:rounded-md before:bg-[var(--primary)]
+            before:absolute before:top-[35px] before:left-[18px] before:hidden md:before:block
+            ">
+                {currentTrans.data.title}
+                {pinningConfig.enabled && order === 1 &&
+                    <span class="text-blue-500 text-2xl ml-2 font-medium">[{i18n(I18nKey.pinned, {}, lang)}]</span>
+                }
+                {pinningConfig.enabled && order === -1 &&
+                    <span class="text-gray-400 text-2xl ml-2 font-medium">[{i18n(I18nKey.pinnedToBottom, {}, lang)}]</span>
+                }
+                {entry.data.effects === false &&
+                    <span class="text-red-500 text-2xl ml-2 font-medium">[{i18n(I18nKey.disabledEffects, {}, lang)}]</span>
+                }
+                <Icon class="inline text-[2rem] text-[var(--primary)] md:hidden translate-y-0.5 absolute" name="material-symbols:chevron-right-rounded" ></Icon>
+                <Icon class="text-[var(--primary)] text-[2rem] transition hidden md:inline absolute translate-y-0.5 opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0" name="material-symbols:chevron-right-rounded"></Icon>
+            </a>
+
+            <!-- metadata -->
+            <PostMetadata published={published} updated={updated} tags={currentTrans.data.tags || tags} category={currentTrans.data.category || category} hideTagsForMobile={true} hideUpdateDate={true} class="mb-4" lang={lang}></PostMetadata>
+
+            <!-- description -->
+            <div class:list={["transition text-75 mb-3.5 pr-4", {"line-clamp-2 md:line-clamp-1": !currentTrans.data.description}]}>
+                { currentTrans.data.description || currentTrans.remarkPluginFrontmatter.excerpt }
+            </div>
+
+            <!-- word count and read time  -->
+            <div class="text-sm text-black/30 dark:text-white/30 flex gap-4 transition">
+                <div>
+                    {currentTrans.remarkPluginFrontmatter.words} {" " + i18n(currentTrans.remarkPluginFrontmatter.words === 1 ? I18nKey.wordCount : I18nKey.wordsCount, {}, lang)}
+                </div>
+                <div>|</div>
+                <div>
+                    {currentTrans.remarkPluginFrontmatter.minutes} {" " + i18n(currentTrans.remarkPluginFrontmatter.minutes === 1 ? I18nKey.minuteCount : I18nKey.minutesCount, {}, lang)}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {hasCover && <a href={getPostUrlBySlug(entry.slug, lang)} aria-label={title}
+                    class:list={["group",
+                        "max-h-[20vh] md:max-h-none mx-4 mt-4 -mb-2 md:mb-0 md:mx-0 md:mt-0",
+                        "md:w-[var(--coverWidth)] relative md:absolute md:top-3 md:bottom-3 md:right-3 rounded-xl overflow-hidden active:scale-95"
+                    ]} >
+        <div class="absolute pointer-events-none z-10 w-full h-full group-hover:bg-black/30 group-active:bg-black/50 transition"></div>
+        <div class="absolute pointer-events-none z-20 w-full h-full flex items-center justify-center ">
+            <Icon name="material-symbols:chevron-right-rounded"
+                  class="transition opacity-0 group-hover:opacity-100 scale-50 group-hover:scale-100 text-white text-5xl">
+            </Icon>
+        </div>
+        <ImageWrapper src={image} basePath={path.join("content/posts/", getDir(Object.values(entry.translations)[0].id))} alt="Cover Image of the Post"
+                  class="w-full h-full" loading={loading}>
+        </ImageWrapper>
+    </a>}
+
+    {!hasCover &&
+        <a href={getPostUrlBySlug(entry.slug, lang)} aria-label={title} class="!hidden md:!flex btn-regular w-[3.25rem]
+         absolute right-3 top-3 bottom-3 rounded-xl bg-[var(--enter-btn-bg)]
+         hover:bg-[var(--enter-btn-bg-hover)] active:bg-[var(--enter-btn-bg-active)] active:scale-95
+        ">
+            <Icon name="material-symbols:chevron-right-rounded"
+                  class="transition text-[var(--primary)] text-4xl mx-auto">
+            </Icon>
+        </a>
+    }
+</div>
+
+<script>
+    import { effectsConfig } from "@configs/effects";
+    import { setupComponent } from "@utils/lifecycle";
+
+    const activeHandlers = new Map<HTMLElement, (e: MouseEvent) => void>();
+
+    function initTilt() {
+        const tiltEnabled = effectsConfig.enable && effectsConfig.tilt.enable;
+        if (!tiltEnabled) return;
+
+        const tiltIntensity = effectsConfig.tilt.intensity;
+        const cards = document.querySelectorAll('.tilt-card');
+        
+        cards.forEach(card => {
+            const htmlCard = card as HTMLElement;
+            if (htmlCard.hasAttribute('data-tilt-initialized')) return;
+            htmlCard.setAttribute('data-tilt-initialized', 'true');
+
+            htmlCard.addEventListener('mouseenter', () => {
+                const isMobile = window.matchMedia("(max-width: 768px)").matches;
+                if (isMobile) return;
+
+                const handler = (e: MouseEvent) => {
+                    const rect = htmlCard.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    const rotateX = (centerY - y) / tiltIntensity; 
+                    const rotateY = (x - centerX) / tiltIntensity;
+                    
+                    htmlCard.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.01, 1.01, 1.01)`;
+                };
+
+                activeHandlers.set(htmlCard, handler);
+                htmlCard.addEventListener('mousemove', handler);
+                htmlCard.style.transition = 'transform 0.1s ease-out';
+            });
+
+            htmlCard.addEventListener('mouseleave', () => {
+                const handler = activeHandlers.get(htmlCard);
+                if (handler) {
+                    htmlCard.removeEventListener('mousemove', handler);
+                    activeHandlers.delete(htmlCard);
+                }
+                htmlCard.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+                htmlCard.style.transition = 'transform 0.5s ease-out';
+            });
+        });
+    }
+
+    function cleanupTilt() {
+        const cards = document.querySelectorAll('.tilt-card');
+        cards.forEach(card => {
+            const htmlCard = card as HTMLElement;
+            const handler = activeHandlers.get(htmlCard);
+            if (handler) {
+                htmlCard.removeEventListener('mousemove', handler);
+            }
+        });
+        activeHandlers.clear();
+    }
+
+    setupComponent('PostCard', initTilt, cleanupTilt);
+</script>
+
+<style define:vars={{coverWidth}}>
+    .tilt-card {
+        transform-style: preserve-3d;
+        will-change: transform;
+    }
+</style>

@@ -1,0 +1,61 @@
+---
+import path from "node:path";
+import Icon from "@components/common/Icon.astro";
+import { adaptiveThemeConfig } from "@configs/adaptive-theme";
+import { siteConfig } from "@configs/site";
+import I18nKey from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
+import type { GroupedPost } from "@utils/content-utils";
+import { getLangFromPathname, type SupportedLanguage } from "@utils/i18n-runtime";
+import { extractHueFromImage } from "@utils/image-utils";
+import { getDir, getPostUrlBySlug } from "@utils/url-utils";
+
+interface Props {
+	posts: GroupedPost[];
+}
+
+const { posts } = Astro.props;
+
+// Get current lang from URL
+const lang = getLangFromPathname(Astro.url.pathname);
+
+const postsWithHue = await Promise.all(
+	posts.map(async (post) => {
+		let hue: number | undefined;
+		if (adaptiveThemeConfig.enable && post.data.image) {
+			const translations = Object.values(post.translations);
+			const representative = translations[0];
+			if (representative) {
+				hue = await extractHueFromImage(post.data.image, path.join("content/posts/", getDir(representative.id)));
+			}
+		}
+		return { post, hue };
+	}),
+);
+---
+
+{posts.length > 0 && (
+    <div class="card-base p-6 mb-4 onload-animation">
+        <h2 class="flex flex-row items-center font-bold text-lg text-neutral-900 dark:text-neutral-100 transition relative ml-3 mb-4
+            before:w-1 before:h-4 before:rounded-md before:bg-[var(--primary)]
+            before:absolute before:left-[-16px] before:top-[5.5px]"
+        >
+            <Icon name="material-symbols:auto-stories-outline-rounded" class="text-xl mr-2"></Icon>
+            <span class="translation-unit">{i18n(I18nKey.relatedPosts, {}, lang)}</span>
+        </h2>
+        <ul class="list-none p-0 m-0">
+            {postsWithHue.map(({ post, hue }) => {
+                const trans = post.translations[lang as SupportedLanguage] || post.translations[siteConfig.lang as SupportedLanguage] || Object.values(post.translations)[0];
+                return (
+                    <li class="mb-2 last:mb-0">
+                        <a href={getPostUrlBySlug(post.slug, lang)} data-hue={hue} class="link text-[var(--primary)] transition text-base font-medium">
+                            <span class="translation-unit">
+                                {trans.data.title}
+                            </span>
+                        </a>
+                    </li>
+                );
+            })}
+        </ul>
+    </div>
+)}

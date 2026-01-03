@@ -1,0 +1,28 @@
+---
+import { ICONS } from "@constants/icons";
+
+interface Props {
+	name: string;
+	class?: string;
+	id?: string;
+}
+
+const { name, class: className, id } = Astro.props;
+const icon = ICONS[name];
+
+if (!icon) {
+	console.error(`[Icon.astro] Icon "${name}" not found in src/constants/icons.ts`);
+}
+---
+
+{icon && (
+  <svg
+    id={id}
+    viewBox={`0 0 ${icon.width} ${icon.height}`}
+    class={className}
+    width="1em"
+    height="1em"
+    fill="currentColor"
+    set:html={icon.body}
+  />
+)}

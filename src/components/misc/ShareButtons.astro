@@ -1,0 +1,162 @@
+---
+import Icon from "@components/common/Icon.astro";
+import I18nKey from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
+import { getLangFromPathname } from "@utils/i18n-runtime";
+
+interface Props {
+	title: string;
+	url: string;
+	class?: string;
+}
+
+const { title, url } = Astro.props;
+const className = Astro.props.class;
+
+const encodedUrl = encodeURIComponent(url);
+const encodedTitle = encodeURIComponent(title);
+
+const twitterShareUrl = `https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}`;
+const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
+
+// Get current lang from URL
+const lang = getLangFromPathname(Astro.url.pathname);
+---
+
+<div class:list={["share-buttons flex flex-wrap gap-2 onload-animation", className]}>
+  <span class="text-50 text-sm font-medium flex items-center pr-2 translation-unit">{i18n(I18nKey.share, {}, lang)}:</span>
+  <button
+    aria-label="Share to Twitter"
+    class="btn-regular rounded-lg h-9 px-3 flex items-center justify-center gap-2"
+    onclick={`window.open('${twitterShareUrl}', '_blank', 'width=600,height=400');`}
+  >
+    <Icon name="fa6-brands:twitter" class="text-lg"></Icon>
+    <span class="translation-unit">{i18n(I18nKey.shareToTwitter, {}, lang)}</span>
+  </button>
+
+  <button
+    aria-label="Share to Facebook"
+    class="btn-regular rounded-lg h-9 px-3 flex items-center justify-center gap-2"
+    onclick={`window.open('${facebookShareUrl}', '_blank', 'width=600,height=400');`}
+  >
+    <Icon name="fa6-brands:facebook" class="text-lg"></Icon>
+    <span class="translation-unit">{i18n(I18nKey.shareToFacebook, {}, lang)}</span>
+  </button>
+
+  <button
+    aria-label="Copy Link"
+    class="btn-regular rounded-lg h-9 px-3 flex items-center justify-center gap-2 copy-link-btn"
+    data-url={url}
+  >
+    <span class="original-content">
+      <Icon name="material-symbols:link" class="text-lg"></Icon>
+      <span class="translation-unit">{i18n(I18nKey.copyLink, {}, lang)}</span>
+    </span>
+    <span class="success-content">
+      <Icon name="material-symbols:check" class="text-lg"></Icon>
+      OK
+    </span>
+  </button>
+</div>
+
+<script>
+  import { setupComponent } from "@utils/lifecycle";
+
+  const handleShareButtonClick = (event: MouseEvent) => {
+    const target = event.target as HTMLElement;
+    const copyButton = target.closest('.copy-link-btn') as HTMLElement;
+    if (!copyButton) return;
+
+    if (copyButton.classList.contains('copied')) return;
+
+    const urlToCopy = copyButton.dataset.url;
+    if (urlToCopy) {
+      navigator.clipboard.writeText(urlToCopy).then(() => {
+        copyButton.classList.add('copied');
+
+        const timeoutId = window.setTimeout(() => {
+          copyButton.classList.remove('copied');
+          copyButton.removeAttribute('data-timeout-id');
+        }, 2000);
+
+        copyButton.setAttribute('data-timeout-id', timeoutId.toString());
+
+      }).catch(err => {
+        console.error('Failed to copy URL:', err);
+        alert('Failed to copy link: ' + err.message);
+      });
+    }
+  };
+
+  const init = () => {
+    const shareButtonsContainers = document.querySelectorAll('.share-buttons');
+    shareButtonsContainers.forEach(container => {
+        container.addEventListener('click', handleShareButtonClick as EventListener);
+    });
+  };
+
+  const cleanup = () => {
+    const shareButtonsContainers = document.querySelectorAll('.share-buttons');
+    shareButtonsContainers.forEach(container => {
+        container.removeEventListener('click', handleShareButtonClick as EventListener);
+        
+        const copyButton = container.querySelector('.copy-link-btn');
+        if (copyButton) {
+            const timeoutId = copyButton.getAttribute('data-timeout-id');
+            if (timeoutId) {
+                clearTimeout(parseInt(timeoutId));
+                copyButton.classList.remove('copied');
+                copyButton.removeAttribute('data-timeout-id');
+            }
+        }
+    });
+  };
+
+  setupComponent('ShareButtons', init, cleanup);
+</script>
+
+<br />
+
+<style>
+  .share-buttons {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px dashed var(--line-divider);
+    justify-content: flex-end; /* Align buttons to the right */
+  }
+
+  .copy-link-btn .original-content,
+  .copy-link-btn .success-content {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: opacity 0.2s ease-in-out;
+  }
+
+  .copy-link-btn .success-content {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .copy-link-btn.copied .original-content {
+    opacity: 0;
+  }
+
+  .copy-link-btn.copied .success-content {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  @media (max-width: 768px) {
+    .share-buttons {
+      justify-content: center; /* Center buttons on mobile */
+      flex-direction: column;
+      align-items: center;
+    }
+    .share-buttons button {
+      width: 100%;
+      max-width: 200px; /* Limit width on mobile for better appearance */
+    }
+  }
+</style>

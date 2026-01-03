@@ -1,0 +1,227 @@
+---
+import ConfigCarrier from "@components/ConfigCarrier.astro";
+import PwaRegistration from "@components/control/PwaRegistration.astro";
+import LanguageMismatchNotice from "@components/LanguageMismatchNotice.astro";
+import EffectsCanvas from "@components/misc/EffectsCanvas.astro";
+import MusicPlayer from "@components/widget/MusicPlayer.astro";
+import { bannerConfig } from "@configs/banner";
+import { fontConfig } from "@configs/font";
+import { siteConfig } from "@configs/site";
+import Head from "@layouts/components/Head.astro";
+import ThemeScript from "@layouts/components/ThemeScript.astro";
+import { isHomePage as checkIsHomePage } from "@utils/url-utils";
+import "@/styles/main.css";
+import "@/styles/navbar.css";
+import "@/styles/transition.css";
+
+interface Props {
+	title?: string;
+	description?: string;
+	keywords?: string;
+	lang?: string;
+	setOGTypeArticle?: boolean;
+	ogImage?: string;
+}
+
+let { title, description, keywords, lang, setOGTypeArticle, ogImage } = Astro.props;
+
+// apply a class to the body element to decide the height of the banner
+const isHomePage = checkIsHomePage(Astro.url.pathname);
+const enableBanner = bannerConfig.enable;
+
+// Language handling - now static
+if (!lang) {
+	lang = `${siteConfig.lang}`;
+}
+const siteLang = lang.replaceAll("_", "-");
+---
+
+<!DOCTYPE html>
+<html lang={siteLang} class="bg-[var(--page-bg)] transition text-[14px] md:text-[16px]" data-overlayscrollbars-initialize data-lang={lang}>
+    <head>
+        <Head 
+            title={title} 
+            description={description} 
+            keywords={keywords} 
+            setOGTypeArticle={setOGTypeArticle} 
+            ogImage={ogImage}
+            lang={lang}
+        />
+        <link rel="stylesheet" href="/lib/katex/katex.min.css">
+        <link rel="stylesheet" href="/lib/overlayscrollbars/overlayscrollbars.css">
+        <link rel="stylesheet" href="/lib/photoswipe/photoswipe.css">
+        <ThemeScript />
+        <slot name="head"></slot>
+    </head>
+    <body class=" min-h-screen transition " class:list={[{ "is-home": isHomePage, "enable-banner": enableBanner }]}
+          data-overlayscrollbars-initialize
+    >
+        <PwaRegistration />
+        <LanguageMismatchNotice />
+        <EffectsCanvas />
+        <div id="reading-progress-bar"></div>
+        <ConfigCarrier></ConfigCarrier>
+        <slot />
+        <MusicPlayer />
+    </body>
+</html>
+
+<style is:global>
+@tailwind components;
+@layer components {
+    .enable-banner.is-home #banner-wrapper {
+        @apply h-[var(--banner-height-home)] translate-y-[var(--banner-height-extend)]
+    }
+    .enable-banner #banner-wrapper {
+        @apply h-[var(--banner-height-home)]
+    }
+
+    .enable-banner.is-home #banner {
+        @apply h-[var(--banner-height-home)] translate-y-0
+    }
+    .enable-banner #banner {
+        @apply h-[var(--banner-height-home)] translate-y-[var(--bannerOffset)]
+    }
+
+    .enable-banner.is-home #main-grid {
+        @apply translate-y-[var(--banner-height-extend)];
+    }
+
+    .enable-banner #top-row {
+        @apply h-[calc(var(--banner-height-home)_-_4.5rem)] transition-all duration-300
+    }
+    .enable-banner.is-home #sidebar-sticky {
+        @apply top-[calc(1rem_-_var(--banner-height-extend))]
+    }
+    .navbar-hidden {
+        @apply opacity-0 -translate-y-16
+    }
+
+    /* Water waves animation */
+    .waves > .parallax use {
+        animation: wave 25s cubic-bezier(0.5, 0.5, 0.45, 0.5) infinite;
+    }
+
+    @keyframes wave {
+        0% {
+            transform: translate3d(-90px, 0, 0);
+        }
+        100% {
+            transform: translate3d(85px, 0, 0);
+        }
+    }
+
+    /* New: Reading Progress Bar */
+    #reading-progress-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 3px; /* Adjust height as needed */
+        background-color: var(--primary); /* Use primary theme color */
+        z-index: 1000; /* Ensure it's above other elements */
+        transform: scaleX(0);
+        transform-origin: 0% 50%;
+        will-change: transform;
+        transition: transform 0.1s ease-out; /* Smooth transition */
+    }
+
+    /* Water waves display optimization */
+    .waves {
+        /* Ensure waves container renders correctly */
+        overflow: visible;
+        z-index: 5;
+        /* Hardware acceleration to ensure synchronization with background rendering */
+        transform: translateZ(0);
+        will-change: transform;
+        /* Ensure it's on the same composite layer as the page background */
+        contain: layout style paint;
+    }
+
+    .waves svg {
+        /* Ensure SVG renders correctly */
+        width: 100%;
+        height: 100%;
+        display: block;
+        /* SVG hardware acceleration */
+        transform: translateZ(0);
+        backface-visibility: hidden;
+    }
+
+    /* Wave fill color theme switching optimization */
+    .waves use {
+        /* Ensure fill color updates synchronously with page background */
+        will-change: fill;
+    }
+
+    /* Wave and background synchronization optimization - fix flicker at junction */
+    #header-waves {
+        /* Ensure waves container is on the same composite layer as the page background */
+        isolation: isolate;
+        /* Force repaint to ensure synchronization with body background */
+        contain: layout style paint;
+        /* Precise alignment */
+        margin-bottom: -1px;
+    }
+
+    /* Additional protection during theme switching */
+    .theme-changing #header-waves,
+    .theme-changing #header-waves svg,
+    .theme-changing #header-waves use {
+        /* Disable all possible rendering delays during theme switching */
+        will-change: auto;
+        transform: translateZ(0);
+        backface-visibility: hidden;
+    }
+
+    /* Mobile wave optimization */
+    @media (max-width: 1279px) {
+        #header-waves {
+            /* Ensure waves container is not clipped */
+            overflow: visible;
+            z-index: 5;
+            /* Fast wave disappearance animation */
+            transition: transform 0.3s ease-in, opacity 0.2s ease-in;
+        }
+
+        /* When banner is hidden, waves disappear quickly */
+        .mobile-hide-banner #header-waves {
+            transform: translateY(-100%);
+            opacity: 0;
+            /* Waves disappear faster than banner */
+            transition: transform 0.25s ease-in, opacity 0.15s ease-in;
+        }
+
+        .waves svg {
+            /* Mobile SVG optimization */
+            min-height: 60px;
+        }
+
+        /* Ensure waves are positioned correctly at the bottom of the banner */
+        .waves {
+            bottom: -1px !important;
+            position: absolute !important;
+        }
+    }
+}
+</style>
+
+<style is:global set:html={`
+${fontConfig.enable ? fontConfig.fonts.map((font) => `
+    @font-face {
+        font-family: '${font.name}';
+        src: url('${font.src}') format('${font.type}');
+        font-weight: ${font.weight};
+        font-style: ${font.style};
+        font-display: ${font.display};
+    }
+`).join('') : ''}
+    body {
+        font-family: ${fontConfig.family};
+    }
+`}></style>
+
+<script>
+    import { setupEventListeners } from "@utils/app-entry";
+    setupEventListeners();
+</script>

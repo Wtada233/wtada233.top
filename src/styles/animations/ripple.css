@@ -1,0 +1,51 @@
+/* Material Design Ripple Effect */
+.ripple-container {
+    position: relative;
+    overflow: hidden;
+    transform: translate3d(0, 0, 0); /* Force GPU acceleration */
+    /* Ensure the container of ripple effect is also positioned */
+    z-index: 1; /* Ensure ripple is above elements with lower z-index */
+}
+
+.ripple {
+    display: block;
+    position: absolute;
+    border-radius: 50%;
+    transform: scale(0);
+    opacity: 0.7;
+    background-color: var(--ripple-color, oklch(0.9 0.05 var(--hue))); /* Default ripple color, can be customized */
+    animation: ripple-animation 0.8s ease-out forwards;
+    pointer-events: none; /* Ensure ripple doesn't interfere with clicks on underlying elements */
+}
+
+@keyframes ripple-animation {
+    to {
+        transform: scale(2); /* Scale up to cover the element */
+        opacity: 0;
+    }
+}
+
+/* Full Screen Ripple Effect */
+.ripple-screen {
+    display: block;
+    position: fixed;
+    border-radius: 50%;
+    transform: scale(0);
+    opacity: 1;
+    background-color: var(--ripple-color, oklch(0.70 0.14 var(--hue)));
+    animation: ripple-screen-animation 0.8s ease-out forwards;
+    pointer-events: none;
+    z-index: 9999;
+}
+
+@keyframes ripple-screen-animation {
+    to {
+        transform: scale(1);
+        opacity: 0;
+    }
+}
+
+/* Dark mode adjustment for ripple color */
+:root.dark {
+    --ripple-color: oklch(0.25 0.05 var(--hue)); /* Darker ripple for dark mode */
+}

@@ -1,0 +1,105 @@
+---
+---
+
+<div id="lang-mismatch-notice" class="fixed bottom-24 right-6 z-[100] max-w-sm hidden animate-fade-in-up">
+    <div class="card-base p-5 shadow-2xl border border-[var(--primary)] flex flex-col gap-4">
+        <div class="flex items-start justify-between gap-4">
+            <p id="notice-text" class="text-sm text-90 leading-relaxed font-medium">
+            </p>
+            <button id="close-notice" class="text-75 hover:text-90 transition-colors p-1" aria-label="Close">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <button 
+            id="switch-lang-btn"
+            class="btn-regular py-2 px-4 rounded-lg text-sm font-bold w-full bg-[var(--primary)] text-white hover:opacity-90 transition-all active:scale-95"
+        >
+        </button>
+    </div>
+</div>
+
+<style>
+@keyframes fade-in-up {
+    from {
+        opacity: 0;
+        transform: translateY(1rem);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+.animate-fade-in-up {
+    animation: fade-in-up 0.4s ease-out forwards;
+}
+</style>
+
+<script>
+import I18nKey from "@i18n/i18nKey";
+import { getTranslation } from "@i18n/translation";
+import { getRuntimeLanguage, getStoredLanguage, setStoredLanguage, getLanguageSwitchUrl } from "@utils/i18n-runtime";
+
+function initLangMismatchNotice() {
+    const notice = document.getElementById('lang-mismatch-notice');
+    const noticeText = document.getElementById('notice-text');
+    const switchBtn = document.getElementById('switch-lang-btn');
+    const closeBtn = document.getElementById('close-notice');
+
+    if (!notice || !noticeText || !switchBtn || !closeBtn) return;
+
+    // Detection Logic: Runs on every call (initial load and Swup content replace)
+    const preferredLang = getStoredLanguage();
+    const currentLang = getRuntimeLanguage();
+
+    if (preferredLang && preferredLang !== currentLang) {
+        const trans = getTranslation(preferredLang);
+        noticeText.textContent = trans[I18nKey.langMismatchNotice];
+        switchBtn.textContent = trans[I18nKey.langMismatchConfirm];
+        notice.classList.remove('hidden');
+    } else {
+        notice.classList.add('hidden');
+        if (!preferredLang && currentLang) {
+            setStoredLanguage(currentLang);
+        }
+    }
+
+    // Event Listeners: Added only once per page instance (notice persists outside Swup)
+    if (notice.dataset.initialized) return;
+    notice.dataset.initialized = "true";
+
+    const handleClose = () => {
+        notice.classList.add('hidden');
+    };
+
+    const handleSwitch = () => {
+        if (!preferredLang) return;
+        window.location.href = getLanguageSwitchUrl(preferredLang, window.location.href);
+    };
+
+    closeBtn.addEventListener('click', handleClose);
+    switchBtn.addEventListener('click', handleSwitch);
+
+    return () => {
+        closeBtn.removeEventListener('click', handleClose);
+        switchBtn.removeEventListener('click', handleSwitch);
+    };
+}
+
+let noticeCleanup: (() => void) | undefined;
+
+const init = () => {
+    noticeCleanup = initLangMismatchNotice();
+}
+
+const cleanup = () => {
+    if (noticeCleanup) {
+        noticeCleanup();
+        noticeCleanup = undefined;
+    }
+}
+
+import { setupComponent } from "@utils/lifecycle";
+setupComponent('LanguageMismatchNotice', init, cleanup);
+</script>

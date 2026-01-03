@@ -1,0 +1,63 @@
+---
+import Icon from "@components/common/Icon.astro";
+import { SUPPORTED_LANGUAGES, type SupportedLanguage } from "@utils/i18n-runtime";
+import Key from "@/i18n/i18nKey";
+import { i18n } from "@/i18n/translation";
+import Layout from "@/layouts/Layout.astro";
+import MainGridLayout from "@/layouts/MainGridLayout.astro";
+
+export async function getStaticPaths() {
+	return SUPPORTED_LANGUAGES.map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params;
+const currentLang = lang as SupportedLanguage;
+---
+
+<Layout title={i18n(Key.pageNotFoundTitle, {}, currentLang)} lang={currentLang}>
+        <MainGridLayout lang={currentLang}>
+            <div class="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
+                    <!-- 404 图标 -->
+                    <div class="mb-8">
+                            <div class="relative">
+                                    <div class="text-8xl md:text-9xl font-bold text-[var(--primary)] opacity-20">
+                                            404
+                                    </div>
+                                    <div class="absolute inset-0 flex items-center justify-center">
+                                            <Icon name="fa6-solid:face-sad-tear" class="text-6xl md:text-7xl text-[var(--primary)]" />
+                                    </div>
+                            </div>
+                    </div>
+
+                    <!-- 错误信息 -->
+                    <div class="card-base p-8 max-w-md mx-auto mb-8">
+                            <h1 class="text-2xl md:text-3xl font-bold text-90 mb-4">
+                                    {i18n(Key.pageNotFoundHeading, {}, currentLang)}
+                            </h1>
+                            <p class="text-75 mb-6 leading-relaxed">
+                                    {i18n(Key.pageNotFoundDescription, {}, currentLang)}
+                            </p>
+
+                            <!-- 导航按钮 -->
+                            <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                                    <a href={`/${currentLang}/`} class="btn-regular-dark px-6 py-3 rounded-lg text-white font-medium">
+                                            <Icon name="fa6-solid:house" class="mr-2" />
+                                            {i18n(Key.pageNotFoundHomeButton, {}, currentLang)}
+                                    </a>
+                                    <a href={`/${currentLang}/archive/`} class="btn-regular px-6 py-3 rounded-lg font-medium">
+                                            <Icon name="fa6-solid:box-archive" class="mr-2" />
+                                            {i18n(Key.pageNotFoundArchiveButton, {}, currentLang)}
+                                    </a>
+                            </div>
+                    </div>
+
+                    <!-- 返回提示 -->
+                    <div class="mt-8 text-50 text-sm">
+                            <p class="flex items-center justify-center">
+                                    <Icon name="fa6-solid:clock-rotate-left" class="mr-2" />
+                                    {i18n(Key.pageNotFoundBackButtonHint, {}, currentLang)}
+                            </p>
+                    </div>
+            </div>
+        </MainGridLayout>
+</Layout>

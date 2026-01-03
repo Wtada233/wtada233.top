@@ -1,0 +1,84 @@
+---
+import { getCollection, render } from "astro:content";
+import Markdown from "@components/misc/Markdown.astro";
+import { Friends as items } from "@configs/friends";
+import { siteConfig } from "@configs/site";
+import I18nKey from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { SUPPORTED_LANGUAGES, type SupportedLanguage } from "@utils/i18n-runtime";
+
+export async function getStaticPaths() {
+	return SUPPORTED_LANGUAGES.map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params;
+const currentLang = lang as SupportedLanguage;
+const defaultLang = siteConfig.lang as SupportedLanguage;
+
+const allFriends = await getCollection("spec", (e) => e.id.startsWith("friends"));
+const friendsMap = Object.fromEntries(
+	allFriends.map((e) => {
+		let l = siteConfig.lang;
+		if (e.id.includes(".en")) l = "en";
+		else if (e.id.includes(".ja")) l = "ja";
+		else if (e.id.includes(".ko")) l = "ko";
+		else if (e.id.includes(".zh_TW")) l = "zh_TW";
+		return [l, e];
+	}),
+);
+
+const entry = friendsMap[currentLang] || friendsMap[defaultLang] || Object.values(friendsMap)[0];
+const { Content } = entry ? await render(entry) : { Content: null };
+---
+<MainGridLayout title={i18n(I18nKey.friends, {}, currentLang)} description={i18n(I18nKey.friends, {}, currentLang)} lang={currentLang} comment={entry?.data.comment === true}>
+  <div class="card-base p-6 mb-4 flex items-center justify-center">
+      <h1 class="text-2xl font-bold text-90">
+          {i18n(I18nKey.friends, {}, currentLang)}
+      </h1>
+  </div>
+  <div class="card-base z-10 px-9 py-6 relative w-full min-h-32">
+    {Content && (
+        <Markdown class="mt-2">
+            <Content />
+        </Markdown>
+    )}
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-10 my-4">
+        {items.map((item) => (
+          <a href={item.siteurl} target="_blank" rel="noopener noreferrer"
+            class="group rounded-3xl bg-white/80 dark:bg-zinc-900/80 shadow-xl hover:shadow-2xl transition-all duration-300 p-6 flex items-center gap-6 border border-zinc-100 dark:border-zinc-800 hover:-translate-y-1"
+          >
+            <div class="flex-shrink-0">
+              <img src={item.imgurl} alt="站点头像" class="w-20 h-20 rounded-full object-cover shadow-md border-4 border-white dark:border-zinc-800 group-hover:scale-105 transition-transform duration-300" />
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-2xl font-bold text-zinc-900 dark:text-zinc-100 group-hover:text-[var(--primary)] transition-colors duration-300 leading-tight">{item.title}</span>
+                {item.tags && item.tags.length > 0 && (
+                  <span class="inline-flex items-center gap-1 text-base px-3 py-1 rounded-full bg-[var(--primary)]/10 text-[var(--primary)] font-semibold tracking-wide">
+                    {item.tags.join(' ')}
+                  </span>
+                )}
+              </div>
+              <div class="text-zinc-600 dark:text-zinc-300 text-base mb-2 line-clamp-2 leading-relaxed font-medium">{item.desc}</div>
+            </div>
+            <div class="ml-auto flex-shrink-0">
+              <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-[var(--primary)]/90 text-white shadow-lg group-hover:scale-110 transition-transform duration-300">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </MainGridLayout>
+  <style>
+    .line-clamp-2 {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+  </style>

@@ -1,0 +1,135 @@
+---
+// This component is responsible for rendering particle effects on a canvas
+// to avoid performance issues with frequent DOM manipulation.
+import { effectsConfig } from "@configs/effects";
+---
+<canvas id="effects-canvas" class="fixed top-0 left-0 w-full h-full pointer-events-none z-[9999]"></canvas>
+
+<script is:inline define:vars={{ effectsConfig: effectsConfig.click, trailConfig: effectsConfig.trail, throttleLimit: effectsConfig.throttleLimit, effectsEnabled: effectsConfig.enable }}>
+    function initCanvasEffects() {
+        if (!effectsEnabled || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+        const canvas = document.getElementById('effects-canvas');
+        if (!canvas) return;
+
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        let particles = [];
+        let running = false;
+        
+        // A flag to ensure we don't attach listeners multiple times
+        if (window.canvasEffectsInitialized) {
+            return;
+        }
+        window.canvasEffectsInitialized = true;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        function isEffectsDisabledOnPage() {
+            const isPostPage = window.location.pathname.includes('/posts/');
+            // Check global disable, per-page disable, or coarse pointer (touch devices)
+            return !effectsEnabled || (isPostPage && window.postEffects === false) || window.matchMedia('(pointer: coarse)').matches;
+        }
+
+        function throttle(func, limit) {
+            let inThrottle;
+            return function(...args) {
+                if (!inThrottle) {
+                    func.apply(this, args);
+                    inThrottle = true;
+                    setTimeout(() => inThrottle = false, limit);
+                }
+            }
+        }
+
+        function addParticle(x, y, isClick) {
+            if (isEffectsDisabledOnPage()) return;
+            
+            const count = isClick ? effectsConfig.particleCount : 1;
+            for (let i = 0; i < count; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const distance = isClick 
+                    ? Math.random() * (effectsConfig.distanceRange.max - effectsConfig.distanceRange.min) + effectsConfig.distanceRange.min
+                    : 0;
+                
+                const durationInFrames = (isClick ? effectsConfig.animationDuration : trailConfig.animationDuration) / 16.67;
+
+                particles.push({
+                    x,
+                    y,
+                    isClick,
+                    life: 1,
+                    size: isClick 
+                        ? Math.random() * (effectsConfig.sizeRange.max - effectsConfig.sizeRange.min) + effectsConfig.sizeRange.min
+                        : trailConfig.size,
+                    vx: isClick ? Math.cos(angle) * distance / durationInFrames : 0,
+                    vy: isClick ? Math.sin(angle) * distance / durationInFrames : 0,
+                    lifeDecay: 1 / durationInFrames,
+                });
+            }
+
+            if (!running) {
+                running = true;
+                animate();
+            }
+        }
+
+        function animate() {
+            if (particles.length === 0) {
+                running = false;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                return;
+            }
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim();
+            ctx.fillStyle = primaryColor;
+
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.life -= p.lifeDecay;
+
+                if (p.life <= 0) {
+                    particles.splice(i, 1);
+                    continue;
+                }
+
+                p.x += p.vx;
+                p.y += p.vy;
+
+                const currentSize = p.isClick ? p.size * (p.life > 0.5 ? 1 : p.life / 0.5) : p.size * p.life;
+                
+                ctx.globalAlpha = p.life;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, Math.max(currentSize / 2, 0), 0, Math.PI * 2, false);
+                ctx.fill();
+            }
+            ctx.globalAlpha = 1; // Reset global alpha
+            requestAnimationFrame(animate);
+        }
+        
+        // --- Setup Listeners ---
+        const clickHandler = e => addParticle(e.clientX, e.clientY, true);
+        const moveHandler = throttle(e => addParticle(e.clientX, e.clientY, false), throttleLimit);
+
+        document.body.addEventListener('click', clickHandler);
+        document.body.addEventListener('mousemove', moveHandler);
+        window.addEventListener('resize', resizeCanvas);
+        
+        // --- Start ---
+        resizeCanvas();
+        animate();
+    }
+
+    // Run only once after the first page load
+    if (document.readyState === 'complete') {
+        initCanvasEffects();
+    } else {
+        document.addEventListener('DOMContentLoaded', initCanvasEffects, { once: true });
+    }
+</script>

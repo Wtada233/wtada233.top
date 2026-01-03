@@ -1,0 +1,79 @@
+---
+import Icon from "@components/common/Icon.astro";
+import GlassSwitch from "@components/GlassSwitch.astro";
+import LanguagePicker from "@components/LanguagePicker.astro";
+import LightDarkSwitch from "@components/LightDarkSwitch.astro";
+import Search from "@components/Search.astro";
+import NavMenuPanel from "@components/widget/NavMenuPanel.astro";
+import { navBarConfig } from "@configs/navbar";
+import { searchConfig } from "@configs/search";
+import { siteConfig } from "@configs/site";
+import { LinkPresets } from "@constants/link-presets";
+import { i18n } from "@i18n/translation";
+import { getLangFromPathname } from "@utils/i18n-runtime";
+import { pathsEqual, url } from "@utils/url-utils";
+import { LinkPreset, type NavBarLink } from "@/types/config";
+
+const className = Astro.props.class;
+
+const currentLang = getLangFromPathname(Astro.url.pathname);
+
+let links: (NavBarLink & { key?: number })[] = navBarConfig.links.map((item: NavBarLink | LinkPreset): NavBarLink & { key?: number } => {
+	if (typeof item === "number") {
+		return { ...LinkPresets[item], key: item };
+	}
+	return item;
+});
+---
+<div id="navbar" class="z-50 onload-animation">
+    <div class="absolute h-8 left-0 right-0 -top-8 bg-[var(--card-bg)] transition"></div> <!-- used for onload animation -->
+    <div class:list={[
+        className,
+        "card-base !overflow-visible max-w-[var(--page-width)] h-[4.5rem] !rounded-t-none mx-auto flex items-center justify-between px-4"]}>
+        <a id="nav-logo" href={url('/', currentLang)} class:list={["btn-plain scale-animation rounded-lg h-[3.25rem] px-5 font-bold active:scale-95"]}>
+            <div class="flex flex-row text-[var(--primary)] items-center text-md">
+                <Icon name="material-symbols:home-outline-rounded" class="text-[1.75rem] mb-1 mr-2" />
+                {siteConfig.title}
+            </div>
+        </a>
+        <div class="hidden md:flex">
+            {links.map((l) => {
+                const linkUrl = l.external ? l.url : url(l.url, currentLang);
+                const isActive = pathsEqual(Astro.url.pathname, linkUrl);
+                const presetKeys = ["home", "archive", "about", "friends", "series"];
+                return <a aria-label={l.name} href={linkUrl} target={l.external ? "_blank" : null}
+                          class:list={["btn-plain scale-animation rounded-lg h-11 font-bold px-5 active:scale-95", {"active": isActive}]}
+                >
+                    <div class="flex items-center">
+                        {l.key !== undefined ? (
+                            <span>{i18n(presetKeys[l.key!] as any, {}, currentLang)}</span>
+                        ) : (
+                            <span>{l.name}</span>
+                        )}
+                        {l.external && <Icon name="fa6-solid:arrow-up-right-from-square" class="text-[0.875rem] transition -translate-y-[1px] ml-1 text-black/[0.2] dark:text-white/[0.2]"></Icon>}
+                    </div>
+                </a>;
+            })}
+        </div>
+        <div class="flex">
+            {searchConfig.enable && <Search></Search>}
+            <button id="pwa-install-btn" class="hidden btn-plain scale-animation rounded-lg h-11 w-11 active:scale-90" aria-label="Install App">
+                <Icon name="material-symbols:download-for-offline-outline-rounded" class="text-[1.25rem]"></Icon>
+            </button>
+            <LanguagePicker></LanguagePicker>
+            <GlassSwitch></GlassSwitch>
+            <LightDarkSwitch></LightDarkSwitch>
+            <button aria-label="Menu" name="Nav Menu" class="btn-plain scale-animation rounded-lg w-11 h-11 active:scale-90 md:!hidden" id="nav-menu-switch">
+                <Icon name="material-symbols:menu-rounded" class="text-[1.25rem]"></Icon>
+            </button>
+        </div>
+        <NavMenuPanel links={links}></NavMenuPanel>
+    </div>
+</div>
+
+<script>
+import { initNavbar } from "@utils/navbar-logic";
+import { setupComponent } from "@utils/lifecycle";
+
+setupComponent('Navbar', initNavbar);
+</script>

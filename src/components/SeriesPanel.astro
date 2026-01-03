@@ -1,0 +1,105 @@
+---
+import { seriesConfig } from "@configs/series";
+import I18nKey from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
+import { getPostTranslation, getSortedPosts } from "@utils/content-utils";
+import { getLangFromPathname } from "@utils/i18n-runtime";
+import { getCategoryUrl, getSeriesUrl } from "@utils/url-utils";
+
+interface Props {
+	keyword?: string;
+	tags?: string[];
+	categories?: string[];
+}
+
+let posts = await getSortedPosts();
+
+// Get current lang from URL
+const lang = getLangFromPathname(Astro.url.pathname);
+
+const grouped = posts.reduce((acc: Record<string, Record<string, { count: number; name: string; posts: typeof posts }>>, post) => {
+	const trans = getPostTranslation(post, lang);
+	if (!trans) return acc;
+	const category = trans.data.category || i18n(I18nKey.uncategorized, {}, lang);
+	const series = trans.data.series;
+	if (!series) return acc;
+
+	if (!acc[category]) acc[category] = {};
+	if (!acc[category][series]) {
+		acc[category][series] = {
+			count: 0,
+			name: series,
+			posts: [],
+		};
+	}
+	acc[category][series].count++;
+	acc[category][series].posts.push(post);
+	return acc;
+}, {});
+
+const groupedArray = Object.keys(grouped).map((key) => ({
+	category: key,
+	series: Object.values(grouped[key]),
+}));
+---
+
+{seriesConfig.enabled && (
+  <div class="translation-unit">
+      {groupedArray.length > 0 ? (
+          <div class="card-base px-8 py-6">
+              {groupedArray.map((group: any) => (
+                  <div>
+                      <div class="flex flex-row w-full items-center h-[3.75rem]">
+                          <div class="w-[20%] md:w-[15%] transition text-2xl font-bold text-right text-75 flex flex-row justify-end">
+                            <a aria-label={group.category} href={getCategoryUrl(group.category, lang)}
+                                class="btn-plain scale-animation rounded-lg h-11 font-bold px-2 active:scale-95"
+                            >
+                                {group.category}
+                            </a>
+                          </div>
+                          <div class="w-[15%] md:w-[10%]">
+                              <div class="h-3 w-3 bg-none rounded-full outline outline-[var(--primary)] mx-auto -outline-offset-[2px] z-50 outline-3"></div>
+                          </div>
+                          <div class="w-[65%] md:w-[75%] transition text-left text-50">{i18n(I18nKey.numberOfSeries, { n: group.series.length }, lang)}</div>
+                      </div>
+                      {group.series.map((series: any) => (
+                          <a href={getSeriesUrl(series.name, lang)}
+                             aria-label={series.name}
+                             class="group btn-plain !block h-10 w-full rounded-lg hover:text-[initial]"
+                          >
+                              <div class="flex flex-row justify-start items-center h-full">
+                                  <!-- count -->
+                                  <div class="w-[20%] md:w-[15%] transition text-sm text-right text-50">
+                                      {i18n(I18nKey.numberOfArticles, { n: series.count }, lang)}
+                                  </div>
+                                  <!-- dot and line -->
+                                  <div class="w-[15%] md:w-[10%] relative dash-line h-full flex items-center">
+                                      <div class="transition-all mx-auto w-1 h-1 rounded group-hover:h-5
+                                      bg-[oklch(0.5_0.05_var(--hue))] group-hover:bg-[var(--primary)]
+                                      outline outline-4 z-50
+                                      outline-[var(--card-bg)]
+                                      group-hover:outline-[var(--btn-plain-bg-hover)]
+                                      group-active:outline-[var(--btn-plain-bg-active)]
+                                      "
+                                      ></div>
+                                  </div>
+                                  <!-- post title -->
+                                  <div class="w-[65%] md:max-w-[75%] md:w-[75%] text-left font-bold
+                                      group-hover:translate-x-1 transition-all group-hover:text-[var(--primary)]
+                                      text-75 pr-8 whitespace-nowrap overflow-ellipsis overflow-hidden"
+                                  >
+                                          {series.name}
+                                  </div>
+                              </div>
+                          </a>
+                      ))}
+                  </div>
+              ))}
+          </div>
+      ) : (
+          <div class="card-base px-8 py-6 text-center text-50">
+              {i18n(I18nKey.noResults, {}, lang)}
+          </div>
+      )}
+  </div>
+)}

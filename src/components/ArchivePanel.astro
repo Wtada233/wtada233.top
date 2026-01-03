@@ -1,0 +1,240 @@
+---
+import { siteConfig } from "@configs/site";
+import I18nKey from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
+import type { PostForList } from "@utils/content-utils";
+import { getLangFromPathname } from "@utils/i18n-runtime";
+
+interface Props {
+	sortedPosts: PostForList[];
+	lang?: string;
+}
+
+const { sortedPosts, lang: propLang } = Astro.props;
+const defaultLang = siteConfig.lang;
+
+// Get current lang from URL or props
+const lang = propLang || getLangFromPathname(Astro.url.pathname);
+---
+
+<div id="archive-panel" class="card-base px-8 py-6" data-posts={JSON.stringify(sortedPosts)} data-default-lang={defaultLang} data-lang={lang}>
+    <div class="flex justify-center flex-wrap gap-2 mb-8">
+        <button class="btn-regular h-9 px-4 rounded-lg text-sm view-btn active" data-view="time">{i18n(I18nKey.byTime, {}, lang)}</button>
+        <button class="btn-regular h-9 px-4 rounded-lg text-sm view-btn" data-view="series">{i18n(I18nKey.bySeries, {}, lang)}</button>
+        <button class="btn-regular h-9 px-4 rounded-lg text-sm view-btn" data-view="category">{i18n(I18nKey.byCategory, {}, lang)}</button>
+        <button class="btn-regular h-9 px-4 rounded-lg text-sm view-btn" data-view="tags">{i18n(I18nKey.byTag, {}, lang)}</button>
+    </div>
+
+    <div id="groups-container">
+        <!-- Groups will be rendered here via JS -->
+    </div>
+
+    <div id="load-more-container" class="flex justify-center mt-8 hidden">
+        <button id="load-more-btn" class="btn-regular h-10 px-6 rounded-lg text-sm font-bold">
+            {i18n(I18nKey.more, {}, lang)}
+        </button>
+    </div>
+</div>
+
+<style is:global>
+	#archive-panel .btn-regular.active {
+		background-color: var(--primary);
+		color: var(--deep-text);
+		font-weight: bold;
+	}
+</style>
+
+<script>
+import I18nKey from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
+import { getRuntimeLanguage } from "@utils/i18n-runtime";
+import { getPostUrlBySlug } from "@utils/url-utils";
+
+function initArchivePanel() {
+    const panel = document.getElementById('archive-panel');
+    const groupsContainer = document.getElementById('groups-container');
+    const loadMoreBtn = document.getElementById('load-more-btn');
+    const loadMoreContainer = document.getElementById('load-more-container');
+    const viewButtons = document.querySelectorAll('.view-btn');
+
+    if (!panel || !groupsContainer || !loadMoreBtn || !loadMoreContainer) return;
+
+    const sortedPosts = JSON.parse(panel.dataset.posts!);
+    const defaultLang = panel.dataset.defaultLang!;
+    let currentView = "time";
+    let visibleGroupsCount = 10;
+    let currentLang = getRuntimeLanguage();
+
+    const getPostTranslation = (p: any) => {
+        return p.translations[currentLang] || p.translations[defaultLang] || Object.values(p.translations)[0];
+    };
+
+    const getFiltersFromURL = () => {
+        const params = new URLSearchParams(window.location.search);
+        return {
+            tags: params.getAll("tag"),
+            categories: params.getAll("category"),
+            series: params.getAll("series"),
+            uncategorized: params.get("uncategorized") === "true"
+        };
+    };
+
+    const formatDate = (dateStr: string) => {
+        const date = new Date(dateStr);
+        const month = (date.getMonth() + 1).toString().padStart(2, "0");
+        const day = date.getDate().toString().padStart(2, "0");
+        return `${month}-${day}`;
+    };
+
+    const render = () => {
+        const filters = getFiltersFromURL();
+        let filteredPosts = sortedPosts.map((p: any) => {
+            const trans = getPostTranslation(p);
+            return {
+                slug: p.slug,
+                data: trans.data,
+                published: p.data.published
+            };
+        });
+
+        if (filters.tags.length > 0) filteredPosts = filteredPosts.filter((p: any) => p.data.tags?.some((t: string) => filters.tags.includes(t)));
+        if (filters.categories.length > 0) filteredPosts = filteredPosts.filter((p: any) => filters.categories.includes(p.data.category));
+        if (filters.series.length > 0) filteredPosts = filteredPosts.filter((p: any) => filters.series.includes(p.data.series));
+        if (filters.uncategorized) filteredPosts = filteredPosts.filter((p: any) => !p.data.category);
+
+        let groups: any[] = [];
+        if (currentView === "time") {
+            const grouped = filteredPosts.reduce((acc: any, p: any) => {
+                const year = new Date(p.published).getFullYear();
+                if (!acc[year]) acc[year] = [];
+                acc[year].push(p);
+                return acc;
+            }, {});
+            groups = Object.keys(grouped).map(year => ({
+                key: year,
+                posts: grouped[year],
+                isTimeGroup: true
+            })).sort((a, b) => Number(b.key) - Number(a.key));
+        } else {
+            let getGroupKey: (p: any) => string | string[];
+            let noGroupKey: string;
+            if (currentView === "series") {
+                getGroupKey = (p) => p.data.series || i18n(I18nKey.noSeries, {}, currentLang);
+                noGroupKey = i18n(I18nKey.noSeries, {}, currentLang);
+            } else if (currentView === "category") {
+                getGroupKey = (p) => p.data.category || i18n(I18nKey.uncategorized, {}, currentLang);
+                noGroupKey = i18n(I18nKey.uncategorized, {}, currentLang);
+            } else {
+                getGroupKey = (p) => (p.data.tags?.length > 0 ? p.data.tags : i18n(I18nKey.noTags, {}, currentLang));
+                noGroupKey = i18n(I18nKey.noTags, {}, currentLang);
+            }
+
+            const grouped = filteredPosts.reduce((acc: any, p: any) => {
+                const keys = getGroupKey(p);
+                (Array.isArray(keys) ? keys : [keys]).forEach(key => {
+                    if (!acc[key]) acc[key] = [];
+                    acc[key].push(p);
+                });
+                return acc;
+            }, {});
+
+            groups = Object.keys(grouped).map(key => ({
+                key,
+                posts: grouped[key],
+                isTimeGroup: false
+            })).sort((a, b) => {
+                if (a.key === noGroupKey) return 1;
+                if (b.key === noGroupKey) return -1;
+                return a.key.localeCompare(b.key);
+            });
+        }
+
+        const visibleGroups = groups.slice(0, visibleGroupsCount);
+        groupsContainer.innerHTML = visibleGroups.length > 0 ? visibleGroups.map(group => `
+            <div>
+                <div class="flex flex-row items-center h-[3.75rem] px-2 md:px-4 gap-3 md:gap-4">
+                    <div class="w-14 md:w-16 transition text-2xl font-bold text-right text-75 flex-shrink-0 truncate" title="${group.key}">
+                        ${group.key}
+                    </div>
+                    <div class="w-4 flex-shrink-0 flex justify-center">
+                        <div class="h-3 w-3 bg-none rounded-full outline outline-[var(--primary)] -outline-offset-[2px] z-50 outline-3"></div>
+                    </div>
+                    <div class="flex-1 transition text-left text-50 truncate">
+                        ${group.posts.length} ${i18n(group.posts.length === 1 ? I18nKey.postCount : I18nKey.postsCount, {}, currentLang)}
+                    </div>
+                </div>
+                ${group.posts.map((post: any) => `
+                    <a href="${getPostUrlBySlug(post.slug, currentLang)}" aria-label="${post.data.title}" class="group btn-plain !block h-10 w-full rounded-lg hover:text-[initial] overflow-hidden">
+                        <div class="flex flex-row justify-start items-center h-full px-2 md:px-4 gap-3 md:gap-4 max-w-full">
+                            <div class="w-14 md:w-16 transition text-sm text-right text-50 flex-shrink-0">
+                                ${formatDate(post.published)}
+                            </div>
+                            <div class="w-4 relative dash-line h-full flex items-center flex-shrink-0">
+                                <div class="transition-all mx-auto w-1 h-1 rounded group-hover:h-5 bg-[oklch(0.5_0.05_var(--hue))] group-hover:bg-[var(--primary)] outline outline-4 z-50 outline-[var(--card-bg)] group-hover:outline-[var(--btn-plain-bg-hover)] group-active:outline-[var(--btn-plain-bg-active)]"></div>
+                            </div>
+                            <div class="flex-1 font-bold text-75 truncate transition-all group-hover:translate-x-1 group-hover:text-[var(--primary)]" title="${post.data.title}">
+                                ${post.data.title}
+                            </div>
+                            <div class="hidden md:block w-[15%] max-w-[8rem] text-left text-sm transition truncate text-30 flex-shrink-0">
+                                ${post.data.tags?.map((t: string) => `#${t}`).join(" ") || ""}
+                            </div>
+                        </div>
+                    </a>
+                `).join("")}
+            </div>
+        `).join("") : `
+            <div class="transition text-50 text-sm px-3 py-16 text-center">
+                ${i18n(I18nKey.noResults, {}, currentLang)}
+            </div>
+        `;
+
+        if (visibleGroupsCount < groups.length) loadMoreContainer.classList.remove('hidden');
+        else loadMoreContainer.classList.add('hidden');
+    };
+
+    const handleViewClick = (btn: HTMLElement) => {
+        viewButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentView = btn.dataset.view!;
+        visibleGroupsCount = 10;
+        render();
+    };
+
+    const handleLoadMoreClick = () => {
+        visibleGroupsCount += 10;
+        render();
+    };
+
+    viewButtons.forEach(btn => {
+        btn.addEventListener('click', () => handleViewClick(btn as HTMLElement));
+    });
+
+    loadMoreBtn.addEventListener('click', handleLoadMoreClick);
+
+    render();
+
+    // Return functions for cleanup
+    return () => {
+        viewButtons.forEach(btn => {
+            btn.removeEventListener('click', () => handleViewClick(btn as HTMLElement));
+        });
+        loadMoreBtn.removeEventListener('click', handleLoadMoreClick);
+    };
+}
+
+let archivePanelCleanup: (() => void) | undefined;
+
+const init = () => {
+    archivePanelCleanup = initArchivePanel();
+};
+
+const cleanup = () => {
+    if (archivePanelCleanup) {
+        archivePanelCleanup();
+        archivePanelCleanup = undefined;
+    }
+};
+
+import { setupComponent } from "@utils/lifecycle";
+setupComponent('ArchivePanel', init, cleanup);
+</script>

@@ -1,0 +1,28 @@
+---
+import PostCard from "@components/PostCard.astro";
+import type { GroupedPost } from "@utils/content-utils";
+import { getLangFromPathname } from "@utils/i18n-runtime";
+
+const { page } = Astro.props;
+
+const lang = getLangFromPathname(Astro.url.pathname);
+---
+<div class="transition flex flex-col rounded-[var(--radius-large)] bg-transparent py-1 md:py-0 gap-4 mb-4">
+    {page.data.map((entry: GroupedPost, index: number) => (
+        <PostCard
+                entry={entry}
+                title={entry.data.title}
+                order={entry.data.order}
+                tags={entry.data.tags}
+                category={entry.data.category}
+                published={entry.data.published}
+                updated={entry.data.updated}
+                image={entry.data.image}
+                description={entry.data.description}
+                draft={entry.data.draft}
+                style=""
+                loading={index === 0 ? "eager" : "lazy"}
+                lang={lang}
+        ></PostCard>
+    ))}
+</div>

@@ -1,0 +1,79 @@
+---
+import { twikooConfig } from "@configs/twikoo";
+import { getLangFromPathname } from "@utils/i18n-runtime";
+import "@/styles/twikoo.css";
+
+interface Props {
+	path: string;
+}
+
+const { enabled, lang: configLang, langAlias, ...restOfTwikooConfig } = twikooConfig;
+
+// Get current lang from URL
+const currentLang = getLangFromPathname(Astro.url.pathname);
+
+let finalLang = configLang;
+if (finalLang === "auto") {
+	finalLang = langAlias?.[currentLang] || currentLang;
+}
+
+const config = {
+	...restOfTwikooConfig,
+	lang: finalLang,
+	el: "#tcomment",
+	path: Astro.props.path,
+};
+---
+
+<div id="tcomment" data-twikoo-config={JSON.stringify(config)}></div>
+<script>
+  import { setupComponent } from "@utils/lifecycle";
+
+  const init = () => {
+    const commentContainer = document.getElementById('tcomment');
+    if (!commentContainer || commentContainer.hasAttribute('data-twikoo-initialized')) {
+      return;
+    }
+
+    const configStr = commentContainer.dataset.twikooConfig;
+    if (!configStr) return;
+    const config = JSON.parse(configStr);
+
+    const doInit = () => {
+      if (window.twikoo) {
+        window.twikoo.init(config);
+        commentContainer.setAttribute('data-twikoo-initialized', 'true');
+      }
+    };
+
+    if (window.twikoo) {
+      doInit();
+      return;
+    }
+    
+    const scriptId = 'twikoo-main-script';
+    if (document.getElementById(scriptId)) {
+        return;
+    }
+
+    const script = document.createElement('script');
+    script.id = scriptId;
+    script.src = '/twikoo/twikoo.min.js';
+    script.defer = true;
+    script.onload = doInit;
+    script.onerror = () => console.error('Twikoo script could not be loaded.');
+    document.body.appendChild(script);
+  };
+
+  const cleanup = () => {
+    const script = document.getElementById('twikoo-main-script');
+    if (script) {
+      script.remove();
+    }
+    if (window.twikoo) {
+      delete (window as any).twikoo;
+    }
+  };
+
+  setupComponent('Twikoo', init, cleanup);
+</script>

@@ -1,0 +1,53 @@
+---
+import { bannerConfig } from "@configs/banner";
+import { siteConfig } from "@configs/site";
+import { AUTO_MODE, BANNER_HEIGHT, BANNER_HEIGHT_EXTEND, BANNER_HEIGHT_HOME, DARK_MODE, DEFAULT_THEME, LIGHT_MODE, PAGE_WIDTH } from "@constants/constants";
+
+const configHue = siteConfig.themeColor.hue;
+const bannerPosition = bannerConfig.position || "center";
+---
+
+<!-- Set the theme before the page is rendered to avoid a flash -->
+<script is:inline define:vars={{DEFAULT_THEME, LIGHT_MODE, DARK_MODE, AUTO_MODE, BANNER_HEIGHT, BANNER_HEIGHT_EXTEND, BANNER_HEIGHT_HOME, PAGE_WIDTH, configHue, bannerPosition}}>
+    // Load the theme from local storage
+    const theme = localStorage.getItem('theme') || DEFAULT_THEME;
+    switch (theme) {
+        case LIGHT_MODE:
+            document.documentElement.classList.remove('dark');
+            break
+        case DARK_MODE:
+            document.documentElement.classList.add('dark');
+            break
+        case AUTO_MODE:
+            if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+    }
+
+    // Load the hue from local storage
+    const hue = localStorage.getItem('hue') || configHue;
+    document.documentElement.style.setProperty('--hue', hue);
+
+    // calculate the --banner-height-extend, which needs to be a multiple of 4 to avoid blurry text
+    let offset = Math.floor(window.innerHeight * (BANNER_HEIGHT_EXTEND / 100));
+    offset = offset - offset % 4;
+    document.documentElement.style.setProperty('--banner-height-extend', `${offset}px`);
+
+    // Set page width
+    document.documentElement.style.setProperty('--page-width', `${PAGE_WIDTH}rem`);
+
+    // Set banner height variables
+    document.documentElement.style.setProperty('--banner-height', `${BANNER_HEIGHT}vh`);
+    document.documentElement.style.setProperty('--banner-height-home', `${BANNER_HEIGHT_HOME}vh`);
+
+    // Calculate banner offset
+    const bannerOffsetByPosition = {
+        top: `${BANNER_HEIGHT_EXTEND}vh`,
+        center: `${BANNER_HEIGHT_EXTEND / 2}vh`,
+        bottom: "0",
+    };
+    const bannerOffset = bannerOffsetByPosition[bannerPosition];
+    document.documentElement.style.setProperty('--bannerOffset', bannerOffset);
+</script>

@@ -1,0 +1,67 @@
+---
+import "@fontsource-variable/jetbrains-mono";
+import "@fontsource-variable/jetbrains-mono/wght-italic.css";
+
+interface Props {
+	class: string;
+}
+const className = Astro.props.class;
+const uniqueId = `md-root-${Math.random().toString(36).slice(2)}`;
+---
+<div id={uniqueId} class={`prose dark:prose-invert prose-base !max-w-none custom-md ${className}`}>
+    <slot/>
+</div>
+
+<script>
+  import { setupComponent } from "@utils/lifecycle";
+
+  const handleClick = (e: MouseEvent) => {
+    const target = e.target as HTMLElement;
+    const btn = target.closest(".copy-btn");
+    if (btn) {
+      const preEle = btn.closest("pre");
+      const codeEle = preEle?.querySelector("code");
+      const code = Array.from(codeEle?.querySelectorAll(".code:not(summary *)") ?? [])
+        .map(el => el.textContent)
+        .join("\n");
+      
+      if (code) {
+        navigator.clipboard.writeText(code);
+      }
+
+      const timeoutId = btn.getAttribute("data-timeout-id");
+      if (timeoutId) {
+        clearTimeout(parseInt(timeoutId));
+      }
+
+      btn.classList.add("success");
+
+      const newTimeoutId = window.setTimeout(() => {
+        btn.classList.remove("success");
+        btn.removeAttribute("data-timeout-id");
+      }, 1000);
+
+      btn.setAttribute("data-timeout-id", newTimeoutId.toString());
+    }
+  };
+
+  const init = () => {
+    document.addEventListener("click", handleClick);
+  };
+
+  const cleanup = () => {
+    document.removeEventListener("click", handleClick);
+    
+    const copyButtons = document.querySelectorAll(".copy-btn");
+    copyButtons.forEach(button => {
+      const timeoutId = button.getAttribute("data-timeout-id");
+      if (timeoutId) {
+        clearTimeout(parseInt(timeoutId));
+        button.classList.remove("success");
+        button.removeAttribute("data-timeout-id");
+      }
+    });
+  };
+
+  setupComponent('Markdown', init, cleanup);
+</script>

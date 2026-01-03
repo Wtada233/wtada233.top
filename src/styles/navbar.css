@@ -1,0 +1,102 @@
+/* Base Navbar Styles using Variables */
+#navbar > div {
+    background: var(--navbar-bg);
+    border: 1px solid var(--navbar-border);
+    border-radius: 0 0 0.75rem 0.75rem;
+    box-shadow: var(--navbar-shadow);
+    backdrop-filter: var(--navbar-backdrop);
+    
+    transition: all var(--duration-medium) var(--ease-standard);
+    will-change: transform, backdrop-filter;
+    transform: translateZ(0);
+}
+
+/* Dropdown & Panels Base Styles */
+.dropdown-content,
+#wallpaper-mode-panel .float-panel,
+#theme-mode-panel .float-panel,
+#nav-menu-panel,
+#search-panel {
+    background: var(--navbar-bg);
+    border: 1px solid var(--navbar-border);
+    box-shadow: var(--navbar-shadow);
+    backdrop-filter: var(--navbar-backdrop);
+}
+
+/* =========================================
+   Glass Mode Logic via Variable Reassignment
+   ========================================= */
+
+/* 
+   Logic: When in Glass Mode, we override the base --navbar-* variables 
+   with the --navbar-glass-* values.
+*/
+
+/* Desktop: Apply Glass only if Banner exists */
+@media (min-width: 1024px) {
+    /* Correct selector: glass-mode is on html, enable-banner is on body */
+    html.glass-mode body.enable-banner {
+        --navbar-bg: var(--navbar-glass-bg);
+        --navbar-border: var(--navbar-glass-border);
+        --navbar-shadow: var(--navbar-glass-shadow);
+        --navbar-backdrop: var(--navbar-glass-backdrop);
+    }
+}
+
+/* Mobile: Apply Glass always if Glass Mode is active */
+@media (max-width: 1023px) {
+    html.glass-mode body {
+        --navbar-bg: var(--navbar-glass-bg);
+        --navbar-border: var(--navbar-glass-border);
+        --navbar-shadow: var(--navbar-glass-shadow);
+        --navbar-backdrop: var(--navbar-glass-backdrop);
+    }
+}
+
+/* =========================================
+   Responsive Adjustments
+   ========================================= */
+
+/* Tablet (768px - 1279px) */
+@media (min-width: 768px) and (max-width: 1279px) {
+    #navbar > div {
+        border-radius: 0 0 1rem 1rem;
+    }
+    
+    #navbar .dropdown-container > .btn-plain .navbar-icon,
+    #navbar .dropdown-container > a.btn-plain .navbar-icon {
+        display: none;
+    }
+}
+
+/* Mobile (< 768px) */
+@media (max-width: 768px) {
+    #navbar > div {
+        max-width: none;
+        width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+    }
+    
+    /* Hide specific elements on mobile */
+    #navbar > div > div:nth-child(2) {
+        display: none;
+    }
+    
+    /* Show menu switch on mobile */
+    #navbar #nav-menu-switch {
+        display: flex;
+    }
+}
+
+/* Small Mobile (< 480px) */
+@media (max-width: 480px) {
+    #navbar > div {
+        border-radius: 0 0 0.5rem 0.5rem;
+        margin: 0;
+        padding-left: 1rem;
+        padding-right: 1rem;
+        max-width: none;
+        width: 100%;
+    }
+}

@@ -1,0 +1,73 @@
+---
+import WidgetLayout from "@components/widget/WidgetLayout.astro";
+import { runningTimeConfig } from "@configs/running-time";
+import { getLangFromPathname } from "@utils/i18n-runtime";
+import I18nKey from "@/i18n/i18nKey";
+import { i18n } from "@/i18n/translation";
+
+interface Props {
+	class?: string;
+	style?: string;
+}
+const { class: className, style } = Astro.props;
+
+// Get current lang from URL
+const lang = getLangFromPathname(Astro.url.pathname);
+---
+
+{runningTimeConfig.enableRunningTime && (
+    <WidgetLayout i18nKey={I18nKey.runningTime} isI18nName={true} id="running-time-widget" class={className} style={style}>
+        <div class="transition text-50 text-sm text-center my-4">
+            <p id="runningtime"></p>
+        </div>
+        <div class="hidden running-time-template" data-lang={lang} data-template={i18n(I18nKey.runningTimeStatus, {}, lang)}></div>
+        <script>
+            import { runningTimeConfig } from "@configs/running-time";
+            import { siteConfig } from "@configs/site";
+            import { setupComponent } from "@utils/lifecycle";
+
+            let runningTimeInterval: number | undefined;
+            const startDate = runningTimeConfig.startDate;
+            const defaultLang = siteConfig.lang;
+
+            function runtime() {
+                const currentLang = document.documentElement.getAttribute('data-lang') || defaultLang;
+                const templateEl = document.querySelector(`.running-time-template[data-lang="${currentLang}"]`);
+                const statusTemplate = templateEl ? templateEl.getAttribute('data-template') : '{d}d {h}h {m}m {s}s';
+
+                const t = new Date(startDate);
+                const n = new Date();
+                const s = n.getTime() - t.getTime();
+                const e = Math.floor(s / 1e3);
+                const o = Math.floor(e / 86400);
+                const i = Math.floor(e % 86400 / 3600);
+                const a = Math.floor(e % 3600 / 60);
+                const r = e % 60;
+                const runningTimeElement = document.getElementById("runningtime");
+                if (runningTimeElement && statusTemplate) {
+                    runningTimeElement.innerHTML = statusTemplate
+                        .replaceAll('{d}', String(o))
+                        .replaceAll('{h}', String(i))
+                        .replaceAll('{m}', String(a))
+                        .replaceAll('{s}', String(r));
+                }
+            }
+            
+            const init = () => {
+                if (runningTimeInterval) {
+                    window.clearInterval(runningTimeInterval);
+                }
+                runtime(); // Call once immediately to avoid flicker
+                runningTimeInterval = window.setInterval(runtime, 1000);
+            };
+
+            const cleanup = () => {
+                if (runningTimeInterval) {
+                    window.clearInterval(runningTimeInterval);
+                }
+            };
+
+            setupComponent('RunningTime', init, cleanup);
+        </script>
+    </WidgetLayout>
+)}

@@ -1,0 +1,88 @@
+---
+import WidgetLayout from "@components/widget/WidgetLayout.astro";
+import { umamiConfig } from "@configs/umami";
+import I18nKey from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
+import { getLangFromPathname } from "@utils/i18n-runtime";
+
+interface Props {
+	class?: string;
+	style?: string;
+}
+const { class: className, style } = Astro.props;
+
+// Get current lang from URL
+const lang = getLangFromPathname(Astro.url.pathname);
+
+// Build-time fallback data fetching
+let buildTimeStats = { pageviews: 0, visits: 0, visitors: 0 };
+if (umamiConfig.widgetEnabled && umamiConfig.enabled) {
+	try {
+		const endAt = Date.now();
+		const startAt = 0;
+		// Use URL constructor to ensure correct protocol and formatting
+		const fetchUrl = new URL(`${umamiConfig.apiUrl}/websites/${umamiConfig.websiteId}/stats`);
+		fetchUrl.searchParams.set("startAt", startAt.toString());
+		fetchUrl.searchParams.set("endAt", endAt.toString());
+
+		const controller = new AbortController();
+		const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
+
+		const response = await fetch(fetchUrl.toString(), {
+			headers: {
+				Accept: "application/json",
+				"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+				Connection: "close",
+				"x-umami-share-token": umamiConfig.shareToken,
+			},
+			signal: controller.signal,
+		});
+		clearTimeout(timeoutId);
+
+		if (response.ok) {
+			const data = await response.json();
+			buildTimeStats = {
+				pageviews: data.pageviews?.value || data.pageviews || 0,
+				visits: data.visits?.value || data.visits || 0,
+				visitors: data.visitors?.value || data.visitors || 0,
+			};
+		}
+	} catch (e) {
+		console.warn("[Umami Build Fetch] Failed:", e instanceof Error ? e.message : e);
+	}
+}
+---
+
+{umamiConfig.widgetEnabled && (
+    <WidgetLayout 
+        i18nKey={I18nKey.statistics} 
+        isI18nName={true} 
+        id="umami-stats" 
+        class:list={[className]} 
+        {style}
+        data-pageviews={buildTimeStats.pageviews}
+        data-visits={buildTimeStats.visits}
+        data-visitors={buildTimeStats.visitors}
+    >
+        <div class="text-center py-2">
+            <div class="text-3xl font-bold text-neutral-900 dark:text-neutral-100" id="total-pageviews">-</div>
+            <div class="text-sm text-neutral-500 dark:text-neutral-400 translation-unit">{i18n(I18nKey.totalPageviews, {}, lang)}</div>
+        </div>
+        <div class="grid grid-cols-2 divide-x divide-neutral-200 dark:divide-neutral-700 text-center pt-2">
+            <div class="px-2">
+                <div class="text-xl font-bold text-neutral-900 dark:text-neutral-100" id="total-visits">-</div>
+                <div class="text-sm text-neutral-500 dark:text-neutral-400 translation-unit">{i18n(I18nKey.totalVisits, {}, lang)}</div>
+            </div>
+            <div class="px-2">
+                <div class="text-xl font-bold text-neutral-900 dark:text-neutral-100" id="total-visitors">-</div>
+                <div class="text-sm text-neutral-500 dark:text-neutral-400 translation-unit">{i18n(I18nKey.totalVisitors, {}, lang)}</div>
+            </div>
+        </div>
+    </WidgetLayout>
+)}
+
+<script>
+    import { fetchUmamiStats } from "@utils/umami-utils";
+    import { setupComponent } from "@utils/lifecycle";
+    setupComponent('UmamiStats', fetchUmamiStats);
+</script>

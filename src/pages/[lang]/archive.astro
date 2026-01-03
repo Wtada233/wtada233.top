@@ -1,0 +1,26 @@
+---
+import ArchivePanel from "@components/ArchivePanel.astro";
+import I18nKey from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { getSortedPostsList } from "@utils/content-utils";
+import { SUPPORTED_LANGUAGES, type SupportedLanguage } from "@utils/i18n-runtime";
+
+export async function getStaticPaths() {
+	return SUPPORTED_LANGUAGES.map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params;
+const currentLang = lang as SupportedLanguage;
+
+const sortedPostsList = await getSortedPostsList();
+---
+
+<MainGridLayout title={i18n(I18nKey.archive, {}, currentLang)} lang={currentLang}>
+    <div class="card-base p-6 mb-4 flex items-center justify-center">
+        <h1 class="text-2xl font-bold text-90">
+            {i18n(I18nKey.archive, {}, currentLang)}
+        </h1>
+    </div>
+    <ArchivePanel sortedPosts={sortedPostsList} lang={currentLang}></ArchivePanel>
+</MainGridLayout>

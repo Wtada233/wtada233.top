@@ -1,0 +1,292 @@
+---
+import Icon from "@components/common/Icon.astro";
+import { siteConfig } from "@configs/site";
+import I18nKey from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
+import { getLangFromPathname } from "@utils/i18n-runtime";
+import type { MarkdownHeading } from "astro";
+
+interface Props {
+	headings?: MarkdownHeading[] | Record<string, MarkdownHeading[]>;
+	class?: string;
+	style?: string;
+}
+
+const { headings, class: className, style } = Astro.props;
+
+const hasHeadings = headings && (Array.isArray(headings) ? headings.length > 0 : Object.keys(headings).length > 0);
+
+// 检查是否为文章页面
+const isPost = Astro.url.pathname.includes("/posts/");
+
+// Get current lang from URL
+const lang = getLangFromPathname(Astro.url.pathname);
+
+let currentHeadings: MarkdownHeading[] = [];
+if (headings) {
+	if (Array.isArray(headings)) {
+		currentHeadings = headings;
+	} else {
+		currentHeadings = headings[lang] || headings[siteConfig.lang] || Object.values(headings)[0] || [];
+	}
+}
+---
+
+{isPost && hasHeadings && (
+<div id="toc-container" class="">
+    <!-- 移动端遮罩层 -->
+    <div id="toc-backdrop" class="fixed inset-0 bg-black/50 z-[100] opacity-0 pointer-events-none transition-opacity duration-300 lg:hidden"></div>
+
+    <!-- 目录面板 (PC端固定，移动端弹出) -->
+    <div id="toc-widget" 
+        class:list={[
+            "fixed z-[101] transition-all duration-500",
+            // PC 端样式
+            "lg:top-24 lg:right-4 2xl:right-16 lg:w-56 2xl:w-64 lg:opacity-0 lg:translate-x-10 lg:pointer-events-none",
+            // 移动端样式 (底部滑出或中间弹出)
+            "bottom-0 left-0 right-0 translate-y-full rounded-t-3xl lg:translate-y-0 lg:rounded-none lg:inset-auto lg:block lg:bottom-auto lg:left-auto",
+            className
+        ]} 
+        style={style}
+    >
+        <div class="card-base flex flex-col w-full lg:w-auto max-h-[75vh] lg:max-h-[calc(100vh-10rem)] shadow-xl bg-[var(--card-bg)]">
+            <div class="p-4 lg:p-4 pb-2 flex justify-between items-center flex-none">
+                <div class="font-bold text-lg pl-4 border-l-4 border-[var(--primary)] transition-colors text-90">
+                    <span class="translation-unit">{i18n(I18nKey.toc, {}, lang)}</span>
+                </div>
+                <button id="toc-close-btn" class="text-75 hover:text-[var(--primary)] transition-colors active:scale-90 p-1" aria-label="Close TOC">
+                    <Icon name="material-symbols:close-rounded" class="text-2xl" />
+                </button>
+            </div>
+            
+            <div class="overflow-y-auto hide-scrollbar px-4 pb-8 lg:pb-4 flex-grow">
+                <ul class="flex flex-col gap-1 text-sm text-75">
+                    {currentHeadings.map((heading) => (
+                        <li class="transition hover:text-[var(--primary)]" style={{ paddingLeft: `${Math.max(0, heading.depth - 1) * 0.5}rem` }}>
+                            <div class="toc-link block py-2 lg:py-1 truncate transition-colors border-l-2 border-transparent pl-2 hover:border-[var(--primary)] cursor-pointer" data-slug={heading.slug}>
+                                {heading.text}
+                            </div>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- 悬浮按钮 (用户隐藏或移动端时显示) -->
+    <button id="toc-show-btn" 
+        class="fixed bottom-24 right-4 lg:top-24 lg:right-0 lg:bottom-auto z-[90] bg-[var(--primary)] lg:bg-[var(--card-bg)] text-white lg:text-[var(--primary)] border border-[var(--line-divider)] lg:border-r-0 rounded-full lg:rounded-l-xl lg:rounded-r-none p-3 lg:p-2 shadow-xl transition-all duration-500 translate-x-20 opacity-0 pointer-events-none hover:pr-4"
+        aria-label="Show TOC"
+    >
+        <Icon name="material-symbols:menu-book-outline-rounded" class="text-2xl lg:hidden" />
+        <Icon name="material-symbols:chevron-left-rounded" class="text-2xl hidden lg:block" />
+    </button>
+</div>
+)}
+
+<style is:global>
+    /* 优化滚动偏移，防止被固定导航栏遮挡 */
+    h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
+        scroll-margin-top: 5.5rem;
+    }
+
+    /* PC端可见性逻辑 */
+    @media (min-width: 1024px) {
+        #toc-widget[data-visible="true"]:not([data-user-hidden="true"]) {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: auto;
+        }
+        #toc-show-btn[data-visible="true"][data-user-hidden="true"] {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: auto;
+        }
+    }
+
+    /* 移动端可见性逻辑 */
+    @media (max-width: 1023px) {
+        /* 面板弹出状态 */
+        #toc-widget[data-mobile-show="true"] {
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+        /* 遮罩层状态 */
+        #toc-backdrop[data-show="true"] {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        /* 悬浮按钮显示 */
+        #toc-show-btn[data-visible="true"] {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: auto;
+        }
+    }
+</style>
+
+<script>
+let tocObserver: IntersectionObserver | undefined;
+let tocScrollHandler: (() => void) | undefined;
+
+function cleanupTOC() {
+    if (tocObserver) {
+        tocObserver.disconnect();
+        tocObserver = undefined;
+    }
+    if (tocScrollHandler) {
+        window.removeEventListener('scroll', tocScrollHandler);
+        tocScrollHandler = undefined;
+    }
+    document.body.style.overflow = '';
+}
+
+function initTOC() {
+    // 强制先清理
+    cleanupTOC();
+
+    const tocWidget = document.getElementById('toc-widget');
+    const showBtn = document.getElementById('toc-show-btn');
+    const closeBtn = document.getElementById('toc-close-btn');
+    const backdrop = document.getElementById('toc-backdrop');
+    
+    if (!tocWidget || !showBtn || !closeBtn) return;
+
+    const isMobile = () => window.innerWidth < 1024;
+
+    // 状态加载 (仅PC端记忆)
+    const applyUserPreference = () => {
+        const isUserHidden = localStorage.getItem('toc-user-hidden') === 'true';
+        if (isUserHidden && !isMobile()) {
+            tocWidget.setAttribute('data-user-hidden', 'true');
+            showBtn.setAttribute('data-user-hidden', 'true');
+        } else {
+            tocWidget.removeAttribute('data-user-hidden');
+            showBtn.removeAttribute('data-user-hidden');
+        }
+    };
+    applyUserPreference();
+
+    const toggleVisibility = () => {
+        const threshold = 300;
+        const visible = window.scrollY > threshold ? "true" : "false";
+        tocWidget.setAttribute('data-visible', visible);
+        showBtn.setAttribute('data-visible', visible);
+        
+        if (!isMobile() && !tocWidget.hasAttribute('data-user-hidden') && localStorage.getItem('toc-user-hidden') === 'true') {
+            applyUserPreference();
+        }
+    };
+
+    const closeTOC = () => {
+        if (isMobile()) {
+            tocWidget.removeAttribute('data-mobile-show');
+            backdrop?.removeAttribute('data-show');
+            document.body.style.overflow = '';
+        }
+        else {
+            tocWidget.setAttribute('data-user-hidden', 'true');
+            showBtn.setAttribute('data-user-hidden', 'true');
+            localStorage.setItem('toc-user-hidden', 'true');
+        }
+    };
+
+    const openTOC = () => {
+        if (isMobile()) {
+            tocWidget.setAttribute('data-mobile-show', 'true');
+            backdrop?.setAttribute('data-show', 'true');
+            document.body.style.overflow = 'hidden';
+        }
+        else {
+            tocWidget.removeAttribute('data-user-hidden');
+            showBtn.removeAttribute('data-user-hidden');
+            localStorage.setItem('toc-user-hidden', 'false');
+        }
+    };
+
+    closeBtn.onclick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        closeTOC();
+    };
+
+    showBtn.onclick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        openTOC();
+    };
+
+    if (backdrop) backdrop.onclick = closeTOC;
+
+    window.addEventListener('scroll', toggleVisibility, { passive: true });
+    tocScrollHandler = toggleVisibility;
+    toggleVisibility();
+
+    // 目录高亮逻辑
+    const allLinks = Array.from(tocWidget.querySelectorAll('.toc-link'));
+    if (allLinks.length === 0) return;
+
+    allLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const slug = link.getAttribute('data-slug');
+            if (!slug) return;
+            const targetElement = document.getElementById(slug);
+            if (targetElement) {
+                targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                history.pushState(null, '', `#${slug}`);
+            }
+            if (isMobile()) {
+                closeTOC();
+            }
+        });
+    });
+
+    // 获取所有需要观察的 ID
+    const slugs = Array.from(new Set(allLinks.map(l => l.getAttribute('data-slug')).filter(Boolean)));
+    const sections = slugs.flatMap(slug => Array.from(document.querySelectorAll(`[id="${slug}"]`))) as HTMLElement[];
+
+    if (sections.length === 0) return;
+
+    const observerCallback = (entries: IntersectionObserverEntry[]) => {
+        const visibleEntries = entries.filter(e => e.isIntersecting && (e.target as HTMLElement).offsetParent !== null);
+        
+        if (visibleEntries.length > 0) {
+            // 找到最靠近顶部的可见章节
+            const topEntry = visibleEntries.sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+            const id = topEntry.target.id;
+            
+            // 清除旧的高亮
+            tocWidget.querySelectorAll('.toc-link.active-toc').forEach(l => {
+                l.classList.remove('text-[var(--primary)]', 'font-bold', 'border-[var(--primary)]', 'active-toc');
+                l.classList.add('border-transparent');
+            });
+
+            // 添加新的高亮
+            tocWidget.querySelectorAll(`.toc-link[data-slug="${id}"]`).forEach(l => {
+                l.classList.add('text-[var(--primary)]', 'font-bold', 'border-[var(--primary)]', 'active-toc');
+                l.classList.remove('border-transparent');
+            });
+        }
+    };
+
+    tocObserver = new IntersectionObserver(observerCallback, {
+        rootMargin: '-5% 0px -80% 0px',
+        threshold: [0, 1]
+    });
+
+    sections.forEach(section => tocObserver?.observe(section));
+}
+
+import { setupComponent } from "@utils/lifecycle";
+
+const init = () => {
+    requestAnimationFrame(initTOC);
+};
+
+const cleanup = () => {
+    cleanupTOC();
+};
+
+setupComponent('TOC', init, cleanup);
+</script>

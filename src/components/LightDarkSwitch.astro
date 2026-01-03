@@ -1,0 +1,170 @@
+---
+import Icon from "@components/common/Icon.astro";
+import { AUTO_MODE, DARK_MODE, LIGHT_MODE } from "@constants/constants.ts";
+import I18nKey from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
+import { getLangFromPathname } from "@utils/i18n-runtime";
+
+const currentLang = getLangFromPathname(Astro.url.pathname);
+---
+
+<!-- z-50 make the panel higher than other float panels -->
+<div id="light-dark-switch-wrapper" class="relative z-50" role="menu" tabindex="-1">
+    <button aria-label="Light/Dark Mode" role="menuitem" class="relative btn-plain scale-animation rounded-lg h-11 w-11 active:scale-90" id="scheme-switch">
+        <div class="absolute mode-icon hidden" data-mode={LIGHT_MODE}>
+            <Icon name="material-symbols:wb-sunny-outline-rounded" class="text-[1.25rem]"></Icon>
+        </div>
+        <div class="absolute mode-icon hidden" data-mode={DARK_MODE}>
+            <Icon name="material-symbols:dark-mode-outline-rounded" class="text-[1.25rem]"></Icon>
+        </div>
+        <div class="absolute mode-icon hidden" data-mode={AUTO_MODE}>
+            <Icon name="material-symbols:radio-button-partial-outline" class="text-[1.25rem]"></Icon>
+        </div>
+    </button>
+
+    <div id="light-dark-panel" class="absolute transition float-panel-closed top-11 -right-2 pt-5" >
+        <div class="card-base float-panel p-2">
+            <button class="flex transition whitespace-nowrap items-center !justify-start w-full btn-plain scale-animation rounded-lg h-9 px-3 font-medium active:scale-95 mb-0.5 theme-option"
+                    data-mode={LIGHT_MODE}
+            >
+                <Icon name="material-symbols:wb-sunny-outline-rounded" class="text-[1.25rem] mr-3"></Icon>
+                {i18n(I18nKey.lightMode, {}, currentLang)}
+            </button>
+            <button class="flex transition whitespace-nowrap items-center !justify-start w-full btn-plain scale-animation rounded-lg h-9 px-3 font-medium active:scale-95 mb-0.5 theme-option"
+                    data-mode={DARK_MODE}
+            >
+                <Icon name="material-symbols:dark-mode-outline-rounded" class="text-[1.25rem] mr-3"></Icon>
+                {i18n(I18nKey.darkMode, {}, currentLang)}
+            </button>
+            <button class="flex transition whitespace-nowrap items-center !justify-start w-full btn-plain scale-animation rounded-lg h-9 px-3 font-medium active:scale-95 theme-option"
+                    data-mode={AUTO_MODE}
+            >
+                <Icon name="material-symbols:radio-button-partial-outline" class="text-[1.25rem] mr-3"></Icon>
+                {i18n(I18nKey.systemMode, {}, currentLang)}
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+import { AUTO_MODE } from "@constants/constants.ts";
+import { applyThemeToDocument, getStoredTheme, setTheme } from "@utils/setting-utils.ts";
+import { setupComponent } from "@utils/lifecycle";
+
+function initLightDarkSwitch() {
+    const wrapper = document.getElementById('light-dark-switch-wrapper');
+    const switchBtn = document.getElementById('scheme-switch');
+    const panel = document.getElementById('light-dark-panel');
+    const options = document.querySelectorAll('.theme-option');
+    const modeIcons = document.querySelectorAll('.mode-icon');
+
+    if (!wrapper || !switchBtn || !panel || wrapper.dataset.initialized) return;
+    wrapper.dataset.initialized = "true";
+
+    let currentMode = getStoredTheme();
+
+    function updateUI(mode: string) {
+        modeIcons.forEach(icon => {
+            if ((icon as HTMLElement).dataset.mode === mode) {
+                icon.classList.remove('hidden');
+            } else {
+                icon.classList.add('hidden');
+            }
+        });
+
+        options.forEach(opt => {
+            if ((opt as HTMLElement).dataset.mode === mode) {
+                opt.classList.add('current-theme-btn');
+            } else {
+                opt.classList.remove('current-theme-btn');
+            }
+        });
+    }
+
+    updateUI(currentMode);
+
+    const togglePanel = () => panel.classList.toggle("float-panel-closed");
+    const hidePanel = () => panel.classList.add("float-panel-closed");
+
+    switchBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        togglePanel();
+    });
+
+    wrapper.addEventListener('mouseleave', hidePanel);
+
+    function switchScheme(newMode: any) {
+        const doc = document as any;
+        const isAppearanceTransition =
+            doc.startViewTransition &&
+            !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+        if (!isAppearanceTransition) {
+            currentMode = newMode;
+            setTheme(newMode);
+            updateUI(newMode);
+            window.dispatchEvent(new CustomEvent("themechange"));
+            return;
+        }
+
+        const rect = switchBtn!.getBoundingClientRect();
+        const x = rect.left + rect.width / 2;
+        const y = rect.top + rect.height / 2;
+        const endRadius = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
+
+        const transition = doc.startViewTransition(async () => {
+            document.documentElement.classList.add("view-transitioning");
+            currentMode = newMode;
+            setTheme(newMode);
+            updateUI(newMode);
+            window.dispatchEvent(new CustomEvent("themechange"));
+        });
+
+        transition.ready.then(() => {
+            const clipPath = [`circle(0px at ${x}px ${y}px)`, `circle(${endRadius}px at ${x}px ${y}px)`];
+            document.documentElement.animate(
+                {
+                    clipPath: clipPath,
+                },
+                {
+                    duration: 400,
+                    easing: "ease-in",
+                    pseudoElement: "::view-transition-new(root)",
+                    fill: "both",
+                },
+            );
+        });
+
+        transition.finished.then(() => {
+            document.documentElement.classList.remove("view-transitioning");
+        });
+    }
+
+    options.forEach(opt => {
+        opt.addEventListener('click', () => {
+            const mode = (opt as HTMLElement).dataset.mode;
+            switchScheme(mode);
+            hidePanel();
+        });
+    });
+}
+
+const handleSystemThemeChange = () => {
+    if (getStoredTheme() === AUTO_MODE) {
+        applyThemeToDocument(AUTO_MODE);
+    }
+};
+
+const cleanup = () => {
+    const darkModePreference = window.matchMedia("(prefers-color-scheme: dark)");
+    darkModePreference.removeEventListener("change", handleSystemThemeChange);
+}
+
+const init = () => {
+    initLightDarkSwitch();
+    const darkModePreference = window.matchMedia("(prefers-color-scheme: dark)");
+    darkModePreference.addEventListener("change", handleSystemThemeChange);
+}
+
+setupComponent('LightDarkSwitch', init, cleanup);
+</script>

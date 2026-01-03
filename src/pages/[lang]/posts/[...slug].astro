@@ -1,0 +1,234 @@
+---
+import path from "node:path";
+import Icon from "@components/common/Icon.astro";
+import AISummary from "@components/misc/AISummary.astro";
+import ImageWrapper from "@components/misc/ImageWrapper.astro";
+import License from "@components/misc/License.astro";
+import Markdown from "@components/misc/Markdown.astro";
+import RelatedPosts from "@components/misc/RelatedPosts.astro";
+import ShareButtons from "@components/misc/ShareButtons.astro";
+import Webmention from "@components/misc/Webmention.astro";
+import PostMetadata from "@components/PostMeta.astro";
+import { adaptiveThemeConfig } from "@configs/adaptive-theme";
+import { aiSummaryConfig } from "@configs/ai-summary";
+import { licenseConfig } from "@configs/license";
+import { outdatedReminderConfig } from "@configs/outdated-reminder";
+import { pinningConfig } from "@configs/pinning";
+import { profileConfig } from "@configs/profile";
+import { shareButtonsConfig } from "@configs/share-buttons";
+import { siteConfig } from "@configs/site";
+import I18nKey from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { type GroupedPost, getPostTranslation, getRelatedPosts, getSortedPosts } from "@utils/content-utils";
+import { formatDateToYYYYMMDD } from "@utils/date-utils";
+import { SUPPORTED_LANGUAGES } from "@utils/i18n-runtime";
+import { extractHueFromImage, resolveImage } from "@utils/image-utils";
+import { getDir, getPostUrlBySlug } from "@utils/url-utils";
+
+export async function getStaticPaths() {
+	const blogEntries = await getSortedPosts();
+	return blogEntries.flatMap((entry) =>
+		SUPPORTED_LANGUAGES.map((lang) => ({
+			params: { lang, slug: entry.slug },
+			props: { entry },
+		})),
+	);
+}
+
+const { entry } = Astro.props as { entry: GroupedPost };
+const { lang } = Astro.params;
+
+// Fallback logic: Try current lang, then default lang, then first available
+const trans = getPostTranslation(entry, lang || "");
+
+if (!trans) {
+	throw new Error(`No translation found for post ${entry.slug}`);
+}
+
+const { Content, headings, remarkPluginFrontmatter } = await trans.render();
+
+const allPosts = await getSortedPosts();
+const relatedPosts = await getRelatedPosts(entry, allPosts, 5);
+
+let ogImage: string | undefined;
+let entryHue: number | undefined;
+if (entry.data.image) {
+	const postDir = path.join("content/posts/", getDir(trans.id));
+	const coverImage = await resolveImage(entry.data.image, postDir);
+	if (coverImage?.src) {
+		ogImage = new URL(coverImage.src, Astro.site).href;
+	}
+	if (adaptiveThemeConfig.enable) {
+		entryHue = await extractHueFromImage(entry.data.image, postDir);
+	}
+}
+
+if (!ogImage) {
+	const safeSlug = entry.slug.replace(/\//g, "_");
+	let contentLang = siteConfig.lang;
+	for (const l of SUPPORTED_LANGUAGES) {
+		if (trans.id.endsWith(`.${l}.md`) || trans.id.includes(`.${l}/`)) {
+			contentLang = l;
+			break;
+		}
+	}
+	const isDark = trans.data.og_theme === "dark";
+	ogImage = new URL(`/assets/og/${safeSlug}_${contentLang}${isDark ? "_dark" : ""}.png`, Astro.site).href;
+}
+
+const jsonLd = {
+	"@context": "https://schema.org",
+	"@type": "BlogPosting",
+	headline: trans.data.title,
+	image: ogImage,
+	description: (aiSummaryConfig.enabled && trans.data.ai) || trans.data.description || trans.data.title,
+	keywords: trans.data.tags,
+	author: {
+		"@type": "Person",
+		name: profileConfig.name,
+		url: Astro.site,
+	},
+	datePublished: formatDateToYYYYMMDD(trans.data.published),
+};
+
+const nextPost = entry.data.nextSlug ? allPosts.find((p) => p.slug === entry.data.nextSlug) : null;
+const prevPost = entry.data.prevSlug ? allPosts.find((p) => p.slug === entry.data.prevSlug) : null;
+
+const nextLink = nextPost
+	? {
+			title: getPostTranslation(nextPost, lang || "").data.title,
+			url: getPostUrlBySlug(nextPost.slug, lang),
+		}
+	: undefined;
+
+const prevLink = prevPost
+	? {
+			title: getPostTranslation(prevPost, lang || "").data.title,
+			url: getPostUrlBySlug(prevPost.slug, lang),
+		}
+	: undefined;
+---
+<MainGridLayout title={trans.data.title} description={trans.data.description} keywords={trans.data.tags.join(", ")} setOGTypeArticle={true} series={trans.data.series} ogImage={ogImage} headings={headings} lang={lang} comment={entry.data.comment !== false} nextLink={nextLink} prevLink={prevLink}>
+    <script define:vars={{ effects: entry.data.effects, customHue: entryHue }} is:inline>
+        window.postEffects = effects;
+        if (customHue !== undefined && customHue !== null) {
+            window.customHue = customHue;
+            document.documentElement.style.setProperty('--hue', customHue);
+        } else {
+            window.customHue = undefined;
+        }
+    </script>
+    <script is:inline slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
+    
+    <div id="post-container" data-hue={entryHue} class="w-full">
+        <article class="translation-unit" data-unit-lang={lang}>
+            <div class:list={["card-base z-10 px-6 md:px-9 pt-6 pb-4 relative w-full mb-4"]}>
+                <!-- word count and reading time -->
+                <div class="flex flex-row text-black/30 dark:text-white/30 gap-5 mb-3 transition">
+                    <div class="flex flex-row items-center">
+                        <div class="transition h-6 w-6 rounded-md bg-black/5 dark:bg-white/10 text-black/50 dark:text-white/50 flex items-center justify-center mr-2">
+                            <Icon name="material-symbols:notes-rounded"></Icon>
+                        </div>
+                        <div class="text-sm">{remarkPluginFrontmatter.words} {" " + i18n(I18nKey.wordsCount, {}, lang)}</div>
+                    </div>
+                    <div class="flex flex-row items-center">
+                        <div class="transition h-6 w-6 rounded-md bg-black/5 dark:bg-white/10 text-black/50 dark:text-white/50 flex items-center justify-center mr-2">
+                            <Icon name="material-symbols:schedule-outline-rounded"></Icon>
+                        </div>
+                        <div class="text-sm">
+                            {remarkPluginFrontmatter.minutes} {" " + i18n(remarkPluginFrontmatter.minutes === 1 ? I18nKey.minuteCount : I18nKey.minutesCount, {}, lang)}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- title -->
+                <div class="relative">
+                    <div
+                        class="transition w-full block font-bold mb-3
+                        text-3xl md:text-[2.25rem]/[2.75rem]
+                        text-black/90 dark:text-white/90
+                        md:before:w-1 before:h-5 before:rounded-md before:bg-[var(--primary)]
+                        before:absolute before:top-[0.75rem] before:left-[-1.125rem]
+                    ">
+                        {trans.data.title}
+                        {pinningConfig.enabled && entry.data.order === 1 &&
+                            <span class="text-blue-500 text-2xl ml-2 font-medium">[{i18n(I18nKey.pinned, {}, lang)}]</span>
+                        }
+                        {pinningConfig.enabled && entry.data.order === -1 &&
+                            <span class="text-gray-400 text-2xl ml-2 font-medium">[{i18n(I18nKey.pinnedToBottom, {}, lang)}]</span>
+                        }
+                        {entry.data.effects === false &&
+                            <span class="text-red-500 text-2xl ml-2 font-medium">[{i18n(I18nKey.disabledEffects, {}, lang)}]</span>
+                        }
+                    </div>
+                </div>
+
+                {aiSummaryConfig.enabled && trans.data.ai && <AISummary content={trans.data.ai} lang={lang} />}
+
+                <!-- metadata -->
+                <div>
+                    <PostMetadata
+                            class="mb-5"
+                            published={trans.data.published}
+                            updated={trans.data.updated}
+                            tags={trans.data.tags}
+                            category={trans.data.category}
+                            lang={lang}
+                    ></PostMetadata>
+                    {!trans.data.image && <div class="border-[var(--line-divider)] border-dashed border-b-[1px] mb-5"></div>}
+                </div>
+
+                {trans.data.image &&
+                    <ImageWrapper id={`post-cover-${lang}`} src={trans.data.image} basePath={path.join("content/posts/", getDir(trans.id))} class="mb-8 rounded-xl banner-container"/>
+                }
+
+                <Markdown class="mb-6 markdown-content">
+                    <Content />
+                </Markdown>
+
+                {licenseConfig.enable && <License title={trans.data.title} slug={entry.slug} pubDate={trans.data.published} class="mb-6 rounded-xl license-container"></License>}
+
+                {shareButtonsConfig.enabled && <ShareButtons title={trans.data.title} url={Astro.url.href} class="mb-6"></ShareButtons>}
+            </div>
+
+            <!-- 上次编辑时间 -->
+            {outdatedReminderConfig.enabled && (
+                <div class="card-base p-6 mb-4">
+                    <div class="flex items-center gap-2">
+                        <div class="transition h-9 w-9 rounded-lg overflow-hidden relative flex items-center justify-center mr-0">
+                            <Icon name="material-symbols:history-rounded" class="text-4xl text-[var(--primary)] transition-transform group-hover:translate-x-0.5 bg-[var(--enter-btn-bg)] p-2 rounded-md" />
+                        </div>
+                        {(() => {
+                            const lastModified = trans.data.updated || trans.data.published;
+                            const now = new Date();
+                            const diffTime = now.getTime() - lastModified.getTime();
+                            const daysDiff = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                            const dateStr = lastModified.toISOString().split("T")[0];
+                            const isOutdated = daysDiff >= outdatedReminderConfig.outdatedThresholdDays;
+
+                            return (
+                                <div class="flex flex-col gap-0.1">
+                                    <div class="text-[1.0rem] leading-tight text-black/75 dark:text-white/75">
+                                        {`${i18n(I18nKey.lastModifiedPrefix, {}, lang)}${dateStr}${
+                                            isOutdated ? `，${i18n(I18nKey.lastModifiedDaysAgo, {}, lang).replace("{days}", daysDiff.toString())}` : ""
+                                        }`}
+                                    </div>
+                                    {isOutdated && (
+                                        <p class="text-[0.8rem] leading-tight text-black/75 dark:text-white/75">
+                                            {i18n(I18nKey.lastModifiedOutdated, {}, lang)}
+                                        </p>
+                                    )}
+                                </div>
+                            );
+                        })()}
+                    </div>
+                </div>
+            )}
+        </article>
+    </div>
+
+    <Webmention targetUrl={Astro.url.href} />
+
+    <RelatedPosts posts={relatedPosts}></RelatedPosts>
+</MainGridLayout>

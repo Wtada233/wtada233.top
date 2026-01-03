@@ -1,0 +1,21 @@
+---
+import { siteConfig } from "@configs/site";
+
+// This is a redirect page
+---
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Redirecting...</title>
+    <meta http-equiv="refresh" content={`0;url=/${siteConfig.lang}/`} />
+    <script>
+        import { resolveRedirectLanguage } from "@utils/i18n-runtime";
+        const lang = resolveRedirectLanguage();
+        window.location.pathname = "/" + lang + "/";
+    </script>
+</head>
+<body>
+    <p>Redirecting to <a href={`/${siteConfig.lang}/`}>home</a>...</p>
+</body>
+</html>
