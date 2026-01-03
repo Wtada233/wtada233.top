@@ -4,7 +4,7 @@ import Icon from "@components/common/Icon.astro";
 
 <!-- There can't be a filter on parent element, or it will break `fixed` -->
 <div class="back-to-top-wrapper">
-    <div id="back-to-top-btn" class="back-to-top-btn hide flex items-center rounded-2xl overflow-hidden transition" onclick="backToTop()">
+    <div id="back-to-top-btn" class="back-to-top-btn hide flex items-center rounded-2xl overflow-hidden transition">
         <button aria-label="Back to Top" class="btn-card h-[3.75rem] w-[3.75rem]">
             <Icon name="material-symbols:keyboard-arrow-up-rounded" class="mx-auto"></Icon>
         </button>
@@ -52,8 +52,30 @@ import Icon from "@components/common/Icon.astro";
 }
 </style>
 
-<script is:raw is:inline>
+<script>
+import { setupComponent } from "@utils/lifecycle";
+
 function backToTop() {
     window.scroll({ top: 0, behavior: 'smooth' });
 }
+
+let backToTopCleanup: (() => void) | undefined;
+
+function initBackToTop() {
+    const btn = document.getElementById('back-to-top-btn');
+    btn?.addEventListener('click', backToTop);
+    
+    backToTopCleanup = () => {
+        btn?.removeEventListener('click', backToTop);
+    };
+}
+
+const cleanup = () => {
+    if (backToTopCleanup) {
+        backToTopCleanup();
+        backToTopCleanup = undefined;
+    }
+}
+
+setupComponent('BackToTop', initBackToTop, cleanup);
 </script>
