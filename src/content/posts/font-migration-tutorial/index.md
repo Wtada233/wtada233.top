@@ -65,27 +65,9 @@ import path from 'node:path';
 import subsetFont from 'subset-font';
 import * as cheerio from 'cheerio';
 import { fontConfig } from '../src/configs/font';
+import { getFilesRecursive } from "./utils";
 
 const DIST_DIR = 'dist';
-
-/**
- * 递归获取目录下所有 HTML 文件
- */
-function getHtmlFiles(dir: string): string[] {
-    let results: string[] = [];
-    if (!fs.existsSync(dir)) return [];
-    const list = fs.readdirSync(dir);
-    for (const file of list) {
-        const fullPath = path.join(dir, file);
-        const stat = fs.statSync(fullPath);
-        if (stat && stat.isDirectory()) {
-            results = results.concat(getHtmlFiles(fullPath));
-        } else if (file.endsWith('.html')) {
-            results.push(fullPath);
-        }
-    }
-    return results;
-}
 
 /**
  * 从 HTML 中提取所有可见文本，自动移除脚本、样式并解码实体
@@ -115,7 +97,7 @@ async function main() {
     }
 
     // 1. 收集所有 HTML 中的文字
-    const htmlFiles = getHtmlFiles(DIST_DIR);
+    const htmlFiles = getFilesRecursive(DIST_DIR, [".html"]);
     if (htmlFiles.length === 0) {
         console.warn(`Dist directory '${DIST_DIR}' not found or contains no HTML files. Did you run build?`);
         return;
@@ -191,7 +173,7 @@ main().catch(err => {
 ```json
 {
   "scripts": {
-    "build": "pnpm run validate-config && astro build && pagefind --site dist && tsx scripts/font-subset.ts"
+    "build": "pnpm run validate-config && astro build && tsx scripts/font-subset.ts"
   }
 }
 ```

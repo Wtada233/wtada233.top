@@ -261,7 +261,7 @@ main();
 ```json
 // package.json
 "scripts": {
-  "build": "astro build && pagefind --site dist && node scripts/compress-font.js",
+  "build": "astro build && node scripts/compress-font.js",
   // ...
 }
 ```

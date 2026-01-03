@@ -27,7 +27,7 @@ async function downloadImage(url: string): Promise<string | null> {
 		const response = await fetch(url, { headers: { "User-Agent": "Mozilla/5.0" } });
 		if (!response.ok) throw new Error(`HTTP ${response.status}`);
 		const buffer = await response.arrayBuffer();
-		
+
 		if (buffer.byteLength < 100) {
 			console.warn(`  [WARN] Downloaded file too small (${buffer.byteLength} bytes), likely not a valid image: ${url}`);
 			return null;

@@ -9,7 +9,6 @@ export const musicPlayerConfig: MusicPlayerConfig = {
 			artist: "米津玄師",
 			cover: "/music/lemon/lemon.jpg",
 			url: "/music/lemon/lemon.mp3",
-			duration: 240,
 		},
 	],
 };

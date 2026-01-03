@@ -105,6 +105,8 @@ async function main() {
 		SITE_DOMAIN,
 		"localhost",
 		"127.0.0.1",
+		"twikoo",
+		"umami",
 		"data:", // Base64 图片
 		"blob:",
 		"mailto:",
@@ -133,8 +135,6 @@ async function main() {
 				if (value && (value.startsWith("http://") || value.startsWith("https://"))) {
 					const isAllowed = ALLOWED_DOMAINS.some((domain) => value.includes(domain));
 					if (!isAllowed) {
-						if (value.includes("twikoo")) return;
-						if (value.includes("umami")) return;
 						leaks.push(`[LEAK] In ${relativePath}: <${tag} ${attr}="${value}">`);
 						leakedAssets++;
 					}

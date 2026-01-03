@@ -62,7 +62,7 @@ Update `package.json` to trigger the script after building:
 ```json
 {
   "scripts": {
-    "build": "pnpm run validate-config && astro build && pagefind --site dist && tsx scripts/font-subset.ts"
+    "build": "pnpm run validate-config && astro build && tsx scripts/font-subset.ts"
   }
 }
 ```

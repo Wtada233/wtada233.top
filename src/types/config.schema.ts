@@ -410,7 +410,6 @@ export type MusicPlayerConfig = {
 		artist: string;
 		cover: string;
 		url: string;
-		duration: number;
 	}[];
 };
 
@@ -424,7 +423,6 @@ export const MusicPlayerConfigSchema: z.ZodType<MusicPlayerConfig> = z.object({
 				artist: z.string(),
 				cover: z.string(),
 				url: z.string(),
-				duration: z.number(),
 			}),
 		)
 		.optional(),
