@@ -160,4 +160,8 @@ export const zh_CN: Translation = {
 	[Key.adminPasswordPrompt]: "请输入管理密码：",
 	[Key.deleteFailed]: "删除失败",
 	[Key.operationFailed]: "操作失败",
+	[Key.twikooVersionMismatch]: "⚠️ Twikoo 版本不匹配",
+	[Key.twikooClient]: "TwikooLite 版本 v{version}",
+	[Key.twikooServer]: "Twikoo 版本 v{version}",
+	[Key.twikooPoweredBy]: "由 Twikoo 提供支持",
 };

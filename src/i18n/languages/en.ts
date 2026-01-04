@@ -161,4 +161,8 @@ export const en: Translation = {
 	[Key.adminPasswordPrompt]: "Enter Admin Password:",
 	[Key.deleteFailed]: "Delete failed",
 	[Key.operationFailed]: "Operation failed",
+	[Key.twikooVersionMismatch]: "⚠️ Twikoo Version Mismatch",
+	[Key.twikooClient]: "TwikooLite v{version}",
+	[Key.twikooServer]: "Twikoo v{version}",
+	[Key.twikooPoweredBy]: "Powered by",
 };

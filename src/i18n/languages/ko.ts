@@ -162,4 +162,8 @@ export const ko: Translation = {
 	[Key.adminPasswordPrompt]: "관리자 비밀번호를 입력해 주세요:",
 	[Key.deleteFailed]: "삭제 실패",
 	[Key.operationFailed]: "작업 실패",
+	[Key.twikooVersionMismatch]: "⚠️ Twikoo 버전 불일치",
+	[Key.twikooClient]: "TwikooLite v{version}",
+	[Key.twikooServer]: "Twikoo v{version}",
+	[Key.twikooPoweredBy]: "Powered by",
 };

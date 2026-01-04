@@ -162,4 +162,8 @@ export const ja: Translation = {
 	[Key.adminPasswordPrompt]: "管理者パスワードを入力してください：",
 	[Key.deleteFailed]: "削除に失敗しました",
 	[Key.operationFailed]: "操作に失敗しました",
+	[Key.twikooVersionMismatch]: "⚠️ Twikoo バージョン不一致",
+	[Key.twikooClient]: "TwikooLite v{version}",
+	[Key.twikooServer]: "Twikoo v{version}",
+	[Key.twikooPoweredBy]: "Powered by",
 };

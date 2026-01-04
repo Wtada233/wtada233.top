@@ -162,4 +162,8 @@ export const zh_TW: Translation = {
 	[Key.adminPasswordPrompt]: "請輸入管理密碼：",
 	[Key.deleteFailed]: "刪除失敗",
 	[Key.operationFailed]: "操作失敗",
+	[Key.twikooVersionMismatch]: "⚠️ Twikoo 版本不符",
+	[Key.twikooClient]: "TwikooLite 版本 v{version}",
+	[Key.twikooServer]: "Twikoo 版本 v{version}",
+	[Key.twikooPoweredBy]: "由 Twikoo 提供支援",
 };

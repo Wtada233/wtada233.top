@@ -43,6 +43,10 @@ const translations = {
 	adminPasswordPrompt: i18n(I18nKey.adminPasswordPrompt, {}, lang),
 	deleteFailed: i18n(I18nKey.deleteFailed, {}, lang),
 	operationFailed: i18n(I18nKey.operationFailed, {}, lang),
+	twikooVersionMismatch: i18n(I18nKey.twikooVersionMismatch, {}, lang),
+	twikooClient: i18n(I18nKey.twikooClient, {}, lang),
+	twikooServer: i18n(I18nKey.twikooServer, {}, lang),
+	twikooPoweredBy: i18n(I18nKey.twikooPoweredBy, {}, lang),
 };
 ---
 
@@ -132,6 +136,7 @@ const translations = {
         likeLoading: Set<string> = new Set();
         destroyed: boolean = false;
         abortController: AbortController = new AbortController();
+        ADAPTED_VERSION = '1.6.44';
 
         constructor(container: HTMLElement) {
             this.container = container;
@@ -157,7 +162,7 @@ const translations = {
                     }),
                     signal: this.abortController.signal
                 });
-                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                if (!res.ok) throw new Error('HTTP ' + res.status);
                 return await res.json();
             } catch (e: any) {
                 if (e.name === 'AbortError') return;
@@ -178,12 +183,42 @@ const translations = {
             try {
                 const res = await this.call('GET_CONFIG');
                 if (this.destroyed || !res) return;
+                
+                const serverVersion = res.config?.VERSION || res.version || 'N/A';
+                const clientVerStr = this.i18n.twikooClient.replace('{version}', this.ADAPTED_VERSION);
+                const serverVerStr = this.i18n.twikooServer.replace('{version}', serverVersion);
+
+                if (serverVersion !== 'N/A' && serverVersion !== this.ADAPTED_VERSION) {
+                    const warning = document.createElement('div');
+                    warning.className = 'bg-yellow-500/10 border border-yellow-500/20 text-yellow-600 dark:text-yellow-400 px-4 py-2 rounded-xl mb-4 text-sm text-center';
+                    warning.innerHTML = this.i18n.twikooVersionMismatch + '<br><span class="opacity-80 text-xs">' + clientVerStr + ' / ' + serverVerStr + '</span>';
+                    this.container.prepend(warning);
+                }
+
+                // Render Footer
+                this.renderFooter(serverVerStr, clientVerStr);
+
                 this.isAdmin = !!(res.result?.config?.IS_ADMIN || res.config?.IS_ADMIN);
                 this.container.dataset.admin = String(this.isAdmin);
             } catch (e) {
                 this.isAdmin = false;
                 this.container.dataset.admin = "false";
+                const clientVerStr = this.i18n.twikooClient.replace('{version}', this.ADAPTED_VERSION);
+                const serverVerStr = this.i18n.twikooServer.replace('{version}', 'N/A');
+                this.renderFooter(serverVerStr, clientVerStr);
             }
+        }
+
+        renderFooter(serverVerStr: string, clientVerStr: string) {
+            const existingFooter = this.container.querySelector('.tk-footer');
+            if (existingFooter) {
+                existingFooter.remove();
+            }
+            
+            const footer = document.createElement('div');
+            footer.className = 'tk-footer w-full text-right mt-8 text-xs text-black/40 dark:text-white/40 transition-colors opacity-60 hover:opacity-100';
+            footer.innerHTML = this.i18n.twikooPoweredBy + ' ' + serverVerStr + ', ' + clientVerStr;
+            this.container.appendChild(footer);
         }
 
         destroy() {

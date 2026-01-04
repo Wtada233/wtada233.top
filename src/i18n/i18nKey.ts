@@ -162,6 +162,10 @@ enum I18nKey {
 	adminPasswordPrompt = "adminPasswordPrompt",
 	deleteFailed = "deleteFailed",
 	operationFailed = "operationFailed",
+	twikooVersionMismatch = "twikooVersionMismatch",
+	twikooClient = "twikooClient",
+	twikooServer = "twikooServer",
+	twikooPoweredBy = "twikooPoweredBy",
 }
 
 export default I18nKey;
