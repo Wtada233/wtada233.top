@@ -1,17 +1,6 @@
 import { z } from "zod";
 import { LinkPreset } from "@/types/enums";
 
-export type SearchConfig = {
-	enable: boolean;
-	debounce: number;
-	indexMaxChars: number;
-	indexContent: boolean;
-	indexCategories: boolean;
-	indexTags: boolean;
-	indexSeries: boolean;
-	indexDescription: boolean;
-};
-
 export type SeoConfig = {
 	twitterId?: string;
 	googleSiteVerification?: string;
@@ -47,7 +36,7 @@ export const SiteConfigSchema: z.ZodType<SiteConfig> = z.object({
 	themeColor: z.object({
 		hue: z.number().min(0).max(360),
 	}),
-	showLastModified: z.boolean().optional(),
+	showLastModified: z.boolean().default(true),
 });
 
 export type BannerConfig = {
@@ -454,15 +443,26 @@ export const UmamiConfigSchema: z.ZodType<UmamiConfig> = z.object({
 	shareToken: z.string(),
 });
 
-export const SearchConfigSchema: z.ZodType<SearchConfig> = z.object({
+export type SearchConfig = {
+	enable: boolean;
+	debounce: number;
+	indexMaxChars: number;
+	indexContent: boolean;
+	indexCategories: boolean;
+	indexTags: boolean;
+	indexSeries: boolean;
+	indexDescription: boolean;
+};
+
+export const SearchConfigSchema: z.ZodTypeAny = z.object({
 	enable: z.boolean(),
-	debounce: z.number().int().min(0),
-	indexMaxChars: z.number().int().min(0),
-	indexContent: z.boolean(),
-	indexCategories: z.boolean(),
-	indexTags: z.boolean(),
-	indexSeries: z.boolean(),
-	indexDescription: z.boolean(),
+	debounce: z.number().int().min(0).default(100),
+	indexMaxChars: z.number().int().min(0).default(5000),
+	indexContent: z.boolean().default(false),
+	indexCategories: z.boolean().default(false),
+	indexTags: z.boolean().default(false),
+	indexSeries: z.boolean().default(false),
+	indexDescription: z.boolean().default(true),
 });
 
 export type AdaptiveThemeConfig = {

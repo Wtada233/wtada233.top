@@ -59,7 +59,7 @@ export function resolveRedirectLanguage(): SupportedLanguage {
 
 	// 3. Check localStorage
 	const storedLang = getStoredLanguage();
-	if (storedLang) return storedLang;
+	if (storedLang && SUPPORTED_LANGUAGES.includes(storedLang)) return storedLang;
 
 	return siteConfig.lang as SupportedLanguage;
 }

@@ -4,6 +4,7 @@ import path from "node:path";
 import type { HTML, Image, Root } from "mdast";
 import remarkDirective from "remark-directive";
 import remarkParse from "remark-parse";
+import sharp from "sharp";
 import { unified } from "unified";
 import { visit } from "unist-util-visit";
 import { getFilesRecursive, getSiteDomain } from "./utils";
@@ -34,16 +35,24 @@ async function downloadImage(url: string): Promise<string | null> {
 		}
 
 		const contentType = response.headers.get("content-type");
+		let ext = "";
 
-		let ext = path.extname(new URL(url).pathname);
-		if (!ext && contentType) {
-			if (contentType.includes("image/jpeg")) ext = ".jpg";
-			else if (contentType.includes("image/png")) ext = ".png";
-			else if (contentType.includes("image/webp")) ext = ".webp";
-			else if (contentType.includes("image/gif")) ext = ".gif";
-			else if (contentType.includes("image/svg")) ext = ".svg";
+		try {
+			const metadata = await sharp(Buffer.from(buffer)).metadata();
+			ext = `.${metadata.format}`;
+		} catch {
+			// Fallback to URL/Header detection
+			ext = path.extname(new URL(url).pathname);
+			if (!ext && contentType) {
+				if (contentType.includes("image/jpeg")) ext = ".jpg";
+				else if (contentType.includes("image/png")) ext = ".png";
+				else if (contentType.includes("image/webp")) ext = ".webp";
+				else if (contentType.includes("image/gif")) ext = ".gif";
+				else if (contentType.includes("image/svg")) ext = ".svg";
+			}
 		}
-		if (!ext) ext = ".webp";
+
+		if (!ext || ext === ".undefined") ext = ".webp";
 
 		const hash = crypto.createHash("md5").update(Buffer.from(buffer)).digest("hex");
 		const filename = `${hash}${ext}`;

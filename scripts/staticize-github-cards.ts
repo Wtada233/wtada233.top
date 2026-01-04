@@ -87,10 +87,15 @@ async function fetchWithRetry(url: string, retries = 5, headers: HeadersInit = {
 
 async function fetchRepoData(repo: string) {
 	console.log(`  >> Fetching GitHub data: ${repo}`);
+	const headers: HeadersInit = {
+		"User-Agent": "Astro-Blog-Staticizer",
+	};
+	if (process.env.GITHUB_TOKEN) {
+		headers.Authorization = `token ${process.env.GITHUB_TOKEN}`;
+	}
+
 	try {
-		const response = await fetchWithRetry(`https://api.github.com/repos/${repo}`, 5, {
-			"User-Agent": "Astro-Blog-Staticizer",
-		});
+		const response = await fetchWithRetry(`https://api.github.com/repos/${repo}`, 5, headers);
 
 		if (!response) {
 			console.warn(`  [WARN] Failed to fetch data for ${repo} (After retries)`);
