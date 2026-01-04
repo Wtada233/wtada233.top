@@ -34,8 +34,4 @@ if (typeof window !== "undefined") {
 		},
 		{ passive: true },
 	);
-
-	document.addEventListener("astro:after-swap", () => {
-		_cachedScrollHeight = 0;
-	});
 }

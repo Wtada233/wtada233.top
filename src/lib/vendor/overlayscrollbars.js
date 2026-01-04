@@ -1,3 +1,9 @@
+/**
+ * ATTENTION: This library version is strictly coupled with the project's
+ * lifecycle management (Swup integration). DO NOT update manually via npm
+ * unless you are prepared to re-apply custom patches and verify compatibility.
+ * Manual updates may break the codebase.
+ */
 /*!
  * OverlayScrollbars
  * Version: 2.13.0

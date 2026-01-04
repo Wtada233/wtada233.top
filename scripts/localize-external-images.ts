@@ -149,9 +149,8 @@ async function main() {
 			} else if (node.type === "html") {
 				const n = node as HTML;
 				const imgRegex = /<img\s+[^>]*src=(["'])([^"']+)\1[^>]*>/gi;
-				let match: RegExpExecArray | null;
-				// biome-ignore lint/suspicious/noAssignInExpressions: <check later>
-				while ((match = imgRegex.exec(n.value)) !== null) {
+				let match = imgRegex.exec(n.value);
+				while (match !== null) {
 					const url = match[2];
 					if (url.startsWith("http") && !ALLOWED_DOMAINS.some((domain) => url.includes(domain))) {
 						const startOffset = (node.position?.start.offset || 0) + match.index;
@@ -161,6 +160,7 @@ async function main() {
 							newUrl: url,
 						});
 					}
+					match = imgRegex.exec(n.value);
 				}
 			}
 		});
