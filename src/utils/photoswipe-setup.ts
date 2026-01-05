@@ -1,9 +1,9 @@
 import { siteConfig } from "@configs/site";
 import { setupComponent } from "@utils/lifecycle";
-import PhotoSwipeLightbox from "../lib/vendor/photoswipe-lightbox.js";
+import PhotoSwipeLightbox from "photoswipe/lightbox";
 
 let lightbox: PhotoSwipeLightbox;
-const pswp = import("../lib/vendor/photoswipe.js");
+const pswp = import("photoswipe");
 
 function initLightbox() {
 	if (lightbox) {
