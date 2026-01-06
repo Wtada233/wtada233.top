@@ -121,6 +121,7 @@ const translations = {
 
 <script>
     import { setupComponent } from "@utils/lifecycle";
+    import { renderMath } from "@utils/katex-loader";
     import { marked } from "marked";
     import md5 from "blueimp-md5";
 
@@ -414,6 +415,7 @@ const translations = {
                 return;
             }
             this.listContainer.innerHTML = comments.map(c => this.renderCommentItem(c, null)).join('');
+            renderMath(this.listContainer);
         }
 
         getAvatar(c: any) {

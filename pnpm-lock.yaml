@@ -56,6 +56,9 @@ importers:
       flexsearch:
         specifier: ^0.8.212
         version: 0.8.212
+      katex:
+        specifier: ^0.16.27
+        version: 0.16.27
       mdast-util-to-string:
         specifier: ^4.0.0
         version: 4.0.0
@@ -114,6 +117,9 @@ importers:
       '@types/hast':
         specifier: ^3.0.4
         version: 3.0.4
+      '@types/katex':
+        specifier: ^0.16.7
+        version: 0.16.7
       '@types/mdast':
         specifier: ^4.0.4
         version: 4.0.4
