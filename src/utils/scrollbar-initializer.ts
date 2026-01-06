@@ -8,9 +8,6 @@ export function initCustomScrollbar(): void {
 		// but just leave it here for now
 		{
 			target: bodyElement,
-			cancel: {
-				nativeScrollbarsOverlaid: true, // don't initialize the overlay scrollbar if there is a native one
-			},
 		},
 		{
 			scrollbars: {
