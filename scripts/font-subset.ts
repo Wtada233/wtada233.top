@@ -3,9 +3,7 @@ import path from "node:path";
 import { fontConfig } from "@configs/font";
 import * as cheerio from "cheerio";
 import subsetFont from "subset-font";
-import { getFilesRecursive } from "./utils";
-
-const DIST_DIR = "dist";
+import { DIST_DIR, getFilesRecursive } from "./utils";
 
 /**
  * 从 HTML 中提取所有可见文本，自动移除脚本、样式并解码实体

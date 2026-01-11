@@ -6,28 +6,14 @@ import remarkDirective from "remark-directive";
 import remarkParse from "remark-parse";
 import { unified } from "unified";
 import { visit } from "unist-util-visit";
-import { getFilesRecursive } from "./utils";
+import { CONTENT_DIR, cleanupOrphanedFiles, EXTERNAL_ASSETS_DIR, fetchWithRetry, getFilesRecursive, SAVE_DIR } from "./utils";
 
 /**
  * 📦 源码级 GitHub 卡片静态化工具 (API 优先 + 自动重试版)
- *
- * 策略：
- * 1. 总是尝试请求 GitHub API 获取最新数据。
- * 2. 如果请求成功，更新 Markdown 源码。
- * 3. 如果请求失败（重试 5 次后），保留源码中原有的静态数据。
  */
-
-const CONTENT_DIR = "src/content";
-const PUBLIC_DIR = "public";
-const AVATAR_PATH = path.join("assets", "external");
-const SAVE_DIR = path.join(PUBLIC_DIR, AVATAR_PATH);
 
 if (!fs.existsSync(SAVE_DIR)) {
 	fs.mkdirSync(SAVE_DIR, { recursive: true });
-}
-
-async function wait(ms: number) {
-	return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 async function downloadAvatar(url: string): Promise<string | null> {
@@ -51,7 +37,7 @@ async function downloadAvatar(url: string): Promise<string | null> {
 		const hash = crypto.createHash("md5").update(Buffer.from(buffer)).digest("hex");
 		const filename = `avatar-${hash}.png`;
 		const savePath = path.join(SAVE_DIR, filename);
-		const publicUrl = `/${AVATAR_PATH}/${filename}`;
+		const publicUrl = `/${EXTERNAL_ASSETS_DIR}/${filename}`;
 
 		if (!fs.existsSync(savePath)) {
 			fs.writeFileSync(savePath, Buffer.from(buffer));
@@ -61,28 +47,6 @@ async function downloadAvatar(url: string): Promise<string | null> {
 		console.warn(`  [WARN] Failed to download avatar ${url}: ${String(e)}`);
 		return null;
 	}
-}
-
-async function fetchWithRetry(url: string, retries = 5, headers: HeadersInit = {}): Promise<Response | null> {
-	for (let i = 0; i < retries; i++) {
-		try {
-			const response = await fetch(url, { headers });
-			if (response.ok) return response;
-			if (response.status === 404) return null; // 404 不重试
-			if (response.status === 403) {
-				// Rate limit hit
-				console.warn(`  [RATE LIMIT] Hit limit for ${url}, waiting...`);
-				await wait(1000 * (i + 1));
-			}
-			throw new Error(`HTTP ${response.status}`);
-		} catch (e) {
-			if (i === retries - 1) throw e;
-			const delay = 1000 * 2 ** i; // 指数退避
-			console.log(`  [RETRY] ${url} failed, retrying in ${delay}ms...`);
-			await wait(delay);
-		}
-	}
-	return null;
 }
 
 async function fetchRepoData(repo: string) {
@@ -124,32 +88,6 @@ async function fetchRepoData(repo: string) {
 		console.warn(`  [ERROR] Network error for ${repo}: ${String(e)}`);
 		return null;
 	}
-}
-
-function cleanupOrphanedFiles() {
-	console.log("\x1b[33m%s\x1b[0m", ">> Cleaning up orphaned avatars...");
-	const allFiles = getFilesRecursive(CONTENT_DIR, [".md", ".mdx"]);
-	const existingAssets = fs.readdirSync(SAVE_DIR);
-	const usedAssets = new Set<string>();
-
-	for (const file of allFiles) {
-		const content = fs.readFileSync(file, "utf-8");
-		for (const asset of existingAssets) {
-			if (content.includes(asset)) {
-				usedAssets.add(asset);
-			}
-		}
-	}
-
-	let deletedCount = 0;
-	for (const asset of existingAssets) {
-		if (!usedAssets.has(asset)) {
-			fs.unlinkSync(path.join(SAVE_DIR, asset));
-			console.log(`  [CLEANUP] Deleted orphaned avatar: ${asset}`);
-			deletedCount++;
-		}
-	}
-	console.log(`>> Cleanup completed. (${deletedCount} assets removed)`);
 }
 
 interface DirectiveNode {
@@ -232,7 +170,7 @@ async function main() {
 		}
 	}
 	console.log("\x1b[32m%s\x1b[0m", ">> GitHub Source Staticization completed.");
-	cleanupOrphanedFiles();
+	cleanupOrphanedFiles("avatars");
 }
 
 main().catch(console.error);

@@ -1,24 +1,13 @@
 import fs from "node:fs";
 import path from "node:path";
 import * as cheerio from "cheerio";
-import { Friends } from "../src/configs/friends";
-import { getFilesRecursive, getSiteDomain } from "./utils";
-
-/**
- * 🕵️ 站点完整性与离线化漏洞检测工具 (Merged Version)
- * 目的：
- * 1. 确保构建产物中不含有任何未授权的外部依赖 (Asset Integrity)。
- * 2. 检查站点中的外部链接是否可用 (Link Connectivity)。
- * 验证“十年之约”离线生存能力与长期维护性。
- */
-
 import type { Root } from "mdast";
 import remarkDirective from "remark-directive";
 import remarkParse from "remark-parse";
 import { unified } from "unified";
 import { visit } from "unist-util-visit";
-
-const DIST_DIR = "dist";
+import { Friends } from "../src/configs/friends";
+import { DIST_DIR, getFilesRecursive, getSiteDomain, POSTS_DIR } from "./utils";
 
 // 允许存在的外部链接（例如友链、社交媒体跳转），但不允许资源类链接（img, script, link）
 const ASSET_TAGS = {
@@ -155,11 +144,10 @@ async function main() {
 	const urlsToCheck = new Set<string>();
 	for (const f of Friends) urlsToCheck.add(f.siteurl);
 
-	const postsDir = "src/content/posts";
-	const sourceFiles = fs.readdirSync(postsDir, { recursive: true }) as string[];
+	const sourceFiles = fs.readdirSync(POSTS_DIR, { recursive: true }) as string[];
 	for (const file of sourceFiles) {
 		if (file.endsWith(".md") || file.endsWith(".mdx")) {
-			const content = fs.readFileSync(path.join(postsDir, file), "utf-8");
+			const content = fs.readFileSync(path.join(POSTS_DIR, file), "utf-8");
 			for (const url of extractUrlsFromMarkdown(content)) urlsToCheck.add(url);
 		}
 	}

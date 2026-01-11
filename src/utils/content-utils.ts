@@ -71,12 +71,13 @@ export async function getGroupedPosts(): Promise<GroupedPost[]> {
 		if (!group) continue;
 		let lang = siteConfig.lang as SupportedLanguage;
 
-		// Map special lang codes if necessary
-		if (post.id.endsWith(".en.md")) lang = "en";
-		else if (post.id.endsWith(".zh_CN.md")) lang = "zh_CN";
-		else if (post.id.endsWith(".zh_TW.md")) lang = "zh_TW";
-		else if (post.id.endsWith(".ja.md")) lang = "ja";
-		else if (post.id.endsWith(".ko.md")) lang = "ko";
+		// Map language code from file suffix
+		for (const l of SUPPORTED_LANGUAGES) {
+			if (post.id.endsWith(`.${l}.md`) || post.id.includes(`.${l}/`)) {
+				lang = l as SupportedLanguage;
+				break;
+			}
+		}
 
 		group.translations[lang] = post;
 	}

@@ -193,7 +193,7 @@ const prevLink = prevPost
             </div>
 
             <!-- 上次编辑时间 -->
-            {outdatedReminderConfig.enabled && (
+            {siteConfig.showLastModified && (
                 <div class="card-base p-6 mb-4">
                     <div class="flex items-center gap-2">
                         <div class="transition h-9 w-9 rounded-lg overflow-hidden relative flex items-center justify-center mr-0">
@@ -205,7 +205,7 @@ const prevLink = prevPost
                             const diffTime = now.getTime() - lastModified.getTime();
                             const daysDiff = Math.floor(diffTime / (1000 * 60 * 60 * 24));
                             const dateStr = lastModified.toISOString().split("T")[0];
-                            const isOutdated = daysDiff >= outdatedReminderConfig.outdatedThresholdDays;
+                            const isOutdated = outdatedReminderConfig.enabled && daysDiff >= outdatedReminderConfig.outdatedThresholdDays;
 
                             return (
                                 <div class="flex flex-col gap-0.1">

@@ -3,10 +3,9 @@ import path from "node:path";
 import sharp from "sharp";
 import { fontConfig } from "../src/configs/font";
 import { siteConfig } from "../src/configs/site";
-import { getFilesRecursive } from "./utils";
+import { DIST_DIR, getFilesRecursive, POSTS_DIR, parseFrontmatter, SUPPORTED_LANGUAGES } from "./utils";
 
-const POSTS_DIR = "src/content/posts";
-const OUTPUT_DIR = "dist/assets/og";
+const OUTPUT_DIR = path.join(DIST_DIR, "assets", "og");
 
 // Ensure output directory exists
 if (!fs.existsSync(OUTPUT_DIR)) {
@@ -15,31 +14,6 @@ if (!fs.existsSync(OUTPUT_DIR)) {
 
 // Load font Path for rendering
 const primaryFont = fontConfig.fonts[0];
-
-function parseFrontmatter(content: string) {
-	const match = content.match(/^---[\r\n]+([\s\S]+?)[\r\n]+---/);
-	const result = { title: "Untitled", image: "", og_theme: "light" };
-	if (!match) return result;
-
-	const yamlContent = match[1];
-	// More robust field extraction
-	const getField = (field: string) => {
-		const regex = new RegExp(`^${field}:\\s*(.*)$`, "m");
-		const m = yamlContent.match(regex);
-		if (!m) return "";
-		let val = m[1].trim();
-		if ((val.startsWith("'") && val.endsWith("'")) || (val.startsWith('"') && val.endsWith('"'))) {
-			val = val.slice(1, -1);
-		}
-		return val;
-	};
-
-	result.title = getField("title") || "Untitled";
-	result.image = getField("image");
-	result.og_theme = getField("og_theme") || "light";
-
-	return result;
-}
 
 function stringToColor(str: string, baseHue: number, isDark = false) {
 	let hash = 0;
@@ -155,14 +129,16 @@ async function main() {
 	}
 	const files = getFilesRecursive(POSTS_DIR, [".md", ".mdx"]);
 
-	const supportedLangs = ["en", "zh_CN", "zh_TW", "ja", "ko"];
 	const defaultLang = siteConfig.lang;
 
 	let count = 0;
 
 	for (const file of files) {
 		const content = fs.readFileSync(file, "utf-8");
-		const { title, image, og_theme } = parseFrontmatter(content);
+		const frontmatter = parseFrontmatter(content);
+		const title = frontmatter.title || "Untitled";
+		const image = frontmatter.image;
+		const og_theme = frontmatter.og_theme || "light";
 
 		const relativePath = path.relative(POSTS_DIR, file);
 		const parsed = path.parse(relativePath);
@@ -170,7 +146,7 @@ async function main() {
 		let slug = parsed.dir ? `${parsed.dir}/${parsed.name}` : parsed.name;
 		let lang = defaultLang;
 
-		for (const l of supportedLangs) {
+		for (const l of SUPPORTED_LANGUAGES) {
 			if (slug.endsWith(`.${l}`)) {
 				slug = slug.substring(0, slug.length - l.length - 1);
 				lang = l;

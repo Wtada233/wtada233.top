@@ -7,16 +7,11 @@ import remarkParse from "remark-parse";
 import sharp from "sharp";
 import { unified } from "unified";
 import { visit } from "unist-util-visit";
-import { getFilesRecursive, getSiteDomain } from "./utils";
+import { CONTENT_DIR, cleanupOrphanedFiles, EXTERNAL_ASSETS_DIR, getAllowedDomains, getFilesRecursive, parseFrontmatter, SAVE_DIR } from "./utils";
 
 /**
  * 🖼️ 源码级外链图片本地化工具 (AST 稳健版)
  */
-
-const CONTENT_DIR = "src/content";
-const PUBLIC_DIR = "public";
-const EXTERNAL_IMG_PATH = path.join("assets", "external");
-const SAVE_DIR = path.join(PUBLIC_DIR, EXTERNAL_IMG_PATH);
 
 if (!fs.existsSync(SAVE_DIR)) {
 	fs.mkdirSync(SAVE_DIR, { recursive: true });
@@ -25,8 +20,8 @@ if (!fs.existsSync(SAVE_DIR)) {
 async function downloadImage(url: string): Promise<string | null> {
 	console.log(`  >> Downloading image: ${url}`);
 	try {
-		const response = await fetch(url, { headers: { "User-Agent": "Mozilla/5.0" } });
-		if (!response.ok) throw new Error(`HTTP ${response.status}`);
+		const response = await fetchWithRetry(url, 3, { "User-Agent": "Mozilla/5.0" });
+		if (!response || !response.ok) throw new Error(`HTTP ${response?.status || "Unknown"}`);
 		const buffer = await response.arrayBuffer();
 
 		if (buffer.byteLength < 100) {
@@ -57,7 +52,7 @@ async function downloadImage(url: string): Promise<string | null> {
 		const hash = crypto.createHash("md5").update(Buffer.from(buffer)).digest("hex");
 		const filename = `${hash}${ext}`;
 		const savePath = path.join(SAVE_DIR, filename);
-		const publicUrl = `/${EXTERNAL_IMG_PATH}/${filename}`;
+		const publicUrl = `/${EXTERNAL_ASSETS_DIR}/${filename}`;
 
 		if (!fs.existsSync(savePath)) {
 			fs.writeFileSync(savePath, Buffer.from(buffer));
@@ -69,37 +64,10 @@ async function downloadImage(url: string): Promise<string | null> {
 	}
 }
 
-function cleanupOrphanedFiles() {
-	console.log("\x1b[33m%s\x1b[0m", ">> Cleaning up orphaned assets...");
-	const allFiles = getFilesRecursive(CONTENT_DIR, [".md", ".mdx"]);
-	const existingAssets = fs.readdirSync(SAVE_DIR);
-	const usedAssets = new Set<string>();
-
-	for (const file of allFiles) {
-		const content = fs.readFileSync(file, "utf-8");
-		for (const asset of existingAssets) {
-			if (content.includes(asset)) {
-				usedAssets.add(asset);
-			}
-		}
-	}
-
-	let deletedCount = 0;
-	for (const asset of existingAssets) {
-		if (!usedAssets.has(asset)) {
-			fs.unlinkSync(path.join(SAVE_DIR, asset));
-			console.log(`  [CLEANUP] Deleted orphaned asset: ${asset}`);
-			deletedCount++;
-		}
-	}
-	console.log(`>> Cleanup completed. (${deletedCount} assets removed)`);
-}
-
 async function main() {
 	console.log("\x1b[36m%s\x1b[0m", ">> Starting Source-level Image Localization (AST Mode)...");
 
-	const SITE_DOMAIN = await getSiteDomain();
-	const ALLOWED_DOMAINS = [SITE_DOMAIN, "localhost", "127.0.0.1"];
+	const ALLOWED_DOMAINS = await getAllowedDomains();
 
 	const files = getFilesRecursive(CONTENT_DIR, [".md", ".mdx"]);
 	const processor = unified().use(remarkParse).use(remarkDirective);
@@ -110,34 +78,16 @@ async function main() {
 		let content = rawContent;
 
 		// 1. Process Frontmatter image field
-		const fmMatch = rawContent.match(/^---[\r\n]+([\s\S]+?)[\r\n]+---/);
-		if (fmMatch) {
-			const lines = fmMatch[1].split(/[\r\n]+/);
-			let externalUrl = "";
-			for (const line of lines) {
-				const colonIdx = line.indexOf(":");
-				if (colonIdx === -1) continue;
-				const key = line.slice(0, colonIdx).trim();
-				if (key === "image") {
-					let val = line.slice(colonIdx + 1).trim();
-					if ((val.startsWith("'") && val.endsWith("'")) || (val.startsWith('"') && val.endsWith('"'))) {
-						val = val.slice(1, -1);
-					}
-					if (val.startsWith("http")) {
-						externalUrl = val;
-					}
-					break;
-				}
-			}
+		const frontmatter = parseFrontmatter(rawContent);
+		const externalUrl = frontmatter.image;
 
-			if (externalUrl && !ALLOWED_DOMAINS.some((domain) => externalUrl.includes(domain))) {
-				const localPath = await downloadImage(externalUrl);
-				if (localPath) {
-					content = content.replace(externalUrl, localPath);
-					totalDownloads++;
-				} else {
-					console.warn(`\x1b[33m[WARN]\x1b[0m Skipping localization for Frontmatter image: ${externalUrl} (Offline or Network Error)`);
-				}
+		if (externalUrl?.startsWith("http") && !ALLOWED_DOMAINS.some((domain) => externalUrl.includes(domain))) {
+			const localPath = await downloadImage(externalUrl);
+			if (localPath) {
+				content = content.replace(externalUrl, localPath);
+				totalDownloads++;
+			} else {
+				console.warn(`\x1b[33m[WARN]\x1b[0m Skipping localization for Frontmatter image: ${externalUrl} (Offline or Network Error)`);
 			}
 		}
 
