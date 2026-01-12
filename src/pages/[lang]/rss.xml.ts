@@ -1,6 +1,7 @@
 import path from "node:path";
 import rss from "@astrojs/rss";
 import type { APIContext } from "astro";
+import * as cheerio from "cheerio";
 import { marked } from "marked";
 import { siteConfig } from "@/configs/site";
 import { getPostTranslation, getSortedPosts } from "@/utils/content-utils";
@@ -55,16 +56,20 @@ export async function GET(context: APIContext): Promise<Response> {
 		// In simple cases it's a string, but to be safe with future versions we await it.
 		let renderedContent = await marked.parse(cleanedContent);
 
-		// Resolve absolute image paths properly with async resolveImage
-		const imgRegex = /<img\s+[^>]*src=(?:(["'])(.*?)\1|([^>\s]+))[^>]*>/gi;
-		const matches = Array.from(renderedContent.matchAll(imgRegex));
+		// Use cheerio to parse and manipulate HTML
+		// load with null as root to avoid adding <html><body> wrapper for fragments
+		const $ = cheerio.load(renderedContent, null, false);
+		const imgTags = $("img");
 
-		const resolvedUrls = new Map<string, string>();
-		await Promise.all(
-			matches.map(async (match) => {
-				const src = match[2] || match[3];
-				if (!src || src.startsWith("http") || src.startsWith("data:")) return;
+		// Collect all promises for image resolution
+		const promises: Promise<void>[] = [];
 
+		imgTags.each((_, el) => {
+			const img = $(el);
+			const src = img.attr("src");
+			if (!src || src.startsWith("http") || src.startsWith("data:")) return;
+
+			const promise = (async () => {
 				try {
 					let absoluteUrl = "";
 					if (src.startsWith("/")) {
@@ -82,20 +87,17 @@ export async function GET(context: APIContext): Promise<Response> {
 						}
 					}
 					if (absoluteUrl) {
-						resolvedUrls.set(src, absoluteUrl);
+						img.attr("src", absoluteUrl);
 					}
 				} catch (e) {
 					console.error(`Failed to resolve image ${src} in post ${post.slug}`, e);
 				}
-			}),
-		);
+			})();
+			promises.push(promise);
+		});
 
-		// Apply all resolved URLs
-		for (const [src, absoluteUrl] of resolvedUrls.entries()) {
-			// Replace all occurrences of this specific src
-			renderedContent = renderedContent.split(`src="${src}"`).join(`src="${absoluteUrl}"`);
-			renderedContent = renderedContent.split(`src='${src}'`).join(`src='${absoluteUrl}'`);
-		}
+		await Promise.all(promises);
+		renderedContent = $.html();
 
 		const itemLink = getPostUrlBySlug(post.slug, currentLang);
 
