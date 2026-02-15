@@ -36,6 +36,7 @@
     "flexsearch": "^0.8.212",
     "katex": "^0.16.27",
     "mdast-util-to-string": "^4.0.0",
+    "node-gyp": "^12.2.0",
     "overlayscrollbars": "2.13.0",
     "photoswipe": "5.4.4",
     "rehype-autolink-headings": "^7.1.0",
