@@ -118,10 +118,12 @@ function initSearch() {
     };
 
     const initIndex = async () => {
-        if (initialized) return;
+        if (initialized && index) return;
         try {
-            const response = await fetch(url("/search-index.json"));
-            rawData = await response.json();
+            if (rawData.length === 0) {
+                const response = await fetch(url("/search-index.json"));
+                rawData = await response.json();
+            }
 
             index = new FlexSearch.Document({
                 document: {
@@ -152,7 +154,7 @@ function initSearch() {
 
     const performSearch = async (keyword: string) => {
         searchTerm = keyword;
-        if (!initialized) await initIndex();
+        if (!initialized || !index) await initIndex();
 
         const hasActiveFilters = Object.keys(activeFilters).length > 0;
         if (!keyword && !hasActiveFilters) {
@@ -319,6 +321,21 @@ function initSearch() {
         if (!panel.classList.contains("float-panel-closed")) inputMobile?.focus();
     });
 
+    // Handle language changes during Swup page transitions
+    if ((window as any).swup) {
+        (window as any).swup.hooks.on('content:replace', () => {
+            const newLang = getRuntimeLanguage();
+            if (newLang !== currentLang) {
+                currentLang = newLang;
+                initialized = false; // Trigger re-index on next search
+                if (rawData.length > 0) {
+                    index = null; // Clear old index
+                    renderFilters(); // Update filter labels
+                }
+            }
+        });
+    }
+
     const handleClickOutside = (e: MouseEvent) => {
         if (!container.contains(e.target as Node) && !panel.contains(e.target as Node)) {
             panel.classList.add("float-panel-closed");
@@ -326,23 +343,8 @@ function initSearch() {
     };
 
     document.addEventListener('click', handleClickOutside);
-    
-    // Cleanup reference
-    const cleanupSelf = () => {
-        document.removeEventListener('click', handleClickOutside);
-        index = null;
-        rawData = [];
-    };
-    (container as any)._cleanupSearch = cleanupSelf;
-}
-
-const cleanupSearch = () => {
-    const container = document.getElementById('search-container');
-    if (container && (container as any)._cleanupSearch) {
-        (container as any)._cleanupSearch();
-    }
 }
 
 import { setupComponent } from "@utils/lifecycle";
-setupComponent('Search', initSearch, cleanupSearch);
+setupComponent('Search', initSearch);
 </script>

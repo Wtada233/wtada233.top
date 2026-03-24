@@ -80,26 +80,12 @@ function initLangMismatchNotice() {
 
     closeBtn.addEventListener('click', handleClose);
     switchBtn.addEventListener('click', handleSwitch);
-
-    return () => {
-        closeBtn.removeEventListener('click', handleClose);
-        switchBtn.removeEventListener('click', handleSwitch);
-    };
 }
-
-let noticeCleanup: (() => void) | undefined;
 
 const init = () => {
-    noticeCleanup = initLangMismatchNotice();
-}
-
-const cleanup = () => {
-    if (noticeCleanup) {
-        noticeCleanup();
-        noticeCleanup = undefined;
-    }
+    initLangMismatchNotice();
 }
 
 import { setupComponent } from "@utils/lifecycle";
-setupComponent('LanguageMismatchNotice', init, cleanup);
+setupComponent('LanguageMismatchNotice', init);
 </script>
