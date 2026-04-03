@@ -22,8 +22,7 @@
 - [ ] 检查 `src/utils/app-entry.ts` 中的事件监听器逻辑
 
 ### 4. 修复组件状态持久化
-- [ ] 确保音乐播放器 (`MusicPlayer.svelte`) 在页面跳转时不中断 (Astro 默认支持 `transition:persist`)
-- [ ] 检查 TOC、Navbar 等组件在跳转后的重新初始化逻辑
+- [ ] 检查组件在跳转后的重新初始化逻辑，音乐播放器等换原生实现
 
 ### 5. 清理类型定义
 - [ ] 移除 `src/global.d.ts` 中关于 `window.swup` 的错误类型定义
@@ -32,6 +31,7 @@
 - [ ] 测试页面跳转动画是否平滑
 - [ ] 测试音乐播放器是否跨页面持续播放
 - [ ] 测试评论区 (Twikoo) 是否在跳转后正确加载
+- [ ] 测试其他是否正常且不出现资源泄露
 
 ## 功能建议与优化 (From Analysis)
 
@@ -42,4 +42,3 @@
 
 ### 8. 性能与体验优化
 - [ ] **图片懒加载优化**：实现 BlurHash 或 LQIP (Low Quality Image Placeholders)，提升图片加载时的视觉体验。
-- [ ] **动态 OG 图片**：使用 `satori` 和 `resvg` 根据文章标题动态生成 Open Graph 社交分享图片。
