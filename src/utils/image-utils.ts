@@ -7,7 +7,7 @@ import sharp from "sharp";
 export async function resolveImage(src: string, basePath = "/"): Promise<ImageMetadata | undefined> {
 	// The glob path here is relative to the project root for consistency.
 	// Adjust if images are in a different base directory.
-	const files = import.meta.glob<ImageMetadata>("/src/**/*.{jpg,jpeg,png,gif,webp,avif}", { import: "default" });
+	const files = import.meta.glob<ImageMetadata>("/src/{assets,content}/**/*.{jpg,jpeg,png,gif,webp,avif}", { import: "default" });
 
 	const fullPath = path
 		.normalize(path.join("/src", basePath, src)) // Ensure path starts from project root for glob matching
