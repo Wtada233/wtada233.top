@@ -1,4 +1,4 @@
-import { type CollectionEntry, getCollection } from "astro:content";
+import { type CollectionEntry, getCollection, render } from "astro:content";
 import { pinningConfig } from "@configs/pinning";
 import { relatedPostsConfig } from "@configs/related-posts";
 import { seriesConfig } from "@configs/series";
@@ -303,7 +303,7 @@ export async function getBlogStats(): Promise<BlogStats> {
 }
 
 export async function getPostCardData(entry: CollectionEntry<"posts">, lang?: string): Promise<{ excerpt: string; wordCount: string; minuteCount: string }> {
-	const { remarkPluginFrontmatter } = await entry.render();
+	const { remarkPluginFrontmatter } = await render(entry);
 	const words = remarkPluginFrontmatter.words;
 	const minutes = remarkPluginFrontmatter.minutes;
 	return {

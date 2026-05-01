@@ -18,7 +18,7 @@ export const GET: APIRoute = async () => {
 				// Clean body content for indexing using MDAST utilities
 				let bodyContent = "";
 				if (searchConfig.indexContent) {
-					const tree = fromMarkdown(trans.body);
+					const tree = fromMarkdown(trans.body ?? "");
 					bodyContent = toString(tree);
 					if (searchConfig.indexMaxChars > 0 && bodyContent.length > searchConfig.indexMaxChars) {
 						bodyContent = bodyContent.substring(0, searchConfig.indexMaxChars);
