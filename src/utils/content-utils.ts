@@ -16,32 +16,6 @@ export type GroupedPost = {
 };
 
 /**
- * 获取特定集合的本地化条目
- */
-export async function getLocalizedEntry<C extends "spec" | "posts">(collection: C, id: string): Promise<CollectionEntry<C> | undefined> {
-	const targetLang = siteConfig.lang;
-	const langPart = targetLang.split("_")[0];
-
-	const entries = await getCollection(collection);
-
-	// 优先级排序
-	// 1. 匹配 ID + 目标语言后缀 (例如 about.zh_TW.md)
-	let selected = entries.find((e: CollectionEntry<C>) => e.id.startsWith(`${id}.${targetLang}.`) || e.id.startsWith(`${id}.${targetLang}/`));
-
-	// 2. 匹配 ID + 语言前缀后缀 (例如 about.en.md)
-	if (!selected) {
-		selected = entries.find((e: CollectionEntry<C>) => e.id.startsWith(`${id}.${langPart}.`) || e.id.startsWith(`${id}.${langPart}/`));
-	}
-
-	// 3. 匹配 基础 ID (例如 about.md)
-	if (!selected) {
-		selected = entries.find((e: CollectionEntry<C>) => e.id === id || e.id === `${id}.md` || e.id === `${id}/index.md`);
-	}
-
-	return selected as CollectionEntry<C>;
-}
-
-/**
  * 核心逻辑：按基础 ID 分组所有文章
  */
 export async function getGroupedPosts(): Promise<GroupedPost[]> {
@@ -139,9 +113,11 @@ export async function getSortedPostsList(): Promise<PostForList[]> {
 	return sortedFullPosts.map((post) => {
 		const translations: PostForList["translations"] = {};
 		for (const [lang, entry] of Object.entries(post.translations)) {
-			translations[lang as SupportedLanguage] = {
-				data: entry.data,
-			};
+			if (entry) {
+				translations[lang as SupportedLanguage] = {
+					data: entry.data,
+				};
+			}
 		}
 		return {
 			slug: post.slug,

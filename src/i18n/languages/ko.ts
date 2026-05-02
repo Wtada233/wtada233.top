@@ -1,7 +1,7 @@
 import Key from "@i18n/i18nKey";
 import type { Translation } from "@i18n/translation";
 
-export const ko: Translation = {
+export const translation: Translation = {
 	[Key.home]: "홈",
 	[Key.about]: "소개",
 	[Key.friends]: "친구",

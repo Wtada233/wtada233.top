@@ -1,32 +1,35 @@
 import { siteConfig } from "@configs/site";
 import type I18nKey from "@i18n/i18nKey";
-import { en } from "@i18n/languages/en";
-import { ja } from "@i18n/languages/ja";
-import { ko } from "@i18n/languages/ko";
-import { zh_CN } from "@i18n/languages/zh_CN";
-import { zh_TW } from "@i18n/languages/zh_TW";
+import { getInternalLang } from "@utils/i18n-runtime";
 
 export type Translation = {
 	[K in I18nKey]: string;
 };
 
-const defaultTranslation = en;
+// Use import.meta.glob to dynamically import all language files
+const languageModules = import.meta.glob<{ translation: Translation }>("./languages/*.ts", { eager: true });
 
-export const languages: Record<string, Translation> = {
-	en: en,
-	zh_cn: zh_CN,
-	zh_tw: zh_TW,
-	ja: ja,
-	ko: ko,
-};
+export const languages: Record<string, Translation> = {};
+
+for (const path in languageModules) {
+	const langCode = path.split("/").pop()?.split(".")[0];
+	if (langCode) {
+		languages[langCode] = languageModules[path].translation;
+	}
+}
+
+// Helper to get a safe fallback translation
+const defaultLang = siteConfig.lang;
+const defaultTranslation = languages[defaultLang] || Object.values(languages)[0];
 
 export function getTranslation(lang: string): Translation {
-	return languages[lang.toLowerCase().replaceAll("-", "_")] || defaultTranslation;
+	return languages[getInternalLang(lang)] || defaultTranslation;
 }
 
 export function i18n(key: I18nKey, replacements?: Record<string, string | number>, lang?: string): string {
-	const targetLang = lang || siteConfig.lang || "en";
-	let text = getTranslation(targetLang)[key];
+	const targetLang = lang || siteConfig.lang;
+	const trans = getTranslation(targetLang);
+	let text = trans[key] || languages[defaultLang]?.[key] || Object.values(languages)[0][key] || "";
 
 	if (replacements) {
 		for (const placeholder in replacements) {

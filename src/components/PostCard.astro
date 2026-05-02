@@ -98,7 +98,7 @@ const tiltEnabled = effectsConfig.enable && effectsConfig.tilt.enable;
                   class="transition opacity-0 group-hover:opacity-100 scale-50 group-hover:scale-100 text-white text-5xl">
             </Icon>
         </div>
-        <ImageWrapper src={image} basePath={path.join("content/posts/", getDir(Object.values(entry.translations)[0].id))} alt="Cover Image of the Post"
+        <ImageWrapper src={image} basePath={path.join("content/posts/", getDir(trans.id))} alt="Cover Image of the Post"
                   class="w-full h-full" loading={loading}>
         </ImageWrapper>
     </a>}

@@ -9,6 +9,7 @@ import { fontConfig } from "@configs/font";
 import { siteConfig } from "@configs/site";
 import Head from "@layouts/components/Head.astro";
 import ThemeScript from "@layouts/components/ThemeScript.astro";
+import { getDisplayLang } from "@utils/i18n-runtime";
 import { isHomePage as checkIsHomePage } from "@utils/url-utils";
 import "overlayscrollbars/styles/overlayscrollbars.css";
 import "photoswipe/style.css";
@@ -36,7 +37,7 @@ const enableBanner = bannerConfig.enable;
 if (!lang) {
 	lang = `${siteConfig.lang}`;
 }
-const siteLang = lang.replaceAll("_", "-");
+const siteLang = getDisplayLang(lang);
 ---
 
 <!DOCTYPE html>

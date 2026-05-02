@@ -9,7 +9,7 @@ import { siteConfig } from "@configs/site";
 import { umamiConfig } from "@configs/umami";
 import { webmentionConfig } from "@configs/webmention";
 import { defaultFavicons } from "@constants/icon";
-import { getLanguageSwitchUrl, SUPPORTED_LANGUAGES } from "@utils/i18n-runtime";
+import { getDisplayLang, getLanguageSwitchUrl, SUPPORTED_LANGUAGES } from "@utils/i18n-runtime";
 import type { Favicon } from "@/types/config";
 import { resolveImage } from "@/utils/image-utils";
 import { url } from "@/utils/url-utils";
@@ -93,7 +93,7 @@ if (profileConfig.avatar) {
 {SUPPORTED_LANGUAGES.map(supportedLang => {
     const langUrl = new URL(getLanguageSwitchUrl(supportedLang, Astro.url), Astro.site);
     return (
-        <link rel="alternate" hreflang={supportedLang.replaceAll('_', '-')} href={langUrl.href} />
+        <link rel="alternate" hreflang={getDisplayLang(supportedLang)} href={langUrl.href} />
     );
 })}
 <link rel="alternate" hreflang="x-default" href={new URL('/' + siteConfig.lang + '/', Astro.site).href} />

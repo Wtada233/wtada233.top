@@ -19,11 +19,13 @@ const defaultLang = siteConfig.lang as SupportedLanguage;
 const allFriends = await getCollection("spec", (e) => e.id.startsWith("friends"));
 const friendsMap = Object.fromEntries(
 	allFriends.map((e) => {
-		let l = siteConfig.lang;
-		if (e.id.includes(".en")) l = "en";
-		else if (e.id.includes(".ja")) l = "ja";
-		else if (e.id.includes(".ko")) l = "ko";
-		else if (e.id.includes(".zh_TW")) l = "zh_TW";
+		let l = defaultLang;
+		for (const langCode of SUPPORTED_LANGUAGES) {
+			if (e.id.includes(`.${langCode}`)) {
+				l = langCode;
+				break;
+			}
+		}
 		return [l, e];
 	}),
 );

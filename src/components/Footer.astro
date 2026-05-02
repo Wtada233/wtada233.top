@@ -2,7 +2,7 @@
 import { profileConfig } from "@configs/profile";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
-import { getLangFromPathname } from "@utils/i18n-runtime";
+import { getDisplayLang, getLangFromPathname } from "@utils/i18n-runtime";
 import { url } from "@utils/url-utils";
 
 const currentYear = new Date().getFullYear();
@@ -13,7 +13,7 @@ const lang = getLangFromPathname(Astro.url.pathname);
 // 从环境变量获取构建日期，确保在构建时可用
 // PUBLIC_BUILD_DATE 环境变量将在 astro.config.mjs 中设置
 const buildDate = import.meta.env.PUBLIC_BUILD_DATE || new Date().toISOString();
-const formattedBuildDate = new Date(buildDate).toLocaleDateString(lang.replace("_", "-"), {
+const formattedBuildDate = new Date(buildDate).toLocaleDateString(getDisplayLang(lang), {
 	year: "numeric",
 	month: "long",
 	day: "numeric",

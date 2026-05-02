@@ -1,7 +1,7 @@
 import Key from "@i18n/i18nKey";
 import type { Translation } from "@i18n/translation";
 
-export const zh_TW: Translation = {
+export const translation: Translation = {
 	[Key.home]: "首頁",
 	[Key.about]: "關於",
 	[Key.friends]: "友鏈",

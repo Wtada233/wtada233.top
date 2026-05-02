@@ -5,7 +5,7 @@ import * as cheerio from "cheerio";
 import { marked } from "marked";
 import { siteConfig } from "@/configs/site";
 import { getPostTranslation, getSortedPosts } from "@/utils/content-utils";
-import { SUPPORTED_LANGUAGES, type SupportedLanguage } from "@/utils/i18n-runtime";
+import { getDisplayLang, SUPPORTED_LANGUAGES, type SupportedLanguage } from "@/utils/i18n-runtime";
 import { resolveImage } from "@/utils/image-utils";
 import { getDir, getPostUrlBySlug } from "@/utils/url-utils";
 
@@ -40,7 +40,7 @@ export async function GET(context: APIContext): Promise<Response> {
 	const groupedPosts = await getSortedPosts();
 
 	// Convert internal lang code to standard RSS language code
-	const rssLang = currentLang.replace("_", "-").toLowerCase();
+	const rssLang = getDisplayLang(currentLang).toLowerCase();
 
 	const rssItems: RssItem[] = [];
 

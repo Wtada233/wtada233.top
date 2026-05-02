@@ -11,6 +11,7 @@ import type {
 	FaviconConfigSchema,
 	FontConfigSchema,
 	FriendsConfigSchema,
+	I18nConfigSchema,
 	LicenseConfigSchema,
 	MusicPlayerConfigSchema,
 	NavBarConfigSchema,
@@ -62,6 +63,7 @@ export type MusicPlayerConfig = z.infer<typeof MusicPlayerConfigSchema>;
 export type UmamiConfig = z.infer<typeof UmamiConfigSchema>;
 export type SearchConfig = z.infer<typeof SearchConfigSchema>;
 export type WebmentionConfig = z.infer<typeof WebmentionConfigSchema>;
+export type I18nConfig = z.infer<typeof I18nConfigSchema>;
 
 export type LIGHT_DARK_MODE = typeof LIGHT_MODE | typeof DARK_MODE | typeof AUTO_MODE;
 

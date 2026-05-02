@@ -1,14 +1,9 @@
 ---
 import Icon from "@components/common/Icon.astro";
-import { SUPPORTED_LANGUAGES, type SupportedLanguage } from "@utils/i18n-runtime";
+import { i18nConfig } from "@configs/i18n";
+import { SUPPORTED_LANGUAGES } from "@utils/i18n-runtime";
 
-const langNames: Record<SupportedLanguage, string> = {
-	en: "English",
-	zh_CN: "简体中文",
-	zh_TW: "繁體中文",
-	ja: "日本語",
-	ko: "한국어",
-};
+const langNames = i18nConfig.nameMap;
 ---
 
 <div id="language-picker" class="relative z-50" role="menu" tabindex="-1">

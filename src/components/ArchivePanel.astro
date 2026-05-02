@@ -48,7 +48,7 @@ const lang = propLang || getLangFromPathname(Astro.url.pathname);
 import { dateConfig } from "@configs/date";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
-import { getRuntimeLanguage } from "@utils/i18n-runtime";
+import { getRuntimeLanguage, getDisplayLang } from "@utils/i18n-runtime";
 import { getPostUrlBySlug } from "@utils/url-utils";
 
 function initArchivePanel() {
@@ -123,7 +123,7 @@ function initArchivePanel() {
 
         let groups: any[] = [];
         if (currentView === "time") {
-            const yearFormatter = new Intl.DateTimeFormat('en-US', {
+            const yearFormatter = new Intl.DateTimeFormat(getDisplayLang(currentLang), {
                 timeZone: dateConfig.timezone,
                 year: 'numeric'
             });

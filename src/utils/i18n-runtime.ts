@@ -1,9 +1,40 @@
+import { i18nConfig } from "@configs/i18n";
 import { siteConfig } from "@configs/site";
 
-export const SUPPORTED_LANGUAGES = ["en", "zh_CN", "zh_TW", "ja", "ko"] as const;
-export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number];
+export const SUPPORTED_LANGUAGES: string[] = Object.keys(i18nConfig.displayMap);
+export type SupportedLanguage = string;
 
 const STORAGE_KEY = "lang";
+
+/**
+ * 获取语言的显示代码 (BCP47)
+ */
+export function getDisplayLang(lang: string): string {
+	return i18nConfig.displayMap[lang] || lang;
+}
+
+/**
+ * 将各种格式的语言代码映射为内部定义的 SupportedLanguage
+ */
+export function getInternalLang(lang: string): SupportedLanguage {
+	const lowerLang = lang.toLowerCase();
+
+	// 1. 尝试直接匹配内部代码 (忽略大小写)
+	for (const supported of SUPPORTED_LANGUAGES) {
+		if (supported.toLowerCase() === lowerLang) {
+			return supported;
+		}
+	}
+
+	// 2. 尝试匹配显示代码 (忽略大小写)
+	for (const [internal, display] of Object.entries(i18nConfig.displayMap)) {
+		if (display.toLowerCase() === lowerLang) {
+			return internal as SupportedLanguage;
+		}
+	}
+
+	return siteConfig.lang as SupportedLanguage;
+}
 
 export function getStoredLanguage(): SupportedLanguage | null {
 	if (typeof localStorage === "undefined") return null;

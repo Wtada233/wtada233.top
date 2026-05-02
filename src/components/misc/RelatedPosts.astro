@@ -2,11 +2,10 @@
 import path from "node:path";
 import Icon from "@components/common/Icon.astro";
 import { adaptiveThemeConfig } from "@configs/adaptive-theme";
-import { siteConfig } from "@configs/site";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
-import type { GroupedPost } from "@utils/content-utils";
-import { getLangFromPathname, type SupportedLanguage } from "@utils/i18n-runtime";
+import { type GroupedPost, getPostTranslation } from "@utils/content-utils";
+import { getLangFromPathname } from "@utils/i18n-runtime";
 import { extractHueFromImage } from "@utils/image-utils";
 import { getDir, getPostUrlBySlug } from "@utils/url-utils";
 
@@ -45,7 +44,7 @@ const postsWithHue = await Promise.all(
         </h2>
         <ul class="list-none p-0 m-0">
             {postsWithHue.map(({ post, hue }) => {
-                const trans = post.translations[lang as SupportedLanguage] || post.translations[siteConfig.lang as SupportedLanguage] || Object.values(post.translations)[0];
+                const trans = getPostTranslation(post, lang);
                 return (
                     <li class="mb-2 last:mb-0">
                         <a href={getPostUrlBySlug(post.slug, lang)} data-hue={hue} class="link text-[var(--primary)] transition text-base font-medium">

@@ -18,7 +18,7 @@ export const SeoConfigSchema: z.ZodType<SeoConfig> = z.object({
 export type SiteConfig = {
 	title: string;
 	subtitle: string;
-	lang: "en" | "zh_CN" | "zh_TW" | "ja" | "ko";
+	lang: string;
 	keywords: string;
 	description: string;
 	themeColor: {
@@ -30,7 +30,7 @@ export type SiteConfig = {
 export const SiteConfigSchema: z.ZodType<SiteConfig> = z.object({
 	title: z.string(),
 	subtitle: z.string(),
-	lang: z.enum(["en", "zh_CN", "zh_TW", "ja", "ko"]),
+	lang: z.string(),
 	keywords: z.string(),
 	description: z.string(),
 	themeColor: z.object({
@@ -483,4 +483,14 @@ export type WebmentionConfig = {
 export const WebmentionConfigSchema: z.ZodType<WebmentionConfig> = z.object({
 	enable: z.boolean(),
 	endpoint: z.string().url(),
+});
+
+export type I18nConfig = {
+	displayMap: Record<string, string>;
+	nameMap: Record<string, string>;
+};
+
+export const I18nConfigSchema: z.ZodType<I18nConfig> = z.object({
+	displayMap: z.record(z.string(), z.string()),
+	nameMap: z.record(z.string(), z.string()),
 });
