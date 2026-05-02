@@ -86,4 +86,6 @@ const files = import.meta.glob<ImageMetadata>("/src/{assets,content}/**/*.{jpg,j
 
 好吧，还有高手。别的css也是这样！特大好消息！（误）
 
+总之真是令人大吃一惊...我看了一下Fuwari的Github仓库，注意到去年已经有人发现这个问题了（2025）：https://github.com/saicaca/fuwari/issues/624
+
 总之就写到这里了，我去改Layout.astro了，bye
