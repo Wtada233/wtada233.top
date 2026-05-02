@@ -19,3 +19,16 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+---
+
+### Additional Contributions and Portions
+
+Copyright (c) 2026 Wtada233
+
+This project is a derivative work of Fuwari. Additional features and refactored components 
+(such as the Music Player and AI summary logic) are contributed by Wtada233 under the 
+same MIT License. 
+
+Portions of this software are derived from third-party projects as
+detailed in the README.md and are used under their respective licenses (Apache-2.0, MIT).

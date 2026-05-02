@@ -74,6 +74,7 @@ pnpm build
 - **自定义字体方案**：参考自 [lanke-seven](https://lanke-seven.vercel.app/posts/107368/)
 - **AI 摘要逻辑**：参考自 [fishcpy](https://blog.fis.ink/posts/35/) (已修正逻辑错误并进行适配优化)
 - **基础主题**：基于优秀的 [Fuwari](https://github.com/saicaca/fuwari)
+- **音乐播放器**：参考自 [Mizuki](https://github.com/LyraVoid/Mizuki) (参考其UI和设计，但是完全重写，移植到astro并修改部分功能)
 
 ---
 
