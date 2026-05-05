@@ -145,6 +145,9 @@ const currentLang = siteConfig.lang;
     width: 320px;
 }
 
+.progress-bar, #volume-bar {
+    touch-action: none;
+}
 @keyframes spin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
@@ -241,25 +244,36 @@ class MusicPlayer extends HTMLElement {
     }
 
     attachListeners() {
-        this.orb.addEventListener('click', () => this.toggleHidden());
-        this.querySelector('#mini-cover-btn')?.addEventListener('click', () => this.togglePlay());
-        this.querySelector('#mini-info-btn')?.addEventListener('click', () => this.toggleExpanded());
-        this.querySelector('#mini-hide-btn')?.addEventListener('click', (e) => { e.stopPropagation(); this.toggleHidden(); });
-        this.querySelector('#mini-expand-btn')?.addEventListener('click', (e) => { e.stopPropagation(); this.toggleExpanded(); });
+        this.orb.addEventListener('pointerdown', (e) => { e.preventDefault(); this.toggleHidden(); });
+        this.querySelector('#mini-cover-btn')?.addEventListener('pointerdown', (e) => { e.preventDefault(); this.togglePlay(); });
+        this.querySelector('#mini-info-btn')?.addEventListener('pointerdown', (e) => { e.preventDefault(); this.toggleExpanded(); });
+        this.querySelector('#mini-hide-btn')?.addEventListener('pointerdown', (e) => { 
+            e.preventDefault(); e.stopPropagation(); this.toggleHidden(); 
+        });
+        this.querySelector('#mini-expand-btn')?.addEventListener('pointerdown', (e) => { 
+            e.preventDefault(); e.stopPropagation(); this.toggleExpanded(); 
+        });
         
-        this.querySelector('#expanded-hide-btn')?.addEventListener('click', () => this.toggleHidden());
-        this.querySelector('#expanded-playlist-btn')?.addEventListener('click', () => this.togglePlaylist());
-        this.querySelector('#collapse-btn')?.addEventListener('click', () => this.toggleExpanded());
+        this.querySelector('#expanded-hide-btn')?.addEventListener('pointerdown', (e) => { e.preventDefault(); this.toggleHidden(); });
+        this.querySelector('#expanded-playlist-btn')?.addEventListener('pointerdown', (e) => { e.preventDefault(); this.togglePlaylist(); });
+        this.querySelector('#collapse-btn')?.addEventListener('pointerdown', (e) => { e.preventDefault(); this.toggleExpanded(); });
         
-        this.querySelector('#main-play-btn')?.addEventListener('click', () => this.togglePlay());
-        this.querySelector('#prev-btn')?.addEventListener('click', () => this.previous());
-        this.querySelector('#next-btn')?.addEventListener('click', () => this.next());
-        this.querySelector('#shuffle-btn')?.addEventListener('click', () => this.toggleShuffle());
-        this.querySelector('#repeat-btn')?.addEventListener('click', () => this.toggleRepeat());
-        this.querySelector('#mute-btn')?.addEventListener('click', () => this.toggleMute());
+        this.querySelector('#main-play-btn')?.addEventListener('pointerdown', (e) => { e.preventDefault(); this.togglePlay(); });
+        this.querySelector('#prev-btn')?.addEventListener('pointerdown', (e) => { e.preventDefault(); this.previous(); });
+        this.querySelector('#next-btn')?.addEventListener('pointerdown', (e) => { e.preventDefault(); this.next(); });
+        this.querySelector('#shuffle-btn')?.addEventListener('pointerdown', (e) => { e.preventDefault(); this.toggleShuffle(); });
+        this.querySelector('#repeat-btn')?.addEventListener('pointerdown', (e) => { e.preventDefault(); this.toggleRepeat(); });
+        this.querySelector('#mute-btn')?.addEventListener('pointerdown', (e) => { e.preventDefault(); this.toggleMute(); });
         
-        this.progressBar.addEventListener('click', (e) => this.setProgress(e));
-        this.volumeBar.addEventListener('mousedown', (e) => this.startVolumeDrag(e));
+        this.progressBar.addEventListener('pointerdown', (e) => this.handleDrag(e as PointerEvent, this.progressBar, (pct) => {
+            this.audio.currentTime = pct * this.audio.duration;
+        }));
+        
+        this.volumeBar.addEventListener('pointerdown', (e) => this.handleDrag(e as PointerEvent, this.volumeBar, (pct) => {
+            this.volume = pct;
+            this.audio.volume = pct;
+            this.volumeFill.style.width = `${pct * 100}%`;
+        }));
         
         this.audio.addEventListener('play', () => this.onPlay());
         this.audio.addEventListener('pause', () => this.onPause());
@@ -269,8 +283,33 @@ class MusicPlayer extends HTMLElement {
         this.audio.addEventListener('loadeddata', () => this.onLoadSuccess());
         this.audio.addEventListener('error', () => this.onLoadError());
 
-        this.querySelector('#close-error')?.addEventListener('click', () => this.errorToast.classList.add('hidden'));
-        this.querySelector('#close-playlist')?.addEventListener('click', () => this.togglePlaylist());
+        this.querySelector('#close-error')?.addEventListener('pointerdown', (e) => {
+            e.preventDefault();
+            this.errorToast.classList.add('hidden');
+        });
+        this.querySelector('#close-playlist')?.addEventListener('pointerdown', (e) => {
+            e.preventDefault();
+            this.togglePlaylist();
+        });
+    }
+
+    handleDrag(e: PointerEvent, element: HTMLElement, callback: (pct: number) => void) {
+        element.setPointerCapture(e.pointerId);
+        const update = (ev: PointerEvent) => {
+            const rect = element.getBoundingClientRect();
+            const pct = Math.max(0, Math.min(1, (ev.clientX - rect.left) / rect.width));
+            callback(pct);
+        };
+        const up = (ev: PointerEvent) => {
+            element.releasePointerCapture(ev.pointerId);
+            element.removeEventListener('pointermove', update);
+            element.removeEventListener('pointerup', up);
+            element.removeEventListener('pointercancel', up);
+        };
+        element.addEventListener('pointermove', update);
+        element.addEventListener('pointerup', up);
+        element.addEventListener('pointercancel', up);
+        update(e);
     }
 
     loadPlaylist() {
@@ -371,29 +410,6 @@ class MusicPlayer extends HTMLElement {
         this.isMuted = !this.isMuted;
         this.audio.muted = this.isMuted;
         (this.querySelector('#mute-btn') as HTMLElement).style.color = this.isMuted ? 'var(--primary)' : 'inherit';
-    }
-
-    setProgress(e: any) {
-        const rect = this.progressBar.getBoundingClientRect();
-        const pct = (e.clientX - rect.left) / rect.width;
-        this.audio.currentTime = pct * this.audio.duration;
-    }
-
-    startVolumeDrag(e: MouseEvent) {
-        const move = (ev: MouseEvent) => {
-            const rect = this.volumeBar.getBoundingClientRect();
-            const pct = Math.max(0, Math.min(1, (ev.clientX - rect.left) / rect.width));
-            this.volume = pct;
-            this.audio.volume = pct;
-            this.volumeFill.style.width = `${pct * 100}%`;
-        };
-        const up = () => {
-            document.removeEventListener('mousemove', move);
-            document.removeEventListener('mouseup', up);
-        };
-        document.addEventListener('mousemove', move);
-        document.addEventListener('mouseup', up);
-        move(e);
     }
 
     onPlay() {
